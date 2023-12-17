@@ -212,6 +212,7 @@
     "use-event-callback": "^0.1.0",
     "use-immer": "^0.8.1",
     "use-query-params": "^1.1.9",
+    "xlsx": "^0.18.5",
     "yargs": "^15.4.1"
   },
   "devDependencies": {

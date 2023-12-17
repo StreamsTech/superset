@@ -266,6 +266,18 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
     }
   };
 
+  function exportToExcel(elementSelector: string, fileName: string): void {
+    const element = document.querySelector(elementSelector);
+    if (element) {
+      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, `${fileName}.xlsx`);
+    } else {
+      console.error('Element not found.');
+    }
+  }
+
   const handleMenuClick = ({
     key,
     domEvent,
@@ -302,8 +314,9 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
         props.exportFullXLSX?.(props.slice.slice_id);
         break;
       case MENU_KEYS.EXPORT_XLSX:
+        exportToExcel(`#chart-id-${props.slice.slice_id}`,'test-superset-report');
         // eslint-disable-next-line no-unused-expressions
-        props.exportXLSX?.(props.slice.slice_id);
+        // props.exportXLSX?.(props.slice.slice_id);
         break;
       case MENU_KEYS.DOWNLOAD_AS_IMAGE: {
         // menu closes with a delay, we need to hide it manually,
@@ -495,7 +508,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
             key={MENU_KEYS.EXPORT_XLSX}
             icon={<Icons.FileOutlined css={dropdownIconsStyles} />}
           >
-            {t('Export to Excel')}
+            {t('Export to Excel...')}
           </Menu.Item>
 
           {props.slice.viz_type !== 'filter_box' &&

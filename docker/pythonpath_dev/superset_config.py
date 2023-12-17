@@ -113,3 +113,37 @@ try:
     )
 except ImportError:
     logger.info("Using default Docker config...")
+
+
+######
+#Streamstech Configuration
+######
+SESSION_COOKIE_SAMESITE = "None" # Sufficient for Firefox
+SESSION_COOKIE_SECURE = True # Required for Google Chrome (at least from version 84) 
+SESSION_COOKIE_HTTPONLY= False 
+HTTP_HEADERS = {'X-Frame-Options': 'ALLOWALL'} 
+ENABLE_PROXY_FIX= True 
+# # Uncomment to setup Public role name, no authentication needed
+AUTH_ROLE_PUBLIC = "Gamma"
+# # Will allow user self registration
+# AUTH_USER_REGISTRATION = True
+PUBLIC_ROLE_LIKE_GAMMA = True 
+WTF_CSRF_ENABLED = False 
+GUEST_ROLE_NAME = "Public"
+FEATURE_FLAGS = { 
+    "EMBEDDED_SUPERSET": True,
+    "DASHBOARD_RBAC": True,
+    "ENABLE_TEMPLATE_PROCESSING": True,
+    "DRILL_TO_DETAIL":True,
+    "DRILL_BY":True,
+    "DASHBOARD_CROSS_FILTERS": True,
+    "ENABLE_JAVASCRIPT_CONTROLS": True
+}
+CORS_OPTIONS = {
+     'supports_credentials': True, 
+     'allow_headers': ['*'], 
+     'resources':['*'], 
+     'origins': ['*']
+}
+FAB_ADD_SECURITY_API = True
+ENABLE_CORS = True
