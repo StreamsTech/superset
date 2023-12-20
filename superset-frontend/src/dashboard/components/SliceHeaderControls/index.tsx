@@ -30,6 +30,7 @@ import {
   withRouter,
 } from 'react-router-dom';
 import moment from 'moment';
+import * as XLSX from 'xlsx';
 import {
   Behavior,
   css,
@@ -314,7 +315,10 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
         props.exportFullXLSX?.(props.slice.slice_id);
         break;
       case MENU_KEYS.EXPORT_XLSX:
-        exportToExcel(`#chart-id-${props.slice.slice_id}`,'test-superset-report');
+        exportToExcel(
+          `#chart-id-${props.slice.slice_id}`,
+          'test-superset-report',
+        );
         // eslint-disable-next-line no-unused-expressions
         // props.exportXLSX?.(props.slice.slice_id);
         break;
