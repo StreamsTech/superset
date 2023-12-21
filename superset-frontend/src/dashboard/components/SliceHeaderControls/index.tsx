@@ -279,6 +279,11 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
     }
   }
 
+  function getPresentDate(): string {
+    const date = new Date();
+    return `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`;
+  }
+
   const handleMenuClick = ({
     key,
     domEvent,
@@ -317,7 +322,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
       case MENU_KEYS.EXPORT_XLSX:
         exportToExcel(
           `#chart-id-${props.slice.slice_id}`,
-          'test-superset-report',
+          `Export-Report-${getPresentDate()}`,
         );
         // eslint-disable-next-line no-unused-expressions
         // props.exportXLSX?.(props.slice.slice_id);
@@ -512,7 +517,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
             key={MENU_KEYS.EXPORT_XLSX}
             icon={<Icons.FileOutlined css={dropdownIconsStyles} />}
           >
-            {t('Export to Excel...')}
+            {t('Export to Excel')}
           </Menu.Item>
 
           {props.slice.viz_type !== 'filter_box' &&
