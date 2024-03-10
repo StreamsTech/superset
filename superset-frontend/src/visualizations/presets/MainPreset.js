@@ -78,7 +78,7 @@ import { PivotTableChartPlugin as PivotTableChartPluginV2 } from '@superset-ui/p
 import { HandlebarsChartPlugin } from '@superset-ui/plugin-chart-handlebars';
 import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
-
+import {PluginChartStlBigNumber} from 'plugin-chart-stl-big-number';
 export default class MainPreset extends Preset {
   constructor() {
     const experimentalplugins = isFeatureEnabled(
@@ -160,6 +160,7 @@ export default class MainPreset extends Preset {
         new EchartsTreeChartPlugin().configure({ key: 'tree_chart' }),
         new EchartsSunburstChartPlugin().configure({ key: 'sunburst_v2' }),
         new HandlebarsChartPlugin().configure({ key: 'handlebars' }),
+        new PluginChartStlBigNumber().configure({key: 'stl-big-number'}),
         ...experimentalplugins,
       ],
     });
