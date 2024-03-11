@@ -65,6 +65,7 @@ import {
   EchartsMixedTimeseriesChartPlugin,
   EchartsTreeChartPlugin,
   EchartsSunburstChartPlugin,
+  StlBigNumberTotalChartPlugin,
 } from '@superset-ui/plugin-chart-echarts';
 import {
   SelectFilterPlugin,
@@ -78,7 +79,7 @@ import { PivotTableChartPlugin as PivotTableChartPluginV2 } from '@superset-ui/p
 import { HandlebarsChartPlugin } from '@superset-ui/plugin-chart-handlebars';
 import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
-import {PluginChartStlBigNumber} from 'plugin-chart-stl-big-number';
+// import {PluginChartStlBigNumber} from 'plugin-chart-stl-big-number';
 export default class MainPreset extends Preset {
   constructor() {
     const experimentalplugins = isFeatureEnabled(
@@ -95,6 +96,8 @@ export default class MainPreset extends Preset {
         new BarChartPlugin().configure({ key: 'bar' }),
         new BigNumberChartPlugin().configure({ key: 'big_number' }),
         new BigNumberTotalChartPlugin().configure({ key: 'big_number_total' }),
+        //stl
+        new StlBigNumberTotalChartPlugin().configure({ key: 'stl_big_number'}),
         new EchartsBoxPlotChartPlugin().configure({ key: 'box_plot' }),
         new BubbleChartPlugin().configure({ key: 'bubble' }),
         new BulletChartPlugin().configure({ key: 'bullet' }),
@@ -160,7 +163,7 @@ export default class MainPreset extends Preset {
         new EchartsTreeChartPlugin().configure({ key: 'tree_chart' }),
         new EchartsSunburstChartPlugin().configure({ key: 'sunburst_v2' }),
         new HandlebarsChartPlugin().configure({ key: 'handlebars' }),
-        new PluginChartStlBigNumber().configure({key: 'stl-big-number'}),
+        // new PluginChartStlBigNumber().configure({key: 'stl-big-number'}),
         ...experimentalplugins,
       ],
     });
