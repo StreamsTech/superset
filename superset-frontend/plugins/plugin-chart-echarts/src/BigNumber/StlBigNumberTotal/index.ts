@@ -35,7 +35,7 @@ const metadata = {
     { url: example1, caption: t('A Big Number') },
     { url: example2, caption: t('With a subheader') },
   ],
-  name: t('Stl Big Number'),
+  name: t('KPI Card'),
   tags: [
     t('Additive'),
     t('Business'),
