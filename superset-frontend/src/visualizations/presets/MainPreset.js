@@ -96,8 +96,8 @@ export default class MainPreset extends Preset {
         new BarChartPlugin().configure({ key: 'bar' }),
         new BigNumberChartPlugin().configure({ key: 'big_number' }),
         new BigNumberTotalChartPlugin().configure({ key: 'big_number_total' }),
-        //stl
-        new StlBigNumberTotalChartPlugin().configure({ key: 'stl_big_number'}),
+        // stl
+        new StlBigNumberTotalChartPlugin().configure({ key: 'stl_big_number' }),
         new EchartsBoxPlotChartPlugin().configure({ key: 'box_plot' }),
         new BubbleChartPlugin().configure({ key: 'bubble' }),
         new BulletChartPlugin().configure({ key: 'bullet' }),

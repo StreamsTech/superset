@@ -28,9 +28,7 @@ import { EchartsChartPlugin } from '../../types';
 
 const metadata = {
   category: t('KPI'),
-  description: t(
-    'Big Number With Changeable Background Color',
-  ),
+  description: t('Big Number With Changeable Background Color'),
   exampleGallery: [
     { url: example1, caption: t('A Big Number') },
     { url: example2, caption: t('With a subheader') },

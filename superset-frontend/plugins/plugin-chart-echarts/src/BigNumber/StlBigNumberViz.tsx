@@ -27,7 +27,7 @@ import {
   BinaryQueryObjectFilterClause,
 } from '@superset-ui/core';
 import Echart from '../components/Echart';
-import { BigNumberVizProps, StlBigNumberVizProps } from './types';
+import { StlBigNumberVizProps } from './types';
 import { EventHandlers } from '../types';
 
 const defaultNumberFormatter = getNumberFormatter();
@@ -278,7 +278,7 @@ class StlBigNumberVis extends React.PureComponent<StlBigNumberVizProps> {
       kickerFontSize,
       headerFontSize,
       subheaderFontSize,
-      backGroundColor
+      backGroundColor,
     } = this.props;
     const className = this.getClassName();
 
@@ -309,14 +309,17 @@ class StlBigNumberVis extends React.PureComponent<StlBigNumberVizProps> {
       );
     }
 
-    const setBackGroundColor =  `rgba(
+    const setBackGroundColor = `rgba(
       ${backGroundColor.r}, 
       ${backGroundColor.g}, 
       ${backGroundColor.b}, 
-      ${backGroundColor.a})`
+      ${backGroundColor.a})`;
 
     return (
-      <div className={className} style={{ height, background: setBackGroundColor }} >
+      <div
+        className={className}
+        style={{ height, background: setBackGroundColor }}
+      >
         {this.renderFallbackWarning()}
         {this.renderKicker((kickerFontSize || 0) * height)}
         {this.renderHeader(Math.ceil(headerFontSize * height))}

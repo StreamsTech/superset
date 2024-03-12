@@ -28,7 +28,7 @@ import {
   QueryFormData,
   getValueFormatter,
 } from '@superset-ui/core';
-import { BigNumberTotalChartProps, BigNumberVizProps, StlBigNumberVizProps } from '../types';
+import { BigNumberTotalChartProps, StlBigNumberVizProps } from '../types';
 import { getDateFormatter, parseMetricValue } from '../utils';
 import { Refs } from '../../types';
 
@@ -54,7 +54,7 @@ export default function transformProps(
     yAxisFormat,
     conditionalFormatting,
     currencyFormat,
-    backGroundColor
+    backGroundColor,
   } = formData;
   const refs: Refs = {};
   const { data = [], coltypes = [] } = queriesData[0];
@@ -111,6 +111,6 @@ export default function transformProps(
     onContextMenu,
     refs,
     colorThresholdFormatters,
-    backGroundColor
+    backGroundColor,
   };
 }

@@ -32,7 +32,11 @@ export { default as EchartsRadarChartPlugin } from './Radar';
 export { default as EchartsFunnelChartPlugin } from './Funnel';
 export { default as EchartsTreeChartPlugin } from './Tree';
 export { default as EchartsTreemapChartPlugin } from './Treemap';
-export { BigNumberChartPlugin, BigNumberTotalChartPlugin, StlBigNumberTotalChartPlugin } from './BigNumber';
+export {
+  BigNumberChartPlugin,
+  BigNumberTotalChartPlugin,
+  StlBigNumberTotalChartPlugin,
+} from './BigNumber';
 export { default as EchartsSunburstChartPlugin } from './Sunburst';
 
 export { default as BoxPlotTransformProps } from './BoxPlot/transformProps';
