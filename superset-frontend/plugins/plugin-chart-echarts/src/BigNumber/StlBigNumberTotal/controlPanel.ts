@@ -26,6 +26,7 @@ import {
   sections,
 } from '@superset-ui/chart-controls';
 import { headerFontSize, subheaderFontSize } from '../sharedControls';
+import { PRIMARY_COLOR } from 'packages/superset-ui-chart-controls/src/shared-controls/sharedControls';
 
 export default {
   controlPanelSections: [
@@ -59,7 +60,17 @@ export default {
       label: t('Chart Options'),
       expanded: true,
       controlSetRows: [
-        ['color_picker', null],
+        [
+          {
+            name: 'backGroundColor',
+            config: {
+              type: 'ColorPickerControl',
+              label: t('Background Color'),
+              renderTrigger: true,
+              default: PRIMARY_COLOR
+            }
+          }
+        ],
         [headerFontSize],
         [subheaderFontSize],
         ['y_axis_format'],

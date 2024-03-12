@@ -27,7 +27,7 @@ import {
   BinaryQueryObjectFilterClause,
 } from '@superset-ui/core';
 import Echart from '../components/Echart';
-import { BigNumberVizProps } from './types';
+import { BigNumberVizProps, StlBigNumberVizProps } from './types';
 import { EventHandlers } from '../types';
 
 const defaultNumberFormatter = getNumberFormatter();
@@ -41,7 +41,7 @@ const PROPORTION = {
   TRENDLINE: 0.3,
 };
 
-class StlBigNumberVis extends React.PureComponent<BigNumberVizProps> {
+class StlBigNumberVis extends React.PureComponent<StlBigNumberVizProps> {
   static defaultProps = {
     className: '',
     headerFormatter: defaultNumberFormatter,
@@ -278,7 +278,7 @@ class StlBigNumberVis extends React.PureComponent<BigNumberVizProps> {
       kickerFontSize,
       headerFontSize,
       subheaderFontSize,
-      colorPicker
+      backGroundColor
     } = this.props;
     const className = this.getClassName();
 
@@ -309,8 +309,14 @@ class StlBigNumberVis extends React.PureComponent<BigNumberVizProps> {
       );
     }
 
+    const setBackGroundColor =  `rgba(
+      ${backGroundColor.r}, 
+      ${backGroundColor.g}, 
+      ${backGroundColor.b}, 
+      ${backGroundColor.a})`
+
     return (
-      <div className={className} style={{ height, background: `rgba(${colorPicker.r}, ${colorPicker.g}, ${colorPicker.b}, ${colorPicker.a})` }} >
+      <div className={className} style={{ height, background: setBackGroundColor }} >
         {this.renderFallbackWarning()}
         {this.renderKicker((kickerFontSize || 0) * height)}
         {this.renderHeader(Math.ceil(headerFontSize * height))}

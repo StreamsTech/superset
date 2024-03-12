@@ -96,5 +96,41 @@ export type BigNumberVizProps = {
   formData?: BigNumberWithTrendlineFormData;
   refs: Refs;
   colorThresholdFormatters?: ColorFormatters;
-  colorPicker: any
+};
+
+export type StlBigNumberVizProps = {
+  className?: string;
+  width: number;
+  height: number;
+  bigNumber?: DataRecordValue;
+  bigNumberFallback?: TimeSeriesDatum;
+  headerFormatter: ValueFormatter | TimeFormatter;
+  formatTime?: TimeFormatter;
+  headerFontSize: number;
+  kickerFontSize?: number;
+  subheader: string;
+  subheaderFontSize: number;
+  showTimestamp?: boolean;
+  showTrendLine?: boolean;
+  startYAxisAtZero?: boolean;
+  timeRangeFixed?: boolean;
+  timestamp?: DataRecordValue;
+  trendLineData?: TimeSeriesDatum[];
+  mainColor?: string;
+  echartOptions?: EChartsCoreOption;
+  onContextMenu?: (
+    clientX: number,
+    clientY: number,
+    filters?: ContextMenuFilters,
+  ) => void;
+  xValueFormatter?: TimeFormatter;
+  formData?: BigNumberWithTrendlineFormData;
+  refs: Refs;
+  colorThresholdFormatters?: ColorFormatters;
+  backGroundColor: {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  };
 };
