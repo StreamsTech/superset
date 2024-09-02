@@ -66,6 +66,7 @@ const MENU_KEYS = {
   EXPORT_CSV: 'export_csv',
   EXPORT_FULL_CSV: 'export_full_csv',
   EXPORT_XLSX: 'export_xlsx',
+  EXPORT_CHART_XLSX: 'export_chart_xlsx',
   EXPORT_FULL_XLSX: 'export_full_xlsx',
   FORCE_REFRESH: 'force_refresh',
   FULLSCREEN: 'fullscreen',
@@ -281,7 +282,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
 
   function getPresentDate(): string {
     const date = new Date();
-    return `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`;
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   }
 
   const handleMenuClick = ({
@@ -320,12 +321,12 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
         props.exportFullXLSX?.(props.slice.slice_id);
         break;
       case MENU_KEYS.EXPORT_XLSX:
-        exportToExcel(
-          `#chart-id-${props.slice.slice_id}`,
-          `Export-Report-${getPresentDate()}`,
-        );
         // eslint-disable-next-line no-unused-expressions
-        // props.exportXLSX?.(props.slice.slice_id);
+        props.exportXLSX?.(props.slice.slice_id);
+        break;
+      case MENU_KEYS.EXPORT_CHART_XLSX:
+        // eslint-disable-next-line no-unused-expressions
+        exportToExcel(`#chart-id-${props.slice.slice_id}`, `Export-Report-${getPresentDate()}`);
         break;
       case MENU_KEYS.DOWNLOAD_AS_IMAGE: {
         // menu closes with a delay, we need to hide it manually,
@@ -519,6 +520,16 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
           >
             {t('Export to Excel')}
           </Menu.Item>
+
+          {(props.slice.viz_type === 'pivot_table_v2' || props.slice.viz_type === 'table' ||
+            props.slice.viz_type === 'time_table' || props.slice.viz_type === 'paired_ttest') && (
+              <Menu.Item
+                key={MENU_KEYS.EXPORT_CHART_XLSX}
+                icon={<Icons.FileExcelOutlined css={dropdownIconsStyles} />}
+              >
+                {t('Export Report to Excel')}
+              </Menu.Item>
+            )}
 
           {props.slice.viz_type !== 'filter_box' &&
             isFeatureEnabled(FeatureFlag.ALLOW_FULL_CSV_EXPORT) &&

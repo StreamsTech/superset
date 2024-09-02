@@ -21,6 +21,7 @@ export { default as ChartClient } from './clients/ChartClient';
 export { default as ChartMetadata } from './models/ChartMetadata';
 export { default as ChartPlugin } from './models/ChartPlugin';
 export { default as ChartProps } from './models/ChartProps';
+export type { ChartPropsConfig } from './models/ChartProps';
 
 export { default as createLoadableRenderer } from './components/createLoadableRenderer';
 export { default as reactify } from './components/reactify';

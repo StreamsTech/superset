@@ -23,6 +23,7 @@ import pandas as pd
 def df_to_excel(df: pd.DataFrame, **kwargs: Any) -> Any:
     output = io.BytesIO()
     # pylint: disable=abstract-class-instantiated
+    kwargs.pop("encoding", None)
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
         df.to_excel(writer, **kwargs)
 

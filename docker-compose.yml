@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
+x-superset-image: &superset-image docker.streamstech.com/monitoringandevaluationsystem/pksf/superset:3.0.0c
 x-superset-user: &superset-user root
 x-superset-depends-on: &superset-depends-on
   - db
@@ -44,9 +44,9 @@ services:
     container_name: superset_db
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:6432:5432"
     volumes:
-      - db_home:/var/lib/postgresql/data
+      - ./db_home:/var/lib/postgresql/data:rw
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   superset:

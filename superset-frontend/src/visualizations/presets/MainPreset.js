@@ -78,6 +78,8 @@ import { PivotTableChartPlugin as PivotTableChartPluginV2 } from '@superset-ui/p
 import { HandlebarsChartPlugin } from '@superset-ui/plugin-chart-handlebars';
 import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
+import { BigNumberWithTrendlineChartPluginExtended, BigNumberTotalChartPluginExtended } from 'plugin-chart-custom-big-number';
+import { CircumplexChartPlugin } from 'superset-plugin-chart-circumplex';
 
 export default class MainPreset extends Preset {
   constructor() {
@@ -94,7 +96,9 @@ export default class MainPreset extends Preset {
         new AreaChartPlugin().configure({ key: 'area' }),
         new BarChartPlugin().configure({ key: 'bar' }),
         new BigNumberChartPlugin().configure({ key: 'big_number' }),
+        new BigNumberWithTrendlineChartPluginExtended().configure({ key: 'big_number_extended' }),
         new BigNumberTotalChartPlugin().configure({ key: 'big_number_total' }),
+        new BigNumberTotalChartPluginExtended().configure({ key: 'big_number_total_extended' }),
         new EchartsBoxPlotChartPlugin().configure({ key: 'box_plot' }),
         new BubbleChartPlugin().configure({ key: 'bubble' }),
         new BulletChartPlugin().configure({ key: 'bullet' }),
@@ -160,6 +164,7 @@ export default class MainPreset extends Preset {
         new EchartsTreeChartPlugin().configure({ key: 'tree_chart' }),
         new EchartsSunburstChartPlugin().configure({ key: 'sunburst_v2' }),
         new HandlebarsChartPlugin().configure({ key: 'handlebars' }),
+        new CircumplexChartPlugin().configure({ key: 'circumplex_chart' }),
         ...experimentalplugins,
       ],
     });
