@@ -521,8 +521,7 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
             {t('Export to Excel')}
           </Menu.Item>
 
-          {(props.slice.viz_type === 'pivot_table_v2' || props.slice.viz_type === 'table' ||
-            props.slice.viz_type === 'time_table' || props.slice.viz_type === 'paired_ttest') && (
+          {(props.slice.viz_type === 'pivot_table_v2') && (
               <Menu.Item
                 key={MENU_KEYS.EXPORT_CHART_XLSX}
                 icon={<Icons.FileExcelOutlined css={dropdownIconsStyles} />}

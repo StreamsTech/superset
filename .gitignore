@@ -112,3 +112,4 @@ docker/requirements-local.txt
 cache/
 
 .vs
+db_home
