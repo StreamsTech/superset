@@ -19,6 +19,7 @@
 coverage/**
 dist/*
 src/assets/images/*
+src/*
 src/assets/stylesheets/*
 node_modules/*
 node_modules*/*

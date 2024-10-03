@@ -322,11 +322,19 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
         break;
       case MENU_KEYS.EXPORT_XLSX:
         // eslint-disable-next-line no-unused-expressions
-        props.exportXLSX?.(props.slice.slice_id);
+        // props.exportXLSX?.(props.slice.slice_id);
+        props.slice.viz_type === 'pivot_table_v2' ? exportToExcel(
+          `#chart-id-${props.slice.slice_id}`,
+          `Export-Report-${getPresentDate()}`,
+        ) : props.exportXLSX?.(props.slice.slice_id);
         break;
       case MENU_KEYS.EXPORT_CHART_XLSX:
         // eslint-disable-next-line no-unused-expressions
-        exportToExcel(`#chart-id-${props.slice.slice_id}`, `Export-Report-${getPresentDate()}`);
+        // exportToExcel(`#chart-id-${props.slice.slice_id}`, `Export-Report-${getPresentDate()}`);
+        exportToExcel(
+          `#chart-id-${props.slice.slice_id}`,
+          `Export-Report-${getPresentDate()}`,
+        );
         break;
       case MENU_KEYS.DOWNLOAD_AS_IMAGE: {
         // menu closes with a delay, we need to hide it manually,
@@ -520,15 +528,16 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
           >
             {t('Export to Excel')}
           </Menu.Item>
-
-          {(props.slice.viz_type === 'pivot_table_v2') && (
-              <Menu.Item
-                key={MENU_KEYS.EXPORT_CHART_XLSX}
-                icon={<Icons.FileExcelOutlined css={dropdownIconsStyles} />}
-              >
-                {t('Export Report to Excel')}
-              </Menu.Item>
-            )}
+          {/*
+          {props.slice.viz_type === 'pivot_table_v2' && (
+            <Menu.Item
+              key={MENU_KEYS.EXPORT_CHART_XLSX}
+              icon={<Icons.FileExcelOutlined css={dropdownIconsStyles} />}
+            >
+              {t('Export Report to Excel')}
+            </Menu.Item>
+          )} 
+          */}
 
           {props.slice.viz_type !== 'filter_box' &&
             isFeatureEnabled(FeatureFlag.ALLOW_FULL_CSV_EXPORT) &&
