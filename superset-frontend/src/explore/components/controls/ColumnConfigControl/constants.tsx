@@ -39,6 +39,9 @@ export type SharedColumnConfigProp =
   | 'horizontalAlign'
   | 'truncateLongCells'
   | 'showCellBars'
+  | 'dashboardUrl'
+  | 'showUrls'
+  | 'urlQueryParams'
   | 'currencyFormat';
 
 const d3NumberFormat: ControlFormItemSpec<'Select'> = {
@@ -116,6 +119,30 @@ const showCellBars: ControlFormItemSpec<'Checkbox'> = {
   debounceDelay: 200,
 };
 
+const dashboardUrl: ControlFormItemSpec<'Input'> = {
+  controlType: 'Input',
+  label: t('Dashboard URL'),
+  description: t('Field for URL'),
+  placeholder: t('Enter a Dashboard URL'), // Use placeholder instead of defaultValue
+  debounceDelay: 200,
+};
+
+const urlQueryParams: ControlFormItemSpec<'Input'> = {
+  controlType: 'Input',
+  label: t('Query Parameters'),
+  description: t('Please separate your query parameters by ,'),
+  placeholder: t('Enter Query Parameters'), // Use placeholder instead of defaultValue
+  debounceDelay: 200,
+};
+
+const showUrls: ControlFormItemSpec<'Checkbox'> = {
+  controlType: 'Checkbox',
+  label: t('Show URl'),
+  description: t('This will control url'),
+  defaultValue: false,
+  debounceDelay: 200,
+};
+
 const alignPositiveNegative: ControlFormItemSpec<'Checkbox'> = {
   controlType: 'Checkbox',
   label: t('Align +/-'),
@@ -171,6 +198,9 @@ export const SHARED_COLUMN_CONFIG_PROPS = {
   truncateLongCells,
   horizontalAlign,
   showCellBars,
+  dashboardUrl,
+  urlQueryParams,
+  showUrls,
   alignPositiveNegative,
   colorPositiveNegative,
   currencyFormat,
@@ -193,6 +223,9 @@ export const DEFAULT_CONFIG_FORM_LAYOUT: ColumnConfigFormLayout = {
           { name: 'horizontalAlign', override: { defaultValue: 'right' } },
         ],
         ['showCellBars'],
+        ['showUrls'],
+        ['dashboardUrl'],
+        ['urlQueryParams'],
         ['alignPositiveNegative'],
         ['colorPositiveNegative'],
       ],

@@ -35,6 +35,7 @@ export default React.memo(function ColumnConfigItem({
 }: ColumnConfigItemProps) {
   const { colors, gridUnit } = useTheme();
   const caretWidth = gridUnit * 6;
+  height = parseInt(height, 10) + 180;
   return (
     <Popover
       title={column.name}

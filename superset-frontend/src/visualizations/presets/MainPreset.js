@@ -80,6 +80,7 @@ import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
 import { BigNumberWithTrendlineChartPluginExtended, BigNumberTotalChartPluginExtended } from 'plugin-chart-custom-big-number';
 import { CircumplexChartPlugin } from 'superset-plugin-chart-circumplex';
+import DetailViewChart from '@superset-ui/plugin-detail-view-chart';
 
 export default class MainPreset extends Preset {
   constructor() {
@@ -133,6 +134,7 @@ export default class MainPreset extends Preset {
         new TableChartPlugin().configure({ key: 'table' }),
         new TimePivotChartPlugin().configure({ key: 'time_pivot' }),
         new TimeTableChartPlugin().configure({ key: 'time_table' }),
+        new DetailViewChart().configure({ key: 'detail_view' }),
         new WordCloudChartPlugin().configure({ key: 'word_cloud' }),
         new WorldMapChartPlugin().configure({ key: 'world_map' }),
         new EchartsAreaChartPlugin().configure({
