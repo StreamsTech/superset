@@ -236,6 +236,8 @@ const transformProps = (
     order_desc: sortDesc = false,
     query_mode: queryMode,
     show_totals: showTotals,
+    dashboardUrl,
+    showUrls = false,
     conditional_formatting: conditionalFormatting,
     allow_rearrange_columns: allowRearrangeColumns,
   } = formData;
@@ -279,6 +281,8 @@ const transformProps = (
     alignPositiveNegative,
     colorPositiveNegative,
     showCellBars,
+    dashboardUrl,
+    showUrls,
     sortDesc,
     includeSearch,
     rowCount,

@@ -48,6 +48,7 @@ import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { PAGE_SIZE_OPTIONS } from '../consts';
 import { sortAlphanumericCaseInsensitive } from './utils/sortAlphanumericCaseInsensitive';
+import { showURLType } from '../TableChart';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
@@ -64,6 +65,7 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   pageSize?: number;
   noResults?: string | ((filterString: string) => ReactNode);
   sticky?: boolean;
+  config?: showURLType[] | any;
   rowCount: number;
   wrapperRef?: MutableRefObject<HTMLDivElement>;
   onColumnOrderChange: () => void;
@@ -81,6 +83,7 @@ const sortTypes = {
 export default typedMemo(function DataTable<D extends object>({
   tableClassName,
   columns,
+  config,
   data,
   serverPaginationData,
   width: initialWidth = '100%',
@@ -248,6 +251,25 @@ export default typedMemo(function DataTable<D extends object>({
     e.preventDefault();
   };
 
+  const cellRender = (cell: any, idx:number) => {
+    let queryString = "";
+    if (config[idx].urlQueryParams) {
+      let params = config[idx].urlQueryParams?.split(',').map((param:string) => param.trim());;
+      if (params.length > 0 ) {
+        queryString = params.map((key:string) => `${key}=${cell.row.original[key]}`).join('&');
+      }
+    }
+    return (
+      <a
+        href={`${config[idx].url}?${queryString}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {cell.render('Cell')}
+      </a>
+    )
+  }
+
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
       <thead>
@@ -275,9 +297,15 @@ export default typedMemo(function DataTable<D extends object>({
             const { key: rowKey, ...rowProps } = row.getRowProps();
             return (
               <tr key={rowKey || row.id} {...rowProps}>
-                {row.cells.map(cell =>
-                  cell.render('Cell', { key: cell.column.id }),
-                )}
+                {row.cells.map((cell, idx) => (
+                  <td key={cell.column.id}>
+                  {config[idx].showURL ? (
+                    cellRender(cell, idx)
+                  ) : (
+                    cell.render('Cell')
+                  )}
+                </td>
+                ))}
               </tr>
             );
           })

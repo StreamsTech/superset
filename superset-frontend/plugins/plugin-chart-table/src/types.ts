@@ -45,6 +45,9 @@ export type TableColumnConfig = {
   columnWidth?: number;
   horizontalAlign?: 'left' | 'right' | 'center';
   showCellBars?: boolean;
+  dashboardUrl?: string;
+  showUrls?: boolean;
+  urlQueryParams?: string;
   alignPositiveNegative?: boolean;
   colorPositiveNegative?: boolean;
   truncateLongCells?: boolean;
@@ -123,6 +126,9 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   alignPositiveNegative?: boolean;
   colorPositiveNegative?: boolean;
   tableTimestampFormat?: string;
+  dashboardUrl?: string;
+  urlQueryParams?: string;
+  showUrls?: boolean;
   // These are dashboard filters, don't be confused with in-chart search filter
   // enabled by `includeSearch`
   filters?: DataRecordFilters;

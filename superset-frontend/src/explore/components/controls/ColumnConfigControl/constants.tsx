@@ -212,6 +212,9 @@ export const DEFAULT_CONFIG_FORM_LAYOUT: ColumnConfigFormLayout = {
       'columnWidth',
       { name: 'horizontalAlign', override: { defaultValue: 'left' } },
     ],
+    ['showUrls'],
+    ['dashboardUrl'],
+    ['urlQueryParams'],
     ['truncateLongCells'],
   ],
   [GenericDataType.NUMERIC]: [

@@ -206,6 +206,7 @@ const getNoResultsMessage = (filter: string) =>
 export default function TableChart<D extends DataRecord = DataRecord>(
   props: TableChartTransformedProps<D> & {
     sticky?: DataTableProps<D>['sticky'];
+    config?: DataTableProps<D>['config'];
   },
 ) {
   const {
@@ -225,6 +226,9 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     serverPaginationData,
     setDataMask,
     showCellBars = true,
+    dashboardUrl = '',
+    showUrls = false,
+    urlQueryParams = '',
     sortDesc = false,
     filters,
     sticky = true, // whether to use sticky header
@@ -649,6 +653,29 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     [columnsMeta, getColumnConfigs],
   );
 
+  const getColumnDashboardConfigs = useCallback(
+    (column: DataColumnMeta, i: number): showURLType => {
+      const {
+        config = {},
+      } = column;
+      return {
+        showURL: config.showUrls,
+        url: config.dashboardUrl,
+        urlQueryParams: config.urlQueryParams
+      };
+    },
+    [
+      showUrls,
+      dashboardUrl,
+      urlQueryParams
+    ],
+  );
+
+  const config = useMemo(
+    () => columnsMeta.map(getColumnDashboardConfigs),
+    [columnsMeta, getColumnDashboardConfigs]
+  )
+
   const handleServerPaginationChange = useCallback(
     (pageNumber: number, pageSize: number) => {
       updateExternalFormData(setDataMask, pageNumber, pageSize);
@@ -695,6 +722,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     <Styles>
       <DataTable<D>
         columns={columns}
+        config = {config}
         data={data}
         rowCount={rowCount}
         tableClassName="table table-striped table-condensed"
@@ -716,4 +744,10 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       />
     </Styles>
   );
+}
+
+export type showURLType = {
+  showURL?: boolean,
+  url?: string,
+  urlQueryParams?: string,
 }

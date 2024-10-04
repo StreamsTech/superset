@@ -152,12 +152,12 @@ const config: ControlPanelConfig = {
       label: t('Query'),
       expanded: true,
       controlSetRows: [
-        [
-          {
-            name: 'query_mode',
-            config: queryMode,
-          },
-        ],
+        // [
+        //   {
+        //     name: 'query_mode',
+        //     config: queryMode,
+        //   },
+        // ],
         [
           {
             name: 'groupby',
@@ -184,110 +184,116 @@ const config: ControlPanelConfig = {
 
                 return newState;
               },
-              rerender: ['metrics', 'percent_metrics'],
+              // rerender: ['metrics', 'percent_metrics'],
             },
           },
         ],
-        [
-          hasGenericChartAxes && isAggMode
-            ? {
-                name: 'time_grain_sqla',
-                config: {
-                  ...sharedControls.time_grain_sqla,
-                  visibility: ({ controls }) => {
-                    const dttmLookup = Object.fromEntries(
-                      ensureIsArray(controls?.groupby?.options).map(option => [
-                        option.column_name,
-                        option.is_dttm,
-                      ]),
-                    );
+        // [
+        //   {
+        //     name: 'time_grain_sqla',
+        //     config: {
+        //       ...sharedControls.time_grain_sqla,
+        //       visibility: ({ controls }) => {
+        //         const dttmLookup = Object.fromEntries(
+        //           ensureIsArray(controls?.groupby?.options).map(option => [
+        //             option.column_name,
+        //             option.is_dttm,
+        //           ]),
+        //         );
 
-                    return ensureIsArray(controls?.groupby.value)
-                      .map(selection => {
-                        if (isAdhocColumn(selection)) {
-                          return true;
-                        }
-                        if (isPhysicalColumn(selection)) {
-                          return !!dttmLookup[selection];
-                        }
-                        return false;
-                      })
-                      .some(Boolean);
-                  },
-                },
-              }
-            : null,
-          hasGenericChartAxes && isAggMode ? 'temporal_columns_lookup' : null,
-        ],
+        //         return ensureIsArray(controls?.groupby.value)
+        //           .map(selection => {
+        //             if (isAdhocColumn(selection)) {
+        //               return true;
+        //             }
+        //             if (isPhysicalColumn(selection)) {
+        //               return !!dttmLookup[selection];
+        //             }
+        //             return false;
+        //           })
+        //           .some(Boolean);
+        //       },
+        //     },
+        //   },
+        //   'temporal_columns_lookup',
+        // ],
+        
         [
-          {
-            name: 'metrics',
-            override: {
-              validators: [],
-              visibility: isAggMode,
-              resetOnHide: false,
-              mapStateToProps: (
-                { controls, datasource, form_data }: ControlPanelState,
-                controlState: ControlState,
-              ) => ({
-                columns: datasource?.columns[0]?.hasOwnProperty('filterable')
-                  ? (datasource as Dataset)?.columns?.filter(
-                      (c: ColumnMeta) => c.filterable,
-                    )
-                  : datasource?.columns,
-                savedMetrics: defineSavedMetrics(datasource),
-                // current active adhoc metrics
-                selectedMetrics:
-                  form_data.metrics ||
-                  (form_data.metric ? [form_data.metric] : []),
-                datasource,
-                externalValidationErrors: validateAggControlValues(controls, [
-                  controls.groupby?.value,
-                  controls.percent_metrics?.value,
-                  controlState.value,
-                ]),
-              }),
-              rerender: ['groupby', 'percent_metrics'],
-            },
-          },
+          // {
+          //   name: 'metrics',
+          //   override: {
+          //     validators: [],
+          //     visibility: isAggMode,
+          //     resetOnHide: false,
+          //     mapStateToProps: (
+          //       { controls, datasource, form_data }: ControlPanelState,
+          //       controlState: ControlState,
+          //     ) => ({
+          //       columns: datasource?.columns[0]?.hasOwnProperty('filterable')
+          //         ? (datasource as Dataset)?.columns?.filter(
+          //             (c: ColumnMeta) => c.filterable,
+          //           )
+          //         : datasource?.columns,
+          //       savedMetrics: defineSavedMetrics(datasource),
+          //       // current active adhoc metrics
+          //       selectedMetrics:
+          //         form_data.metrics ||
+          //         (form_data.metric ? [form_data.metric] : []),
+          //       datasource,
+          //       externalValidationErrors: validateAggControlValues(controls, [
+          //         controls.groupby?.value,
+          //         controls.percent_metrics?.value,
+          //         controlState.value,
+          //       ]),
+          //     }),
+          //     rerender: ['groupby', 'percent_metrics'],
+          //   },
+          // },
+
+
           {
             name: 'all_columns',
             config: allColumnsControl,
           },
+
+          
         ],
-        [
-          {
-            name: 'percent_metrics',
-            config: percentMetricsControl,
-          },
-        ],
-        ['adhoc_filters'],
-        [
-          {
-            name: 'timeseries_limit_metric',
-            override: {
-              visibility: isAggMode,
-              resetOnHide: false,
-            },
-          },
-          {
-            name: 'order_by_cols',
-            config: {
-              type: 'SelectControl',
-              label: t('Ordering'),
-              description: t('Order results by selected columns'),
-              multi: true,
-              default: [],
-              mapStateToProps: ({ datasource }) => ({
-                choices: datasource?.hasOwnProperty('order_by_choices')
-                  ? (datasource as Dataset)?.order_by_choices
-                  : datasource?.columns || [],
-              }),
-              visibility: isRawMode,
-              resetOnHide: false,
-            },
-          },
-        ],
+        // [
+        //   {
+        //     name: 'percent_metrics',
+        //     config: percentMetricsControl,
+        //   },
+        // ],
+
+        
+        // ['adhoc_filters'],
+        // [
+          // {
+          //   name: 'timeseries_limit_metric',
+          //   override: {
+          //     visibility: isAggMode,
+          //     resetOnHide: false,
+          //   },
+          // },
+          // {
+          //   name: 'order_by_cols',
+          //   config: {
+          //     type: 'SelectControl',
+          //     label: t('Ordering'),
+          //     description: t('Order results by selected columns'),
+          //     multi: true,
+          //     default: [],
+          //     mapStateToProps: ({ datasource }) => ({
+          //       choices: datasource?.hasOwnProperty('order_by_choices')
+          //         ? (datasource as Dataset)?.order_by_choices
+          //         : datasource?.columns || [],
+          //     }),
+          //     visibility: isRawMode,
+          //     resetOnHide: false,
+          //   },
+          // },
+        // ],
+        
         [{
           name: 'ColumnNumber',
           config: {
@@ -335,260 +341,244 @@ const config: ControlPanelConfig = {
             description: t('Whether to include Grid'),
           },
         },],
-        isFeatureEnabled(FeatureFlag.DASHBOARD_CROSS_FILTERS) ||
-        isFeatureEnabled(FeatureFlag.DASHBOARD_NATIVE_FILTERS)
-          ? [
-              {
-                name: 'server_pagination',
-                config: {
-                  type: 'CheckboxControl',
-                  label: t('Server pagination'),
-                  description: t(
-                    'Enable server side pagination of results (experimental feature)',
-                  ),
-                  default: false,
-                },
-              },
-            ]
-          : [],
-        [
-          {
-            name: 'row_limit',
-            override: {
-              default: 1000,
-              visibility: ({ controls }: ControlPanelsContainerProps) =>
-                !controls?.server_pagination?.value,
-            },
-          },
-          {
-            name: 'server_page_length',
-            config: {
-              type: 'SelectControl',
-              freeForm: true,
-              label: t('Server Page Length'),
-              default: 10,
-              choices: PAGE_SIZE_OPTIONS,
-              description: t('Rows per page, 0 means no pagination'),
-              visibility: ({ controls }: ControlPanelsContainerProps) =>
-                Boolean(controls?.server_pagination?.value),
-            },
-          },
-        ],
-        !hasGenericChartAxes
-          ? [
-              {
-                name: 'include_time',
-                config: {
-                  type: 'CheckboxControl',
-                  label: t('Include time'),
-                  description: t(
-                    'Whether to include the time granularity as defined in the time section',
-                  ),
-                  default: false,
-                  visibility: isAggMode,
-                  resetOnHide: false,
-                },
-              },
-            ]
-          : [null],
-        [
-          {
-            name: 'order_desc',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Sort descending'),
-              default: true,
-              description: t('Whether to sort descending or ascending'),
-              visibility: isAggMode,
-              resetOnHide: false,
-            },
-          },
-        ],
-        [
-          {
-            name: 'show_totals',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Show totals'),
-              default: false,
-              description: t(
-                'Show total aggregations of selected metrics. Note that row limit does not apply to the result.',
-              ),
-              visibility: isAggMode,
-              resetOnHide: false,
-            },
-          },
-        ],
+        
+        // [
+        //   {
+        //     name: 'server_pagination',
+        //     config: {
+        //       type: 'CheckboxControl',
+        //       label: t('Server pagination'),
+        //       description: t(
+        //         'Enable server side pagination of results (experimental feature)',
+        //       ),
+        //       default: false,
+        //     },
+        //   },
+        // ],
+        // [
+        //   {
+        //     name: 'row_limit',
+        //     override: {
+        //       default: 1000,
+        //       visibility: ({ controls }: ControlPanelsContainerProps) =>
+        //         !controls?.server_pagination?.value,
+        //     },
+        //   },
+        //   {
+        //     name: 'server_page_length',
+        //     config: {
+        //       type: 'SelectControl',
+        //       freeForm: true,
+        //       label: t('Server Page Length'),
+        //       default: 10,
+        //       choices: PAGE_SIZE_OPTIONS,
+        //       description: t('Rows per page, 0 means no pagination'),
+        //       visibility: ({ controls }: ControlPanelsContainerProps) =>
+        //         Boolean(controls?.server_pagination?.value),
+        //     },
+        //   },
+        // ],
+      //   [
+      //     {
+      //       name: 'order_desc',
+      //       config: {
+      //         type: 'CheckboxControl',
+      //         label: t('Sort descending'),
+      //         default: true,
+      //         description: t(
+      //           'If enabled, this control sorts the results/values descending, otherwise it sorts the results ascending.',
+      //         ),
+      //         visibility: isAggMode,
+      //         resetOnHide: false,
+      //       },
+      //     },
+      //   ],
+      //   [
+      //     {
+      //       name: 'show_totals',
+      //       config: {
+      //         type: 'CheckboxControl',
+      //         label: t('Show summary'),
+      //         default: false,
+      //         description: t(
+      //           'Show total aggregations of selected metrics. Note that row limit does not apply to the result.',
+      //         ),
+      //         visibility: isAggMode,
+      //         resetOnHide: false,
+      //       },
+      //     },
+      //   ],
       ],
+      
     },
     {
       label: t('Options'),
       expanded: true,
       controlSetRows: [
-        [
-          {
-            name: 'table_timestamp_format',
-            config: {
-              type: 'SelectControl',
-              freeForm: true,
-              label: t('Timestamp format'),
-              default: smartDateFormatter.id,
-              renderTrigger: true,
-              clearable: false,
-              choices: D3_TIME_FORMAT_OPTIONS,
-              description: t('D3 time format for datetime columns'),
-            },
-          },
-        ],
-        [
-          {
-            name: 'page_length',
-            config: {
-              type: 'SelectControl',
-              freeForm: true,
-              renderTrigger: true,
-              label: t('Page length'),
-              default: null,
-              choices: PAGE_SIZE_OPTIONS,
-              description: t('Rows per page, 0 means no pagination'),
-              visibility: ({ controls }: ControlPanelsContainerProps) =>
-                !controls?.server_pagination?.value,
-            },
-          },
-          null,
-        ],
-        [
-          {
-            name: 'include_search',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Search box'),
-              renderTrigger: true,
-              default: false,
-              description: t('Whether to include a client-side search box'),
-            },
-          },
-          {
-            name: 'show_cell_bars',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Cell bars'),
-              renderTrigger: true,
-              default: true,
-              description: t(
-                'Whether to display a bar chart background in table columns',
-              ),
-            },
-          },
-        ],
-        [
-          {
-            name: 'align_pn',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Align +/-'),
-              renderTrigger: true,
-              default: false,
-              description: t(
-                'Whether to align background charts with both positive and negative values at 0',
-              ),
-            },
-          },
-          {
-            name: 'color_pn',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Color +/-'),
-              renderTrigger: true,
-              default: true,
-              description: t(
-                'Whether to colorize numeric values by if they are positive or negative',
-              ),
-            },
-          },
-        ],
-        [
-          {
-            name: 'allow_rearrange_columns',
-            config: {
-              type: 'CheckboxControl',
-              label: t('Allow columns to be rearranged'),
-              renderTrigger: true,
-              default: false,
-              description: t(
-                "Allow end user to drag-and-drop column headers to rearrange them. Note their changes won't persist for the next time they open the chart.",
-              ),
-            },
-          },
-        ],
-        [
-          {
-            name: 'column_config',
-            config: {
-              type: 'ColumnConfigControl',
-              label: t('Customize columns'),
-              description: t('Further customize how to display each column'),
-              width: 400,
-              height: 320,
-              renderTrigger: true,
-              shouldMapStateToProps() {
-                return true;
-              },
-              mapStateToProps(explore, _, chart) {
-                return {
-                  queryResponse: chart?.queriesResponse?.[0] as
-                    | ChartDataResponseResult
-                    | undefined,
-                };
-              },
-            },
-          },
-        ],
-        [
-          {
-            name: 'conditional_formatting',
-            config: {
-              type: 'ConditionalFormattingControl',
-              renderTrigger: true,
-              label: t('Conditional formatting'),
-              description: t(
-                'Apply conditional color formatting to numeric columns',
-              ),
-              shouldMapStateToProps() {
-                return true;
-              },
-              mapStateToProps(explore, _, chart) {
-                const verboseMap = explore?.datasource?.hasOwnProperty(
-                  'verbose_map',
-                )
-                  ? (explore?.datasource as Dataset)?.verbose_map
-                  : explore?.datasource?.columns ?? {};
-                const chartStatus = chart?.chartStatus;
-                const { colnames, coltypes } =
-                  chart?.queriesResponse?.[0] ?? {};
-                const numericColumns =
-                  Array.isArray(colnames) && Array.isArray(coltypes)
-                    ? colnames
-                        .filter(
-                          (colname: string, index: number) =>
-                            coltypes[index] === GenericDataType.NUMERIC,
-                        )
-                        .map(colname => ({
-                          value: colname,
-                          label: verboseMap[colname] ?? colname,
-                        }))
-                    : [];
-                return {
-                  removeIrrelevantConditions: chartStatus === 'success',
-                  columnOptions: numericColumns,
-                  verboseMap,
-                };
-              },
-            },
-          },
-        ],
+        // [
+        //   {
+        //     name: 'table_timestamp_format',
+        //     config: {
+        //       type: 'SelectControl',
+        //       freeForm: true,
+        //       label: t('Timestamp format'),
+        //       default: smartDateFormatter.id,
+        //       renderTrigger: true,
+        //       clearable: false,
+        //       choices: D3_TIME_FORMAT_OPTIONS,
+        //       description: t('D3 time format for datetime columns'),
+        //     },
+        //   },
+        // ],
+        // [
+        //   {
+        //     name: 'page_length',
+        //     config: {
+        //       type: 'SelectControl',
+        //       freeForm: true,
+        //       renderTrigger: true,
+        //       label: t('Page length'),
+        //       default: null,
+        //       choices: PAGE_SIZE_OPTIONS,
+        //       description: t('Rows per page, 0 means no pagination'),
+        //       visibility: ({ controls }: ControlPanelsContainerProps) =>
+        //         !controls?.server_pagination?.value,
+        //     },
+        //   },
+        //   null,
+        // ],
+        // [
+        //   {
+        //     name: 'include_search',
+        //     config: {
+        //       type: 'CheckboxControl',
+        //       label: t('Search box'),
+        //       renderTrigger: true,
+        //       default: false,
+        //       description: t('Whether to include a client-side search box'),
+        //     },
+        //   },
+        //   {
+        //     name: 'show_cell_bars',
+        //     config: {
+        //       type: 'CheckboxControl',
+        //       label: t('Cell bars'),
+        //       renderTrigger: true,
+        //       default: true,
+        //       description: t(
+        //         'Whether to display a bar chart background in table columns',
+        //       ),
+        //     },
+        //   },
+        // ],
+        // [
+        //   {
+        //     name: 'align_pn',
+        //     config: {
+        //       type: 'CheckboxControl',
+        //       label: t('Align +/-'),
+        //       renderTrigger: true,
+        //       default: false,
+        //       description: t(
+        //         'Whether to align background charts with both positive and negative values at 0',
+        //       ),
+        //     },
+        //   },
+        //   {
+        //     name: 'color_pn',
+        //     config: {
+        //       type: 'CheckboxControl',
+        //       label: t('Color +/-'),
+        //       renderTrigger: true,
+        //       default: true,
+        //       description: t(
+        //         'Whether to colorize numeric values by whether they are positive or negative',
+        //       ),
+        //     },
+        //   },
+        // ],
+        // [
+        //   {
+        //     name: 'allow_rearrange_columns',
+        //     config: {
+        //       type: 'CheckboxControl',
+        //       label: t('Allow columns to be rearranged'),
+        //       renderTrigger: true,
+        //       default: false,
+        //       description: t(
+        //         "Allow end user to drag-and-drop column headers to rearrange them. Note their changes won't persist for the next time they open the chart.",
+        //       ),
+        //     },
+        //   },
+        // ],
+         [
+           {
+             name: 'column_config',
+             config: {
+               type: 'ColumnConfigControl',
+               label: t('Customize columns'),
+               description: t('Further customize how to display each column'),
+               width: 400,
+               height: 320,
+               renderTrigger: true,
+               shouldMapStateToProps() {
+                 return true;
+               },
+               mapStateToProps(explore, _, chart) {
+                 return {
+                   queryResponse: chart?.queriesResponse?.[0] as
+                     | ChartDataResponseResult
+                     | undefined,
+                 };
+               },
+             },
+           },
+         ],
+        // [
+        //   {
+        //     name: 'conditional_formatting',
+        //     config: {
+        //       type: 'ConditionalFormattingControl',
+        //       renderTrigger: true,
+        //       label: t('Conditional formatting'),
+        //       description: t(
+        //         'Apply conditional color formatting to numeric columns',
+        //       ),
+        //       shouldMapStateToProps() {
+        //         return true;
+        //       },
+        //       mapStateToProps(explore, _, chart) {
+        //         const verboseMap = explore?.datasource?.hasOwnProperty(
+        //           'verbose_map',
+        //         )
+        //           ? (explore?.datasource as Dataset)?.verbose_map
+        //           : explore?.datasource?.columns ?? {};
+        //         const chartStatus = chart?.chartStatus;
+        //         const { colnames, coltypes } =
+        //           chart?.queriesResponse?.[0] ?? {};
+        //         const numericColumns =
+        //           Array.isArray(colnames) && Array.isArray(coltypes)
+        //             ? colnames
+        //                 .filter(
+        //                   (colname: string, index: number) =>
+        //                     coltypes[index] === GenericDataType.Numeric,
+        //                 )
+        //                 .map(colname => ({
+        //                   value: colname,
+        //                   label: verboseMap[colname] ?? colname,
+        //                 }))
+        //             : [];
+        //         return {
+        //           removeIrrelevantConditions: chartStatus === 'success',
+        //           columnOptions: numericColumns,
+        //           verboseMap,
+        //         };
+        //       },
+        //     },
+        //   },
+        // ],
       ],
-    },
+    }
   ],
   formDataOverrides: formData => ({
     ...formData,
