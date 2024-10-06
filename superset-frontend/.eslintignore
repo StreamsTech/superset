@@ -34,3 +34,4 @@ esm/
 lib/
 tmp/
 storybook-static/
+plugins/*

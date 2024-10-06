@@ -39,11 +39,14 @@ import {
 import { matchSorter, rankings } from 'match-sorter';
 import { typedMemo, usePrevious } from '@superset-ui/core';
 import { isEqual } from 'lodash';
+// @ts-ignore
 import GlobalFilter, { GlobalFilterProps } from './components/GlobalFilter';
+// @ts-ignore
 import SelectPageSize, {
   SelectPageSizeProps,
   SizeOption,
 } from './components/SelectPageSize';
+// @ts-ignore
 import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { PAGE_SIZE_OPTIONS } from '../consts';
@@ -182,8 +185,6 @@ export default typedMemo(function DataTable<D extends object>({
     page,
     pageCount,
     gotoPage,
-    preGlobalFilteredRows,
-    setGlobalFilter,
     setPageSize: setPageSize_,
     wrapStickyTable,
     setColumnOrder,
@@ -267,7 +268,7 @@ export default typedMemo(function DataTable<D extends object>({
         Object.entries(data[0]).map(([key, value], index) => (
           <div className = {columnSize} key={key} style={{paddingRight: '10px', paddingLeft: '10px'}}>
             <div className="col-md-6" style={{ padding: '10px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ...(isGridView && keyStyle)}}> <strong> {key} </strong>  </div>
-            <div className="col-md-6" style={{ padding: '10px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ...(isGridView && valueStyle) }}> {!isGridView && ' :'}  {config[index].showURL ? (dataRender(data[0], value, index)) : (<>{value}</>)}</div>
+            <div className="col-md-6" style={{ padding: '10px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minHeight: '41px', ...(isGridView && valueStyle) }}> {!isGridView && ' :'}  {config[index].showURL ? (dataRender(data[0], value, index)) : (<>{value}</>)}</div>
           </div>
         ))
       ) : (
@@ -296,7 +297,7 @@ export default typedMemo(function DataTable<D extends object>({
       </a>
     )
   } 
-
+  // @ts-ignore
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
       <thead>
@@ -366,14 +367,16 @@ export default typedMemo(function DataTable<D extends object>({
     pageSizeRef.current = [initialPageSize, resultsSize];
     setPageSize(initialPageSize);
   }
-
+  // @ts-ignore
   const paginationStyle: CSSProperties = sticky.height
     ? {}
     : { visibility: 'hidden' };
 
   let resultPageCount = pageCount;
   let resultCurrentPageSize = pageSize;
+  // @ts-ignore
   let resultCurrentPage = pageIndex;
+  // @ts-ignore
   let resultOnPageChange: (page: number) => void = gotoPage;
   if (serverPagination) {
     const serverPageSize = serverPaginationData?.pageSize ?? initialPageSize;

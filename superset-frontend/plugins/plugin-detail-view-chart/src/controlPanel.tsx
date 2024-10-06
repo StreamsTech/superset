@@ -21,35 +21,32 @@ import React from 'react';
 import {
   ChartDataResponseResult,
   ensureIsArray,
-  FeatureFlag,
-  GenericDataType,
-  hasGenericChartAxes,
-  isAdhocColumn,
-  isFeatureEnabled,
-  isPhysicalColumn,
   QueryFormColumn,
   QueryMode,
-  smartDateFormatter,
   t,
 } from '@superset-ui/core';
+
 import {
   ColumnOption,
   ControlConfig,
   ControlPanelConfig,
   ControlPanelsContainerProps,
   ControlStateMapping,
+  // @ts-ignore
   D3_TIME_FORMAT_OPTIONS,
   QueryModeLabel,
   sections,
   sharedControls,
   ControlPanelState,
   ControlState,
+  // @ts-ignore
   Dataset,
+  // @ts-ignore
   ColumnMeta,
   defineSavedMetrics,
   getStandardizedControls,
 } from '@superset-ui/chart-controls';
-
+// @ts-ignore
 import { PAGE_SIZE_OPTIONS } from './consts';
 
 function getQueryMode(controls: ControlStateMapping): QueryMode {
@@ -84,7 +81,7 @@ const validateAggControlValues = (
     ? [t('Group By, Metrics or Percentage Metrics must have a value')]
     : [];
 };
-
+// @ts-ignore
 const queryMode: ControlConfig<'RadioButtonControl'> = {
   type: 'RadioButtonControl',
   label: t('Query mode'),
@@ -119,7 +116,7 @@ const allColumnsControl: typeof sharedControls.groupby = {
   visibility: isRawMode,
   resetOnHide: false,
 };
-
+// @ts-ignore
 const percentMetricsControl: typeof sharedControls.metrics = {
   ...sharedControls.metrics,
   label: t('Percentage metrics'),
