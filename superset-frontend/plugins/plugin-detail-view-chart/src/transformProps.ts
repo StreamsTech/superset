@@ -38,12 +38,12 @@ import {
 } from '@superset-ui/chart-controls';
 
 import isEqualColumns from './utils/isEqualColumns';
-import DateWithFormatter from './utils/DateWithFormatter';
 import {
   DataColumnMeta,
   TableChartProps,
   TableChartTransformedProps,
 } from './types';
+import DateWithFormatter from './utils/DateWithFormatter';
 
 const { PERCENT_3_POINT } = NumberFormats;
 const { DATABASE_DATETIME } = TimeFormats;
@@ -61,6 +61,8 @@ const processDataRecords = memoizeOne(function processDataRecords(
   if (!data || !data[0]) {
     return data || [];
   }
+
+  // @ts-ignore
   const timeColumns = columns.filter(
     column => column.dataType === GenericDataType.TEMPORAL,
   );
@@ -74,6 +76,7 @@ const processDataRecords = memoizeOne(function processDataRecords(
         datum[key] = new DateWithFormatter(x[key], {
           formatter: formatter as TimeFormatter,
         });
+        datum[key] = datum[key].toString();
       });
       return datum;
     });
