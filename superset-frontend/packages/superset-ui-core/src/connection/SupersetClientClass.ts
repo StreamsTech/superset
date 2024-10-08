@@ -109,6 +109,31 @@ export default class SupersetClientClass {
     if (guestToken) {
       this.headers[guestTokenHeaderName] = guestToken;
     }
+
+
+    if(localStorage.getItem('pageState') === "loaded" || localStorage.getItem('pageState') !== "") {
+      const loginbox  = document.getElementById('loginbox')
+      loginbox?.classList.remove('col-md-offset-3', 'col-sm-8', 'col-sm-offset-2');
+      const newDiv = document.createElement('div');
+      // Add inline styles directly via JavaScript
+      newDiv.style.height = '295px';
+      newDiv.style.backgroundColor = '#f0f8ff';
+      newDiv.style.marginTop = '50px';
+      newDiv.style.borderRadius = '5px';
+      newDiv.style.boxShadow = '2px 4px 8px rgba(0, 0, 0, 0.2)';
+      newDiv.style.border = '2px solid #ccc';
+      newDiv.className = 'col-md-6';
+      newDiv.innerHTML =  '<h1 style="color: #333; font-size: 2em; text-align: center;">Header Text</h1>' +
+      `<p style="color: #555; font-size: 1.2em;">Paragraph Portion</p>`
+      loginbox?.parentNode?.insertBefore(newDiv, loginbox);
+      localStorage.setItem('pageState', '');
+    }
+
+    else if(localStorage.getItem('pageState') === null || localStorage.getItem('pageState') === "") {
+      localStorage.setItem('pageState', "loaded");
+    }
+
+
     this.handleUnauthorized = unauthorizedHandler;
     this.changeLoginBoxContainerColor();
   }
