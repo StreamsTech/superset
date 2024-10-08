@@ -263,7 +263,7 @@ export default typedMemo(function DataTable<D extends object>({
     let keyStyle  = { borderTop: '1px solid black', borderLeft: '1px solid black', borderBottom: '0.5px solid black'};
     let valueStyle  = { borderTop: '1px solid black', borderBottom: '1px solid black', borderLeft: '1px solid black', borderRight: '1px solid black'};
     return (
-      <div>
+      <div style={{ overflow: 'auto' }}>
       {Object.keys(data[0]).length > 0 ? (
         Object.entries(data[0]).map(([key, value], index) => (
           <div className = {columnSize} key={key} style={{paddingRight: '10px', paddingLeft: '10px'}}>
@@ -397,8 +397,8 @@ export default typedMemo(function DataTable<D extends object>({
   }
   return (
     <div
-      ref={wrapperRef}
-      style={{ width: initialWidth, height: initialHeight }}
+      // ref={wrapperRef}
+      style={{ width: initialWidth, height: initialHeight, overflow: 'auto' }}
     >
       {/* {hasGlobalControl ? (
         <div ref={globalControlRef} className="form-inline dt-controls">

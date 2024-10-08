@@ -30,7 +30,7 @@ import {
   QueryMode,
   smartDateFormatter,
   TimeFormats,
-  TimeFormatter,
+  // TimeFormatter,
 } from '@superset-ui/core';
 import {
   ColorFormatters,
@@ -43,7 +43,7 @@ import {
   TableChartProps,
   TableChartTransformedProps,
 } from './types';
-import DateWithFormatter from './utils/DateWithFormatter';
+// import DateWithFormatter from './utils/DateWithFormatter';
 
 const { PERCENT_3_POINT } = NumberFormats;
 const { DATABASE_DATETIME } = TimeFormats;
@@ -67,20 +67,23 @@ const processDataRecords = memoizeOne(function processDataRecords(
     column => column.dataType === GenericDataType.TEMPORAL,
   );
 
-  if (timeColumns.length > 0) {
-    return data.map(x => {
-      const datum = { ...x };
-      timeColumns.forEach(({ key, formatter }) => {
-        // Convert datetime with a custom date class so we can use `String(...)`
-        // formatted value for global search, and `date.getTime()` for sorting.
-        datum[key] = new DateWithFormatter(x[key], {
-          formatter: formatter as TimeFormatter,
-        });
-        datum[key] = datum[key].toString();
-      });
-      return datum;
-    });
-  }
+  // if (timeColumns.length > 0) {
+  //   return data.map(x => {
+  //     const datum = { ...x };
+  //     timeColumns.forEach(({ key, formatter }) => {
+  //       // Convert datetime with a custom date class so we can use `String(...)`
+  //       // formatted value for global search, and `date.getTime()` for sorting.
+  //         datum[key] = new DateWithFormatter(x[key], {
+  //           formatter: formatter as TimeFormatter,
+  //         });
+  //         if(datum[key] !== null && datum[key] !== undefined)
+  //           datum[key] = datum[key].toString();
+  //         else
+  //           datum[key] = null; 
+  //     });
+  //     return datum;
+  //   });
+  // }
   return data;
 });
 
