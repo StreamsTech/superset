@@ -110,7 +110,39 @@ export default class SupersetClientClass {
       this.headers[guestTokenHeaderName] = guestToken;
     }
     this.handleUnauthorized = unauthorizedHandler;
+    this.changeLoginBoxContainerColor();
   }
+  changeLoginBoxContainerColor() {
+    // Catch the div with id 'loginbox'
+    const loginBoxElement = document.getElementById('loginbox');
+
+    if (loginBoxElement) {
+      // Find the closest div with the class 'container'
+      const containerDiv = loginBoxElement.closest('.container');
+
+      if (containerDiv) {
+        // Change the background color to blue
+        const containerDiv2 = containerDiv.closest('.container');
+        if (containerDiv2) {
+
+        (containerDiv2 as HTMLElement).style.backgroundColor = 'blue';
+        }
+      }
+    }
+
+    const signInButton = document.querySelector('input[value="Sign In"]');
+
+    if (signInButton) {
+      // Change the color of the button to orange
+      (signInButton as HTMLElement).style.backgroundColor = 'orange';
+    }
+    const AppMenuElement = document.getElementById('app-menu');
+    if (AppMenuElement) {
+      // Change the color of the button to orange
+      (AppMenuElement as HTMLElement).style.backgroundColor = 'orange';
+    }
+  }
+
 
   async init(force = false): CsrfPromise {
     if (this.isAuthenticated() && !force) {

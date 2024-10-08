@@ -660,6 +660,49 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       const {
         config = {},
       } = column;
+      // Conditional configure for url textbox
+      console.log(JSON.stringify(column, null, 2));
+      console.log("ok"+column.config?.showUrls); // If it's a single object
+      console.log("Anika"+config.showUrls);
+      
+        if (config.showUrls === undefined) {
+          config.showUrls = false; // Set showUrls to false if undefined
+        }
+        console.log("Anika"+config.showUrls);
+      // Loop through all divs with the class 'ant-popover-title'
+      const popoverTitles = document.querySelectorAll('.ant-popover-title');
+ 
+      // Assuming column.label is available in your context
+      popoverTitles.forEach(popoverTitle => {
+ 
+ 
+        // Check if column key matches the popoverTitle's innerHTML
+        if (column.key === popoverTitle?.innerHTML) {
+ 
+ 
+          // Find the nearest .ant-popover-content div
+          const popoverContent = popoverTitle.closest('.ant-popover-content');
+          if (popoverContent) {
+            // Find the dashboard header inside the .ant-popover-content
+            const dashboardHeader = popoverContent.querySelector('[data-test="dashboardUrl-header"]');
+ 
+            // Find the nearest ControlFormRow from the dashboardHeader
+            if (dashboardHeader) {
+              const nearestControlFormRow = dashboardHeader.closest('.css-13o3pm2-ControlFormRow');
+ 
+              // Show or hide the nearest ControlFormRow based on column.config?.showUrls
+              if (nearestControlFormRow) {
+                console.log("Mew"+config.showUrls);
+                if (column.config?.showUrls) {
+                  nearestControlFormRow.style.display = 'block'; // Show if showUrls is true
+                } else {
+                  nearestControlFormRow.style.display = 'none'; // Hide if showUrls is false
+                }
+              }
+            }
+          }
+        }
+      });
       return {
         showURL: config.showUrls,
         url: config.dashboardUrl,
