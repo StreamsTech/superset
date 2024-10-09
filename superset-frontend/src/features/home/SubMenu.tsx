@@ -250,7 +250,7 @@ const SubMenuComponent: React.FunctionComponent<SubMenuProps> = props => {
     <StyledHeader>
       <Row className="menu" role="navigation">
         {props.name && <div className="header">{props.name}</div>}
-        <Menu mode={showMenu} style={{ backgroundColor: '#42f5b3' }}>
+        <Menu mode={showMenu} style={{ backgroundColor: 'transparent' }}>
           {props.tabs?.map(tab => {
             if ((props.usesRouter || hasHistory) && !!tab.usesRouter) {
               return (

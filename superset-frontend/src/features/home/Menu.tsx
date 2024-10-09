@@ -268,6 +268,7 @@ export function Menu({
             mode={showMenu}
             data-test="navbar-top"
             className="main-nav"
+            style={{ backgroundColor: 'orange' }} // Add this line
           >
             {menu.map((item, index) => {
               const props = {

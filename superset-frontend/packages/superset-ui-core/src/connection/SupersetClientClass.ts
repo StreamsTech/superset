@@ -139,6 +139,7 @@ export default class SupersetClientClass {
   }
   changeLoginBoxContainerColor() {
     // Catch the div with id 'loginbox'
+    document.body.style.backgroundColor = '#FFF8C6';
     const loginBoxElement = document.getElementById('loginbox');
 
     if (loginBoxElement) {
@@ -150,7 +151,7 @@ export default class SupersetClientClass {
         const containerDiv2 = containerDiv.closest('.container');
         if (containerDiv2) {
 
-        (containerDiv2 as HTMLElement).style.backgroundColor = 'blue';
+        (containerDiv2 as HTMLElement).style.backgroundColor = '#FFF8C6';
         }
       }
     }
@@ -160,11 +161,6 @@ export default class SupersetClientClass {
     if (signInButton) {
       // Change the color of the button to orange
       (signInButton as HTMLElement).style.backgroundColor = 'orange';
-    }
-    const AppMenuElement = document.getElementById('app-menu');
-    if (AppMenuElement) {
-      // Change the color of the button to orange
-      (AppMenuElement as HTMLElement).style.backgroundColor = 'orange';
     }
   }
 

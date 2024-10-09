@@ -440,6 +440,7 @@ const RightMenu = ({
         <SubMenu
           title={t('Settings')}
           icon={<Icons.TriangleDown iconSize="xl" />}
+          style={{ backgroundColor: 'orange' }}
         >
           {settings?.map?.((section, index) => [
             <Menu.ItemGroup key={`${section.label}`} title={section.label}>

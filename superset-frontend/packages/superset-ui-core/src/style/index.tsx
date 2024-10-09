@@ -78,7 +78,7 @@ const defaultTheme = {
       light2: '#FFCA66', // Light orange
       light3: '#FFDD99', // Pale orange
       light4: '#FFE6CC', // Very light orange
-      light5: '#FFF2E6', // Almost white orange
+      light5: '#663F00', // Almost white orange
     },
     grayscale: {
       base: '#8C6848',  // Grayish orange
