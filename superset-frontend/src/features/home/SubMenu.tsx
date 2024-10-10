@@ -126,7 +126,7 @@ const StyledHeader = styled.div`
     li > div:hover,
     div > div:hover,
     div > a:hover {
-      background: ${({ theme }) => theme.colors.secondary.light4};
+      background: ${({ theme }) => theme.colors.primary.light4};
       border-bottom: none;
       border-radius: ${({ theme }) => theme.borderRadius}px;
       margin-bottom: ${({ theme }) => theme.gridUnit * 2}px;

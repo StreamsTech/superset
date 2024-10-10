@@ -261,7 +261,8 @@ export default typedMemo(function DataTable<D extends object>({
     }
     return (
       <a
-        href={`${config[idx].url}?${queryString}`}
+        href={`${config[idx].url}?${queryString}`} 
+        onClick={() => alert(1)}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -333,6 +334,7 @@ export default typedMemo(function DataTable<D extends object>({
         </tfoot>
       )}
     </table>
+
   );
 
   // force update the pageSize when it's been update from the initial state

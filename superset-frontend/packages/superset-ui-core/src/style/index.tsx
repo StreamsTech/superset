@@ -89,6 +89,7 @@ const defaultTheme = {
       light3: '#E5D3B6', // Pale grayish orange
       light4: '#F2E5CC', // Very pale orange-gray
       light5: '#FAF1E6', // Almost white
+      purple: '#fc03e8',
     },
     error: {
       base: '#E74C3C',  // Red for errors

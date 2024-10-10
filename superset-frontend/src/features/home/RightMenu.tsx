@@ -91,7 +91,6 @@ const StyledMenuItemWithIcon = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: orange; /* Adding orange background color */
 `;
 
 const StyledAnchor = styled.a`
@@ -378,6 +377,8 @@ const RightMenu = ({
             title={
               <StyledI data-test="new-dropdown-icon" className="fa fa-plus" />
             }
+            style={{ backgroundColor: 'orange' }}
+
             icon={<Icons.TriangleDown />}
           >
             {dropdownItems?.map?.(menu => {
