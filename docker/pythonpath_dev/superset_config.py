@@ -118,18 +118,19 @@ except ImportError:
 ######
 #Streamstech Configuration
 ######
-SESSION_COOKIE_SAMESITE = "None" # Sufficient for Firefox
-SESSION_COOKIE_SECURE = True # Required for Google Chrome (at least from version 84) 
-SESSION_COOKIE_HTTPONLY= False 
-HTTP_HEADERS = {'X-Frame-Options': 'ALLOWALL'} 
-ENABLE_PROXY_FIX= True 
+# SESSION_COOKIE_SAMESITE = "None" # Sufficient for Firefox
+# SESSION_COOKIE_SECURE = True # Required for Google Chrome (at least from version 84) 
+# SESSION_COOKIE_HTTPONLY= False 
+#HTTP_HEADERS = {'X-Frame-Options': 'ALLOWALL'} 
+# ENABLE_PROXY_FIX= True 
 # # Uncomment to setup Public role name, no authentication needed
-AUTH_ROLE_PUBLIC = "Gamma"
+# AUTH_ROLE_PUBLIC = "Gamma"  Public
 # # Will allow user self registration
 # AUTH_USER_REGISTRATION = True
 PUBLIC_ROLE_LIKE_GAMMA = True 
-WTF_CSRF_ENABLED = False 
-GUEST_ROLE_NAME = "Public"
+WTF_CSRF_ENABLED = False
+TALISMAN_ENABLED = False
+GUEST_ROLE_NAME = "Gamma"
 FEATURE_FLAGS = { 
     "EMBEDDED_SUPERSET": True,
     "DASHBOARD_RBAC": True,
@@ -139,12 +140,13 @@ FEATURE_FLAGS = {
     "DASHBOARD_CROSS_FILTERS": True,
     "ENABLE_JAVASCRIPT_CONTROLS": True
 }
-CORS_OPTIONS = {
-     'supports_credentials': True, 
-     'allow_headers': ['*'], 
-     'resources':['*'], 
-     'origins': ['*']
-}
+# CORS_OPTIONS = {
+#      'supports_credentials': True, 
+#      'allow_headers': ['*'], 
+#      'resources':['*'], 
+#      'origins': ['*']
+# }
+
 FAB_ADD_SECURITY_API = True
 ENABLE_CORS = True
 SECRET_KEY='4IETlIrDFFVmSr2OiKqT3WTsbpWALJBtSMuE2JfKEacp6p9WpBRZ4e49'

@@ -261,13 +261,17 @@ export default typedMemo(function DataTable<D extends object>({
     }
     return (
       <a
-        href={`${config[idx].url}?${queryString}`}
-        target="_blank"
+        onClick={() => messagePass(config[idx].url, idx)}
         rel="noopener noreferrer"
       >
         {cell.render('Cell')}
       </a>
     )
+  }
+
+  const messagePass =(code:string, idx:number)=> {
+    var data = { embeddedCode: code, embeddedTrigger: true }
+    window.top?.postMessage(data, '*');
   }
 
   const renderTable = () => (
