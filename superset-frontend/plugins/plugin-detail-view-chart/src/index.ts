@@ -18,10 +18,10 @@
  */
 import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
 import transformProps from './transformProps';
-import thumbnail from './images/thumbnail.png';
-import example1 from './images/Table.jpg';
-import example2 from './images/Table2.jpg';
-import example3 from './images/Table3.jpg';
+import thumbnail from './images/DetailViewMain.png';
+import example1 from './images/options.png';
+import example2 from './images/option2.png';
+import example3 from './images/option3.png';
 import controlPanel from './controlPanel';
 import buildQuery from './buildQuery';
 import { TableChartFormData, TableChartProps } from './types';
@@ -39,7 +39,7 @@ const metadata = new ChartMetadata({
   category: t('Table'),
   canBeAnnotationTypes: ['EVENT', 'INTERVAL'],
   description: t(
-    'Classic row-by-column spreadsheet like view of a dataset. Use tables to showcase a view into the underlying data or to show aggregated metrics.',
+    'A detailed, customizable record view chart where users can select specific columns to display and define the number of sections for organizing data. Users can switch between grid and non-grid views, and URLs can be added to any column for enhanced interaction.',
   ),
   exampleGallery: [{ url: example1 }, { url: example2 }, { url: example3 }],
   name: t('Detail View Chart'),
