@@ -121,9 +121,9 @@ const showCellBars: ControlFormItemSpec<'Checkbox'> = {
 
 const dashboardUrl: ControlFormItemSpec<'Input'> = {
   controlType: 'Input',
-  label: t('Dashboard URL'),
-  description: t('Field for URL'),
-  placeholder: t('Enter a Dashboard URL'), // Use placeholder instead of defaultValue
+  label: t('Dashboard embedded code'),
+  description: t('Field for dashboard embedded code'),
+  placeholder: t('Enter a dashboard embedded code'), // Use placeholder instead of defaultValue
   debounceDelay: 200,
 };
 

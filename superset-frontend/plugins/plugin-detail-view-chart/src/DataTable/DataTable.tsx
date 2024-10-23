@@ -279,24 +279,29 @@ export default typedMemo(function DataTable<D extends object>({
   }
 
   const dataRender = (data:any, value: string, idx:number) => {
-    let queryString = "";
-    if (config[idx].urlQueryParams) {
-      let params = config[idx].urlQueryParams?.split(',').map((param:string) => param.trim());
-      console.log(data);
-      if (params.length > 0 ) {
-        queryString = params.map((key:string) => `${key}=${data[key]}`).join('&');
-      }
-    }
+    // let queryString = "";
+    // if (config[idx].urlQueryParams) {
+    //   let params = config[idx].urlQueryParams?.split(',').map((param:string) => param.trim());
+    //   console.log(data);
+    //   if (params.length > 0 ) {
+    //     queryString = params.map((key:string) => `${key}=${data[key]}`).join('&');
+    //   }
+    // }
     return (
       <a
-        href={`${config[idx].url}?${queryString}`}
-        target="_blank"
+        onClick={() => messagePass(config[idx].url, idx)}
         rel="noopener noreferrer"
       >
         {value}
       </a>
     )
   } 
+
+  const messagePass =(code:string, idx:number)=> {
+    var data = { embeddedCode: code, embeddedTrigger: true }
+    window.top?.postMessage(data, '*');
+  }
+
   // @ts-ignore
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>

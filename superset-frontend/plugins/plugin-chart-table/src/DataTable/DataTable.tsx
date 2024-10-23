@@ -252,13 +252,13 @@ export default typedMemo(function DataTable<D extends object>({
   };
 
   const cellRender = (cell: any, idx:number) => {
-    let queryString = "";
-    if (config[idx].urlQueryParams) {
-      let params = config[idx].urlQueryParams?.split(',').map((param:string) => param.trim());;
-      if (params.length > 0 ) {
-        queryString = params.map((key:string) => `${key}=${cell.row.original[key]}`).join('&');
-      }
-    }
+    // let queryString = "";
+    // if (config[idx].urlQueryParams) {
+    //   let params = config[idx].urlQueryParams?.split(',').map((param:string) => param.trim());;
+    //   if (params.length > 0 ) {
+    //     queryString = params.map((key:string) => `${key}=${cell.row.original[key]}`).join('&');
+    //   }
+    // }
     return (
       <a
         onClick={() => messagePass(config[idx].url, idx)}
