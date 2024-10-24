@@ -251,28 +251,48 @@ export default typedMemo(function DataTable<D extends object>({
     e.preventDefault();
   };
 
-  const cellRender = (cell: any, idx:number) => {
+  const cellRender = (cell: any, idx: number) => {
     let queryString = "";
+    let queryParams: { [key: string]: any } = {}; // Object to store key-value pairs
+  
     if (config[idx].urlQueryParams) {
-      let params = config[idx].urlQueryParams?.split(',').map((param:string) => param.trim());;
-      if (params.length > 0 ) {
-        queryString = params.map((key:string) => `${key}=${cell.row.original[key]}`).join('&');
+      let params = config[idx].urlQueryParams?.split(',').map((param: string) => param.trim());
+      if (params.length > 0) {
+        queryString = params.map((key: string) => `${key}=${cell.row.original[key]}`).join('&');
+        
+        // Store key-value pairs in queryParams object
+        params.forEach((key: string) => {
+          queryParams[key] = cell.row.original[key];
+        });
       }
     }
+  
     return (
       <a
-        onClick={() => messagePass(config[idx].url, idx)}
+      onClick={(e) => {
+        const iframeSrc = window.location.href; // Get the iframe source URL
+        messagePass(config[idx].url, queryParams,iframeSrc); // Pass the adf-id along with other data
+      }}
         rel="noopener noreferrer"
       >
         {cell.render('Cell')}
       </a>
-    )
+    );
   }
-
-  const messagePass =(code:string, idx:number)=> {
-    var data = { embeddedCode: code, embeddedTrigger: true }
-    window.top?.postMessage(data, '*');
+  
+  const messagePass = (code: string, queryParams: { [key: string]: any }, iframeSrc: any) => {
+    console.log('Passing queryParams:', queryParams);
+    console.log('Iframe source passed:', iframeSrc);
+    var data = { 
+      embeddedCode: code, 
+      embeddedTrigger: true, 
+      queryParams: queryParams, // Include queryParams object in the data
+      iframeSrc: iframeSrc
+    };
+    
+    window.parent.postMessage(data, '*');
   }
+  
 
   const renderTable = () => (
     <table {...getTableProps({ className: tableClassName })}>
