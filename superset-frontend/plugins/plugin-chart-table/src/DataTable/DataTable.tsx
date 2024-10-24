@@ -271,7 +271,7 @@ export default typedMemo(function DataTable<D extends object>({
       <a
       onClick={(e) => {
         const iframeSrc = window.location.href; // Get the iframe source URL
-        messagePass(config[idx].url, queryParams,iframeSrc); // Pass the adf-id along with other data
+        messagePass(config[idx].url, queryParams,iframeSrc); 
       }}
         rel="noopener noreferrer"
       >
@@ -281,8 +281,6 @@ export default typedMemo(function DataTable<D extends object>({
   }
   
   const messagePass = (code: string, queryParams: { [key: string]: any }, iframeSrc: any) => {
-    console.log('Passing queryParams:', queryParams);
-    console.log('Iframe source passed:', iframeSrc);
     var data = { 
       embeddedCode: code, 
       embeddedTrigger: true, 
