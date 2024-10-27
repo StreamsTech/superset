@@ -273,7 +273,7 @@ export default typedMemo(function DataTable<D extends object>({
 
   const messagePass =(code:string, queryParams: object)=> {
     const iframeId = new URLSearchParams(window.location.search).get('iframeId');
-    var data = { embeddedCode: code, embeddedTrigger: true, queryParams: queryParams,iframeId : iframeId}
+    var data = { embeddedCode: code, embeddedTrigger: true, queryParams: queryParams, iframeId : iframeId}
     window.top?.postMessage(data, '*');
   }
 

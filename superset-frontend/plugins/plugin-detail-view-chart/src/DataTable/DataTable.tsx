@@ -279,17 +279,18 @@ export default typedMemo(function DataTable<D extends object>({
   }
 
   const dataRender = (data:any, value: string, idx:number) => {
-    // let queryString = "";
-    // if (config[idx].urlQueryParams) {
-    //   let params = config[idx].urlQueryParams?.split(',').map((param:string) => param.trim());
-    //   console.log(data);
-    //   if (params.length > 0 ) {
-    //     queryString = params.map((key:string) => `${key}=${data[key]}`).join('&');
-    //   }
-    // }
+    let queryParams: { [key: string]: any } = {};
+    if (config[idx].urlQueryParams) {
+      let params = config[idx].urlQueryParams?.split(',').map((param: string) => param.trim());
+      if (params.length > 0) {
+        params.forEach((key: string) => {
+          queryParams[key] = data.row.original[key];
+        });
+      }
+    }
     return (
       <a
-        onClick={() => messagePass(config[idx].url, idx)}
+        onClick={() => messagePass(config[idx].url, queryParams)}
         rel="noopener noreferrer"
       >
         {value}
@@ -297,8 +298,9 @@ export default typedMemo(function DataTable<D extends object>({
     )
   } 
 
-  const messagePass =(code:string, idx:number)=> {
-    var data = { embeddedCode: code, embeddedTrigger: true }
+  const messagePass =(code:string, queryParams: object)=> {
+    const iframeId = new URLSearchParams(window.location.search).get('iframeId');
+    var data = { embeddedCode: code, embeddedTrigger: true, queryParams: queryParams, iframeId : iframeId}
     window.top?.postMessage(data, '*');
   }
 
