@@ -263,17 +263,16 @@ export default typedMemo(function DataTable<D extends object>({
     }
     return (
       <a
-        onClick={() => messagePass(config[idx].url, queryParams)}
+        onClick={(event) => messagePass(config[idx].url, queryParams, cell.value)}
         rel="noopener noreferrer"
       >
         {cell.render('Cell')}
       </a>
     )
   }
-
-  const messagePass =(code:string, queryParams: object)=> {
+  const messagePass =(code:string, queryParams: object, cellTitle: string)=> {
     const iframeId = new URLSearchParams(window.location.search).get('iframeId');
-    var data = { embeddedCode: code, embeddedTrigger: true, queryParams: queryParams, iframeId : iframeId}
+    var data = { embeddedCode: code, embeddedTrigger: true, queryParams: queryParams, iframeId : iframeId, title: cellTitle}
     window.top?.postMessage(data, '*');
   }
 
