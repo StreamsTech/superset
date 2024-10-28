@@ -263,7 +263,7 @@ export default typedMemo(function DataTable<D extends object>({
     }
     return (
       <a
-        onClick={(event) => messagePass(config[idx].url, queryParams, cell.value)}
+        onClick={() => messagePass(config[idx].url, queryParams, cell.value)}
         rel="noopener noreferrer"
       >
         {cell.render('Cell')}
