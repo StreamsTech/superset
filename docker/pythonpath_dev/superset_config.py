@@ -25,6 +25,7 @@ import os
 
 from celery.schedules import crontab
 from flask_caching.backends.filesystemcache import FileSystemCache
+from typing import Any
 
 logger = logging.getLogger()
 
@@ -150,3 +151,11 @@ FEATURE_FLAGS = {
 FAB_ADD_SECURITY_API = True
 ENABLE_CORS = True
 SECRET_KEY='4IETlIrDFFVmSr2OiKqT3WTsbpWALJBtSMuE2JfKEacp6p9WpBRZ4e49'
+
+HTML_SANITIZATION = True
+HTML_SANITIZATION_SCHEMA_EXTENSIONS: dict[str, Any] = {
+    "attributes": {
+        "*": ["style", "className"],
+    },
+    "tagNames": ["style"],
+}

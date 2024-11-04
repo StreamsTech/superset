@@ -88,4 +88,27 @@ Handlebars.registerHelper('stringify', (obj: any, obj2: any) => {
   return isPlainObject(obj) ? JSON.stringify(obj) : String(obj);
 });
 
+Handlebars.registerHelper('numberFormat', function (value, options) {
+  // Helper parameters
+  var useDecimals = options.hash['useDecimals'] !== false; // default is true
+  var dl = useDecimals ? options.hash['decimalLength'] || 2 : 0;
+  var ts = options.hash['thousandsSep'] || ',';
+  var ds = useDecimals ? options.hash['decimalSep'] || '.' : '';
+ 
+  // Parse to float
+  var parsedValue = parseFloat(value);
+ 
+  // Return empty string if value is not a valid number
+  if (isNaN(parsedValue)) return '';
+ 
+  // Format regex
+  var re = '\\d(?=(\\d{3})+' + (dl > 0 ? '\\D' : '$') + ')';
+ 
+  // Formats the number with the specified decimal length
+  var num = parsedValue.toFixed(Math.max(0, ~~dl));
+ 
+  // Return the formatted number
+  return (ds ? num.replace('.', ds) : num).replace(new RegExp(re, 'g'), '$&' + ts);
+});
+
 Helpers.registerHelpers(Handlebars);
