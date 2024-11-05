@@ -78,10 +78,13 @@ export type BigNumberVizProps = {
   headerFontSize: number;
   kickerFontSize?: number;
   subheader: string;
+  icon: any;
   subheaderFontSize: number;
   backgroundColor:string,
   textAlignment:string,
   textColor: string;
+  iconColor: string;
+  iconBackgroundColor: string;
   subHeadTextColor:string;
   showTimestamp?: boolean;
   showTrendLine?: boolean;

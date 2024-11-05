@@ -16,6 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
+import { far } from '@fortawesome/free-regular-svg-icons';
+
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+
+library.add(fas, far, fab);
+
 import React, { MouseEvent } from 'react';
 import {
   t,
@@ -44,7 +57,9 @@ const PROPORTION = {
   text: 'black',
   subheadtext: 'black',
   bgColor: 'white',
-  testAlignment: 'flex-start'
+  testAlignment: 'flex-start',
+  iconColor: 'black',
+  iconBg: 'transparent',
 };
 
 class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
@@ -64,7 +79,10 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
     textColor: PROPORTION.text,
     subHeadTextColor: PROPORTION.subheadtext,
     backgroundColor: PROPORTION.bgColor,
-    testAlignment: PROPORTION.testAlignment
+    testAlignment: PROPORTION.testAlignment,
+    iconColor: PROPORTION.iconColor,
+    iconBackgroundColor: PROPORTION.iconBg,
+
   };
 
 
@@ -72,10 +90,13 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
     const { maxChart } = this.props;
     for (let i = 1; i <= maxChart; i++) {
       let subheaderTextSelector = 'input[aria-label="subHeader_' + i + '"]';
+      let iconTextSelector = 'input[aria-label="icon_' + i + '"]';
+      let iconTextColorSelector = 'input[aria-label="Icon_Color_' + i + '"]'
+      let iconBgColorSelector = 'input[aria-label="icon_background_color_' + i + '"]'
       let bgColorSelector = 'input[aria-label="background_color_' + i + '"]';
       let subHeaderColorSelector = 'input[aria-label="Sub_Header_Text_Color_' + i + '"]';
       let headerColorSelector = 'input[aria-label="Text_Color_' + i + '"]';
-      let selectors = [subheaderTextSelector, bgColorSelector, subHeaderColorSelector, headerColorSelector]
+      let selectors = [subheaderTextSelector, bgColorSelector, subHeaderColorSelector, headerColorSelector,iconTextSelector,iconTextColorSelector,iconBgColorSelector]
       selectors.forEach((ele) => {
         if (lastclicked === i) {
           const element = document.querySelector(ele);
@@ -231,6 +252,23 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
       Array.isArray(colorThresholdFormatters) &&
       colorThresholdFormatters.length > 0;
     let numberColor;
+    const icon = bigNumberConfig[index].icon;
+
+    let iconPrefix: any = '';
+
+    let iconName: any = '';
+
+    if (icon) {
+
+      // Split the icon string, e.g., "fa-solid fa-camera-retro" becomes ["fa-solid", "fa-camera-retro"]
+
+      const iconParts = icon.split(' ');
+
+      iconPrefix = iconParts[0]?.replace('fa-', ''); // remove "fa-" to get the prefix like "solid", "regular", "brands"
+
+      iconName = iconParts[1]?.replace('fa-', '');   // remove "fa-" to get the icon name like "camera-retro"
+
+    }
     if (hasThresholdColorFormatter) {
       colorThresholdFormatters!.forEach(formatter => {
         const formatterResult = bigNumberConfig[index].bigNumberText
@@ -266,10 +304,23 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
           fontSize,
           height: maxHeight,
           color: numberColor,
+          display: 'flex', // Use flex to align icon and text
+          alignItems: 'center', // Center the icon and text vertically
         }}
         onContextMenu={onContextMenu}
       >
         {text}
+        {iconPrefix && iconName && (
+
+<FontAwesomeIcon
+
+  icon={[iconPrefix, iconName]} // Pass prefix and icon name
+
+  style={{ marginLeft: '0.2em', color:bigNumberConfig[index].iconColor, backgroundColor: bigNumberConfig[index].iconBackgroundColor, padding:'0.2em', borderRadius: '0.25em' }}
+
+/>
+
+)}
       </div>
     );
   }
@@ -360,10 +411,13 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
     const { maxChart } = this.props;
     for (let i = 1; i <= maxChart; i++) {
       let subheaderTextSelector = 'input[aria-label="subHeader_' + i + '"]';
+      let iconTextSelector = 'input[aria-label="icon_' + i + '"]';
+      let iconTextColorSelector = 'input[aria-label="Icon_Color_' + i + '"]'
+      let iconBgColorSelector = 'input[aria-label="icon_background_color_' + i + '"]'
       let bgColorSelector = 'input[aria-label="background_color_' + i + '"]';
       let subHeaderColorSelector = 'input[aria-label="Sub_Header_Text_Color_' + i + '"]';
       let headerColorSelector = 'input[aria-label="Text_Color_' + i + '"]';
-      let selectors = [subheaderTextSelector, bgColorSelector, subHeaderColorSelector, headerColorSelector]
+      let selectors = [subheaderTextSelector, bgColorSelector, subHeaderColorSelector, headerColorSelector, iconTextSelector, iconTextColorSelector, iconBgColorSelector]
       selectors.forEach((ele) => {
         if (param + 1 === i) {
           const element = document.querySelector(ele);

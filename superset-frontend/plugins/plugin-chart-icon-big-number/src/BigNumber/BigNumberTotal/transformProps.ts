@@ -49,13 +49,16 @@ export default function transformProps(
     headerFontSize,
     metric = 'value',
     subheader = '',
+    icon='',
     subheaderFontSize,
     forceTimestampFormatting,
     timeFormat,
     yAxisFormat,
     conditionalFormatting,
     currencyFormat,
-	textColor,
+	  textColor,
+    iconColor,
+    iconBackgroundColor,
     subHeadTextColor,
     backgroundColor,
     textAlignment,
@@ -116,11 +119,14 @@ export default function transformProps(
     onContextMenu,
     refs,
     colorThresholdFormatters,
-	textColor,
+	  textColor,
+    icon,
+    iconColor,
+    iconBackgroundColor,
     subHeadTextColor,
     backgroundColor,
     textAlignment,
-	bigNumberConfig,
+	  bigNumberConfig,
     maxChart,
   };
 }
@@ -130,7 +136,10 @@ function bigNumberConfigProvider(formData: any, queriesData: any) {
  const subHeaders = [];
  const backgroundColors = [];
  const textColors = [];
+ const iconColors =[];
+ const iconBackgroundColors = [];
  const subHeaderTextColors = [];
+ const icons=[];
 
 
 
@@ -143,6 +152,11 @@ function bigNumberConfigProvider(formData: any, queriesData: any) {
    backgroundColors.push(formData[`backgroundColor${i}`]);
 
    textColors.push(formData[`textColor${i}`]);
+   icons.push(formData[`icon${i}`]);
+
+   iconColors.push(formData[`iconColor${i}`]);
+
+   iconBackgroundColors.push(formData[`iconBackgroundColor${i}`]);
 
    subHeaderTextColors.push(formData[`subHeaderTextColor${i}`]);
 
@@ -163,12 +177,18 @@ function bigNumberConfigProvider(formData: any, queriesData: any) {
       bigNumberConfig.push({
 
         subHeader: subHeaders[i] || '',
+        
+        icon: icons[i] || '',
 
         subHeaderTextColour: subHeaderTextColors[i] || '',
 
         bigNumberText: queriesData.data[0][key] || '',
 
         textColour: textColors[i] || '',
+        
+        iconColor: iconColors[i] || '',
+
+        iconBackgroundColor: iconBackgroundColors[i] || '',
 
         backgoundColour: backgroundColors[i] || ''
 

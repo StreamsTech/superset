@@ -26,7 +26,7 @@ import {
   sections,
 } from '@superset-ui/chart-controls';
 import { headerFontSize, subheaderFontSize, textAlignment } from '../sharedControls';
-import { backgroundColorControl, generateTextControls, subHeadTextColorControl } from './extendControlPanelSections';
+import { backgroundColorControl, generateTextControls, subHeadTextColorControl, generateIconControls, iconBackgroundColorControl } from './extendControlPanelSections';
 
 export default {
   controlPanelSections: [
@@ -121,6 +121,16 @@ export default {
           },
         ],
       ],
+    },
+    {
+      label: t('Icon Options'),
+      expanded: true,
+      controlSetRows: [
+        ...generateIconControls(10),
+        ...subHeadTextColorControl('Icon_Color_',10),
+        ...iconBackgroundColorControl(10),
+        
+      ]
     },
     {
       label: t('Chart Colour Options'),
