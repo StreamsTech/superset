@@ -78,6 +78,7 @@ import { PivotTableChartPlugin as PivotTableChartPluginV2 } from '@superset-ui/p
 import { HandlebarsChartPlugin } from '@superset-ui/plugin-chart-handlebars';
 import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
+import { IconBigNumberWithTrendlineChartPlugin, IconBigNumberTotalChartPlugin } from '@superset-ui/plugin-chart-icon-big-number';
 import { BigNumberWithTrendlineChartPluginExtended, BigNumberTotalChartPluginExtended } from 'plugin-chart-custom-big-number';
 import { CircumplexChartPlugin } from 'superset-plugin-chart-circumplex';
 import DetailViewChart from '@superset-ui/plugin-detail-view-chart';
@@ -100,6 +101,8 @@ export default class MainPreset extends Preset {
         new BigNumberWithTrendlineChartPluginExtended().configure({ key: 'big_number_extended' }),
         new BigNumberTotalChartPlugin().configure({ key: 'big_number_total' }),
         new BigNumberTotalChartPluginExtended().configure({ key: 'big_number_total_extended' }),
+        new IconBigNumberWithTrendlineChartPlugin().configure({ key: 'icon_big_number'}),
+        new IconBigNumberTotalChartPlugin().configure({key: 'icon_big_number_total'}),
         new EchartsBoxPlotChartPlugin().configure({ key: 'box_plot' }),
         new BubbleChartPlugin().configure({ key: 'bubble' }),
         new BulletChartPlugin().configure({ key: 'bullet' }),
