@@ -524,6 +524,18 @@ const schemes = [
       '#800026',
     ],
   },
+  {
+    id: 'pinkOrangeSequential',
+    label: 'pink/orange',
+    isDiverging: true,
+    colors: [
+      '#F79A1C',
+      '#F990CE',
+      '#F970C1',
+      '#F8149A',
+      '#BE0270',
+    ],
+  },
 ].map(s => new SequentialScheme(s));
 
 export default schemes;

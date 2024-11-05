@@ -114,6 +114,17 @@ const schemes = [
       '#d9d9d9',
     ],
   },
+  {
+    id: 'PinkCategorical',
+    label: 'Pink Categorical',
+    colors: [
+      '#F79A1C',
+      '#F990CE',
+      '#F970C1',
+      '#F8149A',
+      '#BE0270',
+    ],
+  },
 ].map(s => new CategoricalScheme(s));
 
 export default schemes;
