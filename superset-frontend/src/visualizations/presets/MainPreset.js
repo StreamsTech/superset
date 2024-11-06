@@ -67,6 +67,10 @@ import {
   EchartsSunburstChartPlugin,
 } from '@superset-ui/plugin-chart-echarts';
 import {
+  EchartsTimeseriesBarChartPluginExtended
+} from '@superset-ui/plugin-chart-echarts-extended';
+
+import {
   SelectFilterPlugin,
   RangeFilterPlugin,
   TimeFilterPlugin,
@@ -145,6 +149,9 @@ export default class MainPreset extends Preset {
         }),
         new EchartsTimeseriesBarChartPlugin().configure({
           key: 'echarts_timeseries_bar',
+        }),
+        new EchartsTimeseriesBarChartPluginExtended().configure({
+          key: 'echarts_timeseries_bar_extend',
         }),
         new EchartsTimeseriesLineChartPlugin().configure({
           key: 'echarts_timeseries_line',
