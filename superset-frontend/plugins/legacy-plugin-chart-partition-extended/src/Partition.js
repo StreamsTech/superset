@@ -264,16 +264,8 @@ function Icicle(element, props) {
 
     function positionAndPopulate(tip, d) {
       let t = '<table>';
-      let percent = '56%';
-      let allNodes = getAncestors(d);
-      if (allNodes.length > 0) {
-        console.log("--------- Data ------------");
-        console.log(allNodes[0].value);
-        console.log(d.value);
-      }
       if (useRichTooltip) {
         const nodes = getAncestors(d);
-        console.log("NodeS :", nodes);
         nodes.reverse().forEach(n => {
           t += '<tbody>';
           t +=
@@ -287,7 +279,6 @@ function Icicle(element, props) {
             `<td>${getCategory(n.depth)}</td>` +
             `<td>${n.name}</td>` +
             `<td>${n.disp}</td>` +
-            `<td>${percent}</td>` +
             '</tr>';
         });
       } else {
@@ -303,7 +294,6 @@ function Icicle(element, props) {
           '</td>' +
           `<td>${d.name}</td>` +
           `<td>${d.disp}</td>` +
-          `<td>${percent}</td>` +
           '</tr>';
       }
       t += '</tbody></table>';
