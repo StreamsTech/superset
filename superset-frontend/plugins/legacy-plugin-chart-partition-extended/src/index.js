@@ -26,13 +26,12 @@ const metadata = new ChartMetadata({
   category: t('Part of a Whole'),
   description: t('Compare the same summarized metric across multiple groups.'),
   exampleGallery: [{ url: example }],
-  name: t('Partition Chart'),
+  name: t('Partition Chart Extended'),
   tags: [t('Categorical'), t('Comparison'), t('Legacy'), t('Proportional')],
   thumbnail,
   useLegacyApi: true,
 });
-
-export default class PartitionChartPlugin extends ChartPlugin {
+export default class PartitionChartPluginExtended extends ChartPlugin {
   constructor() {
     super({
       loadChart: () => import('./ReactPartition'),

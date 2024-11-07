@@ -2795,6 +2795,192 @@ class PartitionViz(NVD3TimeSeriesViz):
         return self.nest_values(levels)
 
 
+class PartitionVizExtended(NVD3TimeSeriesViz):
+
+    """
+    A hierarchical data visualization with support for time series.
+    """
+
+    viz_type = "partition_extended"
+    verbose_name = _("Extended Partition Diagram")
+
+    @deprecated(deprecated_in="3.0")
+    def query_obj(self) -> QueryObjectDict:
+        query_obj = super().query_obj()
+        time_op = self.form_data.get("time_series_option", "not_time")
+        # Return time series data if the user specifies so
+        query_obj["is_timeseries"] = time_op != "not_time"
+        return query_obj
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def levels_for(
+        time_op: str, groups: list[str], df: pd.DataFrame
+    ) -> dict[int, pd.Series]:
+        """
+        Compute the partition at each `level` from the dataframe.
+        """
+        levels = {}
+        for i in range(0, len(groups) + 1):
+            agg_df = df.groupby(groups[:i]) if i else df
+            levels[i] = (
+                agg_df.mean()
+                if time_op == "agg_mean"
+                else agg_df.sum(numeric_only=True)
+            )
+        return levels
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def levels_for_diff(
+        time_op: str, groups: list[str], df: pd.DataFrame
+    ) -> dict[int, pd.DataFrame]:
+        # Obtain a unique list of the time grains
+        times = list(set(df[DTTM_ALIAS]))
+        times.sort()
+        until = times[len(times) - 1]
+        since = times[0]
+        # Function describing how to calculate the difference
+        func = {
+            "point_diff": [pd.Series.sub, lambda a, b, fill_value: a - b],
+            "point_factor": [pd.Series.div, lambda a, b, fill_value: a / float(b)],
+            "point_percent": [
+                lambda a, b, fill_value=0: a.div(b, fill_value=fill_value) - 1,
+                lambda a, b, fill_value: a / float(b) - 1,
+            ],
+        }[time_op]
+        agg_df = df.groupby(DTTM_ALIAS).sum()
+        levels = {
+            0: pd.Series(
+                {
+                    m: func[1](agg_df[m][until], agg_df[m][since], 0)
+                    for m in agg_df.columns
+                }
+            )
+        }
+        for i in range(1, len(groups) + 1):
+            agg_df = df.groupby([DTTM_ALIAS] + groups[:i]).sum()
+            levels[i] = pd.DataFrame(
+                {
+                    m: func[0](agg_df[m][until], agg_df[m][since], fill_value=0)
+                    for m in agg_df.columns
+                }
+            )
+        return levels
+
+    @deprecated(deprecated_in="3.0")
+    def levels_for_time(
+        self, groups: list[str], df: pd.DataFrame
+    ) -> dict[int, VizData]:
+        procs = {}
+        for i in range(0, len(groups) + 1):
+            self.form_data["groupby"] = groups[:i]
+            df_drop = df.drop(groups[i:], 1)
+            procs[i] = self.process_data(df_drop, aggregate=True)
+        self.form_data["groupby"] = groups
+        return procs
+
+    @deprecated(deprecated_in="3.0")
+    def nest_values(
+        self,
+        levels: dict[int, pd.DataFrame],
+        level: int = 0,
+        metric: str | None = None,
+        dims: list[str] | None = None,
+    ) -> list[dict[str, Any]]:
+        """
+        Nest values at each level on the back-end with
+        access and setting, instead of summing from the bottom.
+        """
+        if dims is None:
+            dims = []
+        if not level:
+            return [
+                {
+                    "name": m,
+                    "val": levels[0][m],
+                    "children": self.nest_values(levels, 1, m),
+                }
+                for m in levels[0].index
+            ]
+        if level == 1:
+            metric_level = levels[1][metric]
+            return [
+                {
+                    "name": i,
+                    "val": metric_level[i],
+                    "children": self.nest_values(levels, 2, metric, [i]),
+                }
+                for i in metric_level.index
+            ]
+        if level >= len(levels):
+            return []
+        dim_level = levels[level][metric][[dims[0]]]
+        return [
+            {
+                "name": i,
+                "val": dim_level[i],
+                "children": self.nest_values(levels, level + 1, metric, dims + [i]),
+            }
+            for i in dim_level.index
+        ]
+
+    @deprecated(deprecated_in="3.0")
+    def nest_procs(
+        self,
+        procs: dict[int, pd.DataFrame],
+        level: int = -1,
+        dims: tuple[str, ...] | None = None,
+        time: Any = None,
+    ) -> list[dict[str, Any]]:
+        if dims is None:
+            dims = ()
+        if level == -1:
+            return [
+                {"name": m, "children": self.nest_procs(procs, 0, (m,))}
+                for m in procs[0].columns
+            ]
+        if not level:
+            return [
+                {
+                    "name": t,
+                    "val": procs[0][dims[0]][t],
+                    "children": self.nest_procs(procs, 1, dims, t),
+                }
+                for t in procs[0].index
+            ]
+        if level >= len(procs):
+            return []
+        return [
+            {
+                "name": i,
+                "val": procs[level][dims][i][time],
+                "children": self.nest_procs(procs, level + 1, dims + (i,), time),
+            }
+            for i in procs[level][dims].columns
+        ]
+
+    @deprecated(deprecated_in="3.0")
+    def get_data(self, df: pd.DataFrame) -> VizData:
+        if df.empty:
+            return None
+        groups = get_column_names(self.form_data.get("groupby"))
+        time_op = self.form_data.get("time_series_option", "not_time")
+        if not groups:
+            raise ValueError(_("Please choose at least one groupby"))
+        if time_op == "not_time":
+            levels = self.levels_for("agg_sum", groups, df)
+        elif time_op in ["agg_sum", "agg_mean"]:
+            levels = self.levels_for(time_op, groups, df)
+        elif time_op in ["point_diff", "point_factor", "point_percent"]:
+            levels = self.levels_for_diff(time_op, groups, df)
+        elif time_op == "adv_anal":
+            procs = self.levels_for_time(groups, df)
+            return self.nest_procs(procs)
+        else:
+            levels = self.levels_for("agg_sum", [DTTM_ALIAS] + groups, df)
+        return self.nest_values(levels)
+
 @deprecated(deprecated_in="3.0")
 def get_subclasses(cls: type[BaseViz]) -> set[type[BaseViz]]:
     return set(cls.__subclasses__()).union(

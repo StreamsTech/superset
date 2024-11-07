@@ -264,6 +264,8 @@ function Icicle(element, props) {
 
     function positionAndPopulate(tip, d) {
       let t = '<table>';
+      let allNodes = getAncestors(d);
+      let total = allNodes.reduce((max, obj) => Math.max(max, obj.value), -Infinity);
       if (useRichTooltip) {
         const nodes = getAncestors(d);
         nodes.reverse().forEach(n => {
@@ -272,13 +274,13 @@ function Icicle(element, props) {
             '<tr>' +
             '<td>' +
             '<div ' +
-            `style='border: 2px solid transparent;` +
-            `background-color: ${n.color};'` +
+            `style='border: 2px solid transparent; background-color: ${n.color};'` +
             '></div>' +
             '</td>' +
             `<td>${getCategory(n.depth)}</td>` +
             `<td>${n.name}</td>` +
             `<td>${n.disp}</td>` +
+            `<td>(${((n.value / total) * 100).toFixed(2) + "%"})</td>`+
             '</tr>';
         });
       } else {
@@ -289,21 +291,46 @@ function Icicle(element, props) {
         t +=
           '<tr>' +
           '<td>' +
-          `<div style='border: thin solid grey; background-color: ${d.color};'` +
-          '></div>' +
+          `<div style='border: thin solid grey; background-color: ${d.color};'></div>` +
           '</td>' +
           `<td>${d.name}</td>` +
           `<td>${d.disp}</td>` +
+          `<td>(${((d.value / total) * 100).toFixed(2) + "%"})</td>` +
           '</tr>';
       }
       t += '</tbody></table>';
-      const [tipX, tipY] = d3.mouse(element);
+    
+      const [mouseX, mouseY] = d3.mouse(element);
+      const container = document.querySelector('.superset-legacy-chart-partition');
+      const containerRect = container.getBoundingClientRect();
+      const diffwidth = 1285 - containerRect.width;
+      const tooltipWidth = 400;
+      const tooltipHeight = 200; 
+    
+      // Position tooltip and ensure it stays within container
+      let tipX = mouseX + 13;
+      let tipY = mouseY;
+    
+      if (tipX + tooltipWidth > containerRect.width && tipY + tooltipHeight > containerRect.height) {
+        tipX = ((tipX + tooltipWidth) - (containerRect.width - (tooltipWidth)));
+        tipY =((tipY + tooltipHeight) - (containerRect.height - 50));
+      }
+
+      else if (tipX + tooltipWidth > containerRect.width && tipY + tooltipHeight < containerRect.height) {
+        tipX = ((tipX + tooltipWidth) - (containerRect.width - (tooltipWidth))) + 50;
+        tipY = tipY + 30;
+      }
+
+      else if (tipX + tooltipWidth < containerRect.width && tipY + tooltipHeight > containerRect.height) {
+        tipY =((tipY + tooltipHeight) - (containerRect.height - (tooltipHeight/2)));
+      }
+
       tip
         .html(t)
-        .style('left', `${tipX + 15}px`)
+        .style('left', `${tipX}px`)
         .style('top', `${tipY}px`);
     }
-
+    
     const nodes = init(root);
 
     let zoomX = w / root.dx;
@@ -378,8 +405,10 @@ function Icicle(element, props) {
         if (!d.disp) {
           return d.name;
         }
-
-        return `${d.name}: ${d.disp}`;
+        if (typeof(d.name) === 'string')
+          return `${d.name}: ${d.disp}`;
+        else
+          return `${d.name[d.name.length-1]} : ${d.disp}`;
       });
 
     // Apply color scheme
