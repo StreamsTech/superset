@@ -78,7 +78,7 @@ export default class EchartsTimeseriesBarChartPluginExtended extends EchartsChar
           AnnotationType.Interval,
           AnnotationType.Timeseries,
         ],
-        name: hasGenericChartAxes ? t('Extended Bar Chart ') : t('Time-series Bar Chart Extended'),
+        name: hasGenericChartAxes ? t('Bar Chart Extended') : t('Time-series Bar Chart Extended'),
         tags: [
           t('ECharts'),
           t('Predictive'),

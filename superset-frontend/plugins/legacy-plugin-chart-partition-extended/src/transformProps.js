@@ -31,6 +31,8 @@ export default function transformProps(chartProps) {
     richTooltip,
     timeSeriesOption,
     sliceId,
+    percentageTooltip,
+    partitionDetailsLoad,
   } = formData;
   const { verboseMap } = datasource;
 
@@ -50,5 +52,7 @@ export default function transformProps(chartProps) {
     useLogScale: logScale,
     useRichTooltip: richTooltip,
     sliceId,
+    percentageTooltip: percentageTooltip,
+    partitionDetailsLoad: partitionDetailsLoad,
   };
 }

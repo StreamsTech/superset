@@ -24,7 +24,7 @@ import {
   EchartsFunnelChartPlugin,
   EchartsTreemapChartPlugin,
   EchartsAreaChartPlugin,
-  EchartsTimeseriesBarChartPlugin,
+  EchartsTimeseriesBarChartPluginExtended,
   EchartsTimeseriesLineChartPlugin,
   EchartsTimeseriesScatterChartPlugin,
   EchartsTimeseriesSmoothLineChartPlugin,
@@ -48,7 +48,7 @@ test('@superset-ui/plugin-chart-echarts exists', () => {
   expect(EchartsFunnelChartPlugin).toBeDefined();
   expect(EchartsTreemapChartPlugin).toBeDefined();
   expect(EchartsAreaChartPlugin).toBeDefined();
-  expect(EchartsTimeseriesBarChartPlugin).toBeDefined();
+  expect(EchartsTimeseriesBarChartPluginExtended).toBeDefined();
   expect(EchartsTimeseriesLineChartPlugin).toBeDefined();
   expect(EchartsTimeseriesScatterChartPlugin).toBeDefined();
   expect(EchartsTimeseriesSmoothLineChartPlugin).toBeDefined();
@@ -85,7 +85,7 @@ test('@superset-ui/plugin-chart-echarts-parsemethod-validation', () => {
     new EchartsAreaChartPlugin().configure({
       key: 'echarts_area',
     }),
-    new EchartsTimeseriesBarChartPlugin().configure({
+    new EchartsTimeseriesBarChartPluginExtended().configure({
       key: 'echarts_timeseries_bar',
     }),
     new EchartsTimeseriesLineChartPlugin().configure({

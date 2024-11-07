@@ -119,6 +119,8 @@ function Icicle(element, props) {
     useRichTooltip,
     timeSeriesOption = 'not_time',
     sliceId,
+    percentageTooltip,
+    partitionDetailsLoad,
   } = props;
 
   const div = d3.select(element);
@@ -280,7 +282,7 @@ function Icicle(element, props) {
             `<td>${getCategory(n.depth)}</td>` +
             `<td>${n.name}</td>` +
             `<td>${n.disp}</td>` +
-            `<td>(${((n.value / total) * 100).toFixed(2) + "%"})</td>`+
+            `<td>${percentageTooltip ? '('+ ((n.value / total) * 100).toFixed(2) + "%)" : ''}</td>`+
             '</tr>';
         });
       } else {
@@ -295,22 +297,24 @@ function Icicle(element, props) {
           '</td>' +
           `<td>${d.name}</td>` +
           `<td>${d.disp}</td>` +
-          `<td>(${((d.value / total) * 100).toFixed(2) + "%"})</td>` +
+          `<td>${percentageTooltip ? '('+ ((d.value / total) * 100).toFixed(2) + "%)" : ''}</td>` +
           '</tr>';
       }
       t += '</tbody></table>';
-    
+
       const [mouseX, mouseY] = d3.mouse(element);
-      const container = document.querySelector('.superset-legacy-chart-partition');
-      const containerRect = container.getBoundingClientRect();
-      const diffwidth = 1285 - containerRect.width;
-      const tooltipWidth = 400;
-      const tooltipHeight = 200; 
-    
-      // Position tooltip and ensure it stays within container
       let tipX = mouseX + 13;
       let tipY = mouseY;
-    
+
+      // Tooltip Position fix portion
+      // Position tooltip and ensure it stays within container
+      /*
+      // const container = document.querySelector('.superset-legacy-chart-partition');
+      // const containerRect = container.getBoundingClientRect();
+      // const diffwidth = 1285 - containerRect.width;
+      // const tooltipWidth = 400;
+      // const tooltipHeight = 200; 
+
       if (tipX + tooltipWidth > containerRect.width && tipY + tooltipHeight > containerRect.height) {
         tipX = ((tipX + tooltipWidth) - (containerRect.width - (tooltipWidth)));
         tipY =((tipY + tooltipHeight) - (containerRect.height - 50));
@@ -324,6 +328,7 @@ function Icicle(element, props) {
       else if (tipX + tooltipWidth < containerRect.width && tipY + tooltipHeight > containerRect.height) {
         tipY =((tipY + tooltipHeight) - (containerRect.height - (tooltipHeight/2)));
       }
+      */
 
       tip
         .html(t)
@@ -405,10 +410,16 @@ function Icicle(element, props) {
         if (!d.disp) {
           return d.name;
         }
-        if (typeof(d.name) === 'string')
+
+        if (partitionDetailsLoad) {
           return `${d.name}: ${d.disp}`;
-        else
-          return `${d.name[d.name.length-1]} : ${d.disp}`;
+        } 
+        else {
+          if (typeof(d.name) === 'string')
+            return `${d.name}: ${d.disp}`;
+          else
+            return `${d.name[d.name.length-1]} : ${d.disp}`;
+        }
       });
 
     // Apply color scheme

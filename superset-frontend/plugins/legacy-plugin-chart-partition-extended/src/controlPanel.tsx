@@ -192,6 +192,20 @@ const config: ControlPanelConfig = {
         ],
         [
           {
+            name: 'partition_details_load',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Partition Details Load'),
+              renderTrigger: true,
+              default: false,
+              description: t(
+                'The partition details helps to know previous partition information into it',
+              ),
+            },
+          },
+        ],
+        [
+          {
             name: 'log_scale',
             config: {
               type: 'CheckboxControl',
@@ -226,6 +240,20 @@ const config: ControlPanelConfig = {
               default: true,
               description: t(
                 'The rich tooltip shows a list of all series for that point in time',
+              ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'percentage_tooltip',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Percentage Tooltip'),
+              renderTrigger: true,
+              default: true,
+              description: t(
+                'The percentage tooltip shows percentage value for that point in time',
               ),
             },
           },
