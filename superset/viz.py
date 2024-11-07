@@ -827,6 +827,87 @@ class CalHeatmapViz(BaseViz):
         return query_obj
 
 
+class CalHeatmapVizExtended(BaseViz):
+
+    """Calendar heatmap."""
+
+    viz_type = "excal_heatmap"
+    verbose_name = _("Extended Calendar Heatmap")
+    credits = "<a href=https://github.com/wa0x6e/cal-heatmap>cal-heatmap</a>"
+    is_timeseries = True
+
+    @deprecated(deprecated_in="3.0")
+    def get_data(self, df: pd.DataFrame) -> VizData:  # pylint: disable=too-many-locals
+        if df.empty:
+            return None
+
+        form_data = self.form_data
+        data = {}
+        records = df.to_dict("records")
+        for metric in self.metric_labels:
+            values = {}
+            for query_obj in records:
+                v = query_obj[DTTM_ALIAS]
+                if hasattr(v, "value"):
+                    v = v.value
+                values[str(v / 10**9)] = query_obj.get(metric)
+            data[metric] = values
+
+        try:
+            start, end = get_since_until(
+                relative_start=relative_start,
+                relative_end=relative_end,
+                time_range=form_data.get("time_range"),
+                since=form_data.get("since"),
+                until=form_data.get("until"),
+            )
+        except ValueError as ex:
+            raise QueryObjectValidationError(str(ex)) from ex
+        if not start or not end:
+            raise QueryObjectValidationError(
+                "Please provide both time bounds (Since and Until)"
+            )
+        domain = form_data.get("domain_granularity")
+        diff_delta = rdelta.relativedelta(end, start)
+        diff_secs = (end - start).total_seconds()
+
+        if domain == "year":
+            range_ = end.year - start.year + 1
+        elif domain == "month":
+            range_ = diff_delta.years * 12 + diff_delta.months + 1
+        elif domain == "week":
+            range_ = diff_delta.years * 53 + diff_delta.weeks + 1
+        elif domain == "day":
+            range_ = diff_secs // (24 * 60 * 60) + 1  # type: ignore
+        else:
+            range_ = diff_secs // (60 * 60) + 1  # type: ignore
+
+        return {
+            "data": data,
+            "start": start,
+            "domain": domain,
+            "subdomain": form_data.get("subdomain_granularity"),
+            "range": range_,
+        }
+
+    @deprecated(deprecated_in="3.0")
+    def query_obj(self) -> QueryObjectDict:
+        query_obj = super().query_obj()
+        query_obj["metrics"] = self.form_data.get("metrics")
+        mapping = {
+            "min": "PT1M",
+            "hour": "PT1H",
+            "day": "P1D",
+            "week": "P1W",
+            "month": "P1M",
+            "year": "P1Y",
+        }
+        query_obj["extras"]["time_grain_sqla"] = mapping[
+            self.form_data.get("subdomain_granularity", "min")
+        ]
+        return query_obj
+
+
 class NVD3Viz(BaseViz):
 
     """Base class for all nvd3 vizs"""
