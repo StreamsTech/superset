@@ -18,6 +18,7 @@
  */
 import { isFeatureEnabled, Preset, FeatureFlag } from '@superset-ui/core';
 import CalendarChartPlugin from '@superset-ui/legacy-plugin-chart-calendar';
+import CalendarChartPluginExtended from '@superset-ui/legacy-plugin-chart-calendar-extended';
 import ChordChartPlugin from '@superset-ui/legacy-plugin-chart-chord';
 import CountryMapChartPlugin from '@superset-ui/legacy-plugin-chart-country-map';
 import EventFlowChartPlugin from '@superset-ui/legacy-plugin-chart-event-flow';
@@ -28,6 +29,7 @@ import MapBoxChartPlugin from '@superset-ui/legacy-plugin-chart-map-box';
 import PairedTTestChartPlugin from '@superset-ui/legacy-plugin-chart-paired-t-test';
 import ParallelCoordinatesChartPlugin from '@superset-ui/legacy-plugin-chart-parallel-coordinates';
 import PartitionChartPlugin from '@superset-ui/legacy-plugin-chart-partition';
+import PartitionChartPluginExtended from '@superset-ui/legacy-plugin-chart-partition-extended'
 import RoseChartPlugin from '@superset-ui/legacy-plugin-chart-rose';
 import SankeyChartPlugin from '@superset-ui/legacy-plugin-chart-sankey';
 import SunburstChartPlugin from '@superset-ui/legacy-plugin-chart-sunburst';
@@ -67,6 +69,10 @@ import {
   EchartsSunburstChartPlugin,
 } from '@superset-ui/plugin-chart-echarts';
 import {
+  EchartsTimeseriesBarChartPluginExtended
+} from '@superset-ui/plugin-chart-echarts-extended';
+
+import {
   SelectFilterPlugin,
   RangeFilterPlugin,
   TimeFilterPlugin,
@@ -105,6 +111,7 @@ export default class MainPreset extends Preset {
         new BubbleChartPlugin().configure({ key: 'bubble' }),
         new BulletChartPlugin().configure({ key: 'bullet' }),
         new CalendarChartPlugin().configure({ key: 'cal_heatmap' }),
+        new CalendarChartPluginExtended().configure({ key: 'excal_heatmap' }),
         new ChordChartPlugin().configure({ key: 'chord' }),
         new CompareChartPlugin().configure({ key: 'compare' }),
         new CountryMapChartPlugin().configure({ key: 'country_map' }),
@@ -127,6 +134,7 @@ export default class MainPreset extends Preset {
         new PairedTTestChartPlugin().configure({ key: 'paired_ttest' }),
         new ParallelCoordinatesChartPlugin().configure({ key: 'para' }),
         new PartitionChartPlugin().configure({ key: 'partition' }),
+        new PartitionChartPluginExtended().configure({ key: 'partition_extended' }),
         new EchartsPieChartPlugin().configure({ key: 'pie' }),
         new PivotTableChartPluginV2().configure({ key: 'pivot_table_v2' }),
         new RoseChartPlugin().configure({ key: 'rose' }),
@@ -147,6 +155,9 @@ export default class MainPreset extends Preset {
         }),
         new EchartsTimeseriesBarChartPlugin().configure({
           key: 'echarts_timeseries_bar',
+        }),
+        new EchartsTimeseriesBarChartPluginExtended().configure({
+          key: 'echarts_timeseries_bar_extend',
         }),
         new EchartsTimeseriesLineChartPlugin().configure({
           key: 'echarts_timeseries_line',
