@@ -268,6 +268,7 @@ function Icicle(element, props) {
       let t = '<table>';
       let allNodes = getAncestors(d);
       let total = allNodes.reduce((max, obj) => Math.max(max, obj.value), -Infinity);
+      
       if (useRichTooltip) {
         const nodes = getAncestors(d);
         nodes.reverse().forEach(n => {
@@ -301,40 +302,38 @@ function Icicle(element, props) {
           '</tr>';
       }
       t += '</tbody></table>';
-
+    
+      // Get cursor position relative to the element
       const [mouseX, mouseY] = d3.mouse(element);
-      let tipX = mouseX + 13;
-      let tipY = mouseY;
-
-      // Tooltip Position fix portion
-      // Position tooltip and ensure it stays within container
-      /*
-      // const container = document.querySelector('.superset-legacy-chart-partition');
-      // const containerRect = container.getBoundingClientRect();
-      // const diffwidth = 1285 - containerRect.width;
-      // const tooltipWidth = 400;
-      // const tooltipHeight = 200; 
-
-      if (tipX + tooltipWidth > containerRect.width && tipY + tooltipHeight > containerRect.height) {
-        tipX = ((tipX + tooltipWidth) - (containerRect.width - (tooltipWidth)));
-        tipY =((tipY + tooltipHeight) - (containerRect.height - 50));
+      
+      // Define tooltip offsets and positioning logic based on cursor position
+      let tipX, tipY;
+      const elementWidth = element.offsetWidth;
+      const elementHeight = element.offsetHeight;
+      const tooltipWidth = tip.node().offsetWidth;
+      const tooltipHeight = tip.node().offsetHeight;
+    
+      // Position tooltip to the left if the cursor is near the right edge
+      if (mouseX + tooltipWidth + 20 > elementWidth) {
+        tipX = mouseX - tooltipWidth - 10;
+      } else {
+        tipX = mouseX + 10;
       }
-
-      else if (tipX + tooltipWidth > containerRect.width && tipY + tooltipHeight < containerRect.height) {
-        tipX = ((tipX + tooltipWidth) - (containerRect.width - (tooltipWidth))) + 50;
-        tipY = tipY + 30;
+    
+      // Position tooltip above if the cursor is near the bottom edge
+      if (mouseY + tooltipHeight + 20 > elementHeight) {
+        tipY = mouseY - tooltipHeight - 10;
+      } else {
+        tipY = mouseY + 10;
       }
-
-      else if (tipX + tooltipWidth < containerRect.width && tipY + tooltipHeight > containerRect.height) {
-        tipY =((tipY + tooltipHeight) - (containerRect.height - (tooltipHeight/2)));
-      }
-      */
-
+    
+      // Update the tooltip's position and content
       tip
         .html(t)
         .style('left', `${tipX}px`)
         .style('top', `${tipY}px`);
     }
+    
     
     const nodes = init(root);
 
