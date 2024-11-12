@@ -18,7 +18,7 @@ export default function EchartsPie(props: PieTransformPropsExtend) {
         selectedValues={selectedValues}
       />
       
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table className="pie-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
   <thead>
     <tr>
       <th style={{ border: '1px solid #ddd', padding: '8px' }}>Category</th>
