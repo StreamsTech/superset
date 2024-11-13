@@ -18,7 +18,7 @@
  */
 import {
   EchartsBoxPlotChartPlugin,
-  EchartsPieChartPlugin,
+  EchartsPieChartPluginExtend,
   EchartsTimeseriesChartPlugin,
   EchartsGraphChartPlugin,
   EchartsFunnelChartPlugin,
@@ -42,7 +42,7 @@ import { EchartsChartPlugin } from '../src/types';
 
 test('@superset-ui/plugin-chart-echarts exists', () => {
   expect(EchartsBoxPlotChartPlugin).toBeDefined();
-  expect(EchartsPieChartPlugin).toBeDefined();
+  expect(EchartsPieChartPluginExtend).toBeDefined();
   expect(EchartsTimeseriesChartPlugin).toBeDefined();
   expect(EchartsGraphChartPlugin).toBeDefined();
   expect(EchartsFunnelChartPlugin).toBeDefined();
@@ -67,7 +67,7 @@ test('@superset-ui/plugin-chart-echarts-parsemethod-validation', () => {
     new EchartsBoxPlotChartPlugin().configure({
       key: 'box_plot',
     }),
-    new EchartsPieChartPlugin().configure({
+    new EchartsPieChartPluginExtend().configure({
       key: 'pie',
     }),
     new EchartsTimeseriesChartPlugin().configure({
