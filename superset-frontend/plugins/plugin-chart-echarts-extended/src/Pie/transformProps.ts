@@ -309,6 +309,41 @@ export default function transformProps(
     },
   ];
 
+//table
+ // Generate table data based on the chart data
+ const tableData = data.map((datum, index) => {
+  const value = datum[metricLabel];
+  const name= extractGroupbyLabel({
+    datum,
+    groupby: groupbyLabels,
+    coltypeMapping,
+    timeFormatter: getTimeFormatter(dateFormat),
+  });
+
+  // Ensure value is not null and assign a fallback value (e.g., 0)
+  const numericValue = value === null || value === undefined
+    ? 0 // or any default value you prefer
+    : typeof value === 'boolean'
+    ? (value ? 1 : 0) // Convert boolean to number
+    : value instanceof Date
+    ? value.toISOString() // Convert Date to string
+    : value; // Keep value as is if it is a string or number
+
+
+  // Calculate the percentage
+  const percent = totalValue > 0 ? (convertInteger(numericValue) / totalValue) * 100 : 0;
+  const sliceColor = colorFn(name, sliceId) || '#000000';
+  return {
+   
+    name,
+    value: numericValue, // Use numeric value to avoid type issues
+    percent: percent > 0 ? percent.toFixed(2) + '%' : '0.00%', // Format percentage to two decimal places
+    color: sliceColor,
+   
+  };
+});
+
+
   const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,
@@ -357,5 +392,6 @@ export default function transformProps(
     refs,
     emitCrossFilters,
     coltypeMapping,
+    tableData,
   };
 }

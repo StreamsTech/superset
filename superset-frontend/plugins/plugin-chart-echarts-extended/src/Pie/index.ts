@@ -25,10 +25,11 @@ import example1 from './images/Pie1.jpg';
 import example2 from './images/Pie2.jpg';
 import example3 from './images/Pie3.jpg';
 import example4 from './images/Pie4.jpg';
+import example5 from './images/Pie5.jpg';
 import { EchartsPieChartProps, EchartsPieFormData } from './types';
 import { EchartsChartPlugin } from '../types';
 
-export default class EchartsPieChartPlugin extends EchartsChartPlugin<
+export default class EchartsPieChartPluginExtend extends EchartsChartPlugin<
   EchartsPieFormData,
   EchartsPieChartProps
 > {
@@ -56,16 +57,17 @@ export default class EchartsPieChartPlugin extends EchartsChartPlugin<
         category: t('Part of a Whole'),
         credits: ['https://echarts.apache.org'],
         description:
-          t(`The classic. Great for showing how much of a company each investor gets, what demographics follow your blog, or what portion of the budget goes to the military industrial complex.
+          t(`The classic. Great for showing how much of a company each investor gets, what demographics follow your blog, or what portion of the budget goes to the military industrial complex.This extended version includes a color-coded table beneath the pie chart, enhancing its comprehensiveness.
 
         Pie charts can be difficult to interpret precisely. If clarity of relative proportion is important, consider using a bar or other chart type instead.`),
         exampleGallery: [
           { url: example1 },
           { url: example2 },
+          { url: example5 },
           { url: example3 },
           { url: example4 },
         ],
-        name: t('Pie Chart'),
+        name: t('Pie Chart Extended'),
         tags: [
           t('Aesthetic'),
           t('Categorical'),

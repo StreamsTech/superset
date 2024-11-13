@@ -82,4 +82,11 @@ export const DEFAULT_FORM_DATA: EchartsPieFormData = {
 export type PieChartTransformedProps =
   BaseTransformedProps<EchartsPieFormData> &
     ContextMenuTransformedProps &
-    CrossFilterTransformedProps;
+    CrossFilterTransformedProps&{
+      tableData: Array<{
+        name: string;
+        value: string | number ;
+        percent?: string; // Optional field for percent
+        color: string;
+      }>;
+    };

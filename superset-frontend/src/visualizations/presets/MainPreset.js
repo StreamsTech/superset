@@ -69,7 +69,8 @@ import {
   EchartsSunburstChartPlugin,
 } from '@superset-ui/plugin-chart-echarts';
 import {
-  EchartsTimeseriesBarChartPluginExtended
+  EchartsTimeseriesBarChartPluginExtended,
+  EchartsPieChartPluginExtend,
 } from '@superset-ui/plugin-chart-echarts-extended';
 
 import {
@@ -87,8 +88,6 @@ import TimeTableChartPlugin from '../TimeTable';
 import { BigNumberWithTrendlineChartPluginExtended, BigNumberTotalChartPluginExtended } from 'plugin-chart-custom-big-number';
 import { CircumplexChartPlugin } from 'superset-plugin-chart-circumplex';
 import DetailViewChart from '@superset-ui/plugin-detail-view-chart';
-import {EchartsPieChartPluginExtend} from '@superset-ui/plugin-chart-pie-chart-extended';
-
 export default class MainPreset extends Preset {
   constructor() {
     const experimentalplugins = isFeatureEnabled(
