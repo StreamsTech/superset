@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { ensureIsInt, t, validateNonEmpty } from '@superset-ui/core';
+import { ensureIsInt, GenericDataType, t, validateNonEmpty } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
@@ -28,6 +28,7 @@ import {
   D3_TIME_FORMAT_OPTIONS,
   sections,
   getStandardizedControls,
+  Dataset,
 } from '@superset-ui/chart-controls';
 import { DEFAULT_FORM_DATA } from './types';
 import { legendSection } from '../controls';
@@ -239,6 +240,50 @@ const config: ControlPanelConfig = {
               description: t('Inner radius of donut hole'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
                 Boolean(controls?.donut?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'column_color_formatting',
+            config: {
+              type: 'ColumnColorFormatingControl',
+              vizType: 'pie-extend',
+              renderTrigger: true,
+              label: t('Column Color formatting'),
+              description: t(
+                'Apply conditional color formatting to numeric columns',
+              ),
+              shouldMapStateToProps() {
+                return true;
+              },
+              mapStateToProps(explore, _, chart) {
+                const verboseMap = explore?.datasource?.hasOwnProperty(
+                  'verbose_map',
+                )
+                  ? (explore?.datasource as Dataset)?.verbose_map
+                  : explore?.datasource?.columns ?? {};
+                const chartStatus = chart?.chartStatus;
+                const { colnames, coltypes } =
+                  chart?.queriesResponse?.[0] ?? {};
+                const numericColumns =
+                  Array.isArray(colnames) && Array.isArray(coltypes)
+                    ? colnames
+                        // .filter(
+                        //   (colname: string, index: number) =>
+                        //     coltypes[index] === GenericDataType.STRING,
+                        // )
+                        .map(colname => ({
+                          value: colname,
+                          label: verboseMap[colname] ?? colname,
+                        }))
+                    : [];
+                return {
+                  removeIrrelevantConditions: chartStatus === 'success',
+                  columnOptions: numericColumns,
+                  verboseMap,
+                };
+              },
             },
           },
         ],

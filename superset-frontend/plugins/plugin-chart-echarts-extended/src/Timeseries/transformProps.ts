@@ -174,6 +174,7 @@ export default function transformProps(
     yAxisTitlePosition,
     zoomable,
     tooltipPercentageShow,
+    columnColorFormatting,
   }: EchartsTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
   const refs: Refs = {};
 
@@ -274,6 +275,7 @@ export default function transformProps(
       entry,
       colorScale,
       colorScaleKey,
+      columnColorFormatting,
       {
         area,
         filterState,

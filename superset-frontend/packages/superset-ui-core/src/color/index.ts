@@ -25,6 +25,7 @@ export { default as CategoricalScheme } from './CategoricalScheme';
 export * from './CategoricalScheme';
 export { default as getCategoricalSchemeRegistry } from './CategoricalSchemeRegistrySingleton';
 export { default as ColorScheme } from './ColorScheme';
+export { default as ColumnColorScheme } from './ColumnColorScheme'
 export * from './ColorScheme';
 export { default as getSequentialSchemeRegistry } from './SequentialSchemeRegistrySingleton';
 export { default as SequentialScheme } from './SequentialScheme';

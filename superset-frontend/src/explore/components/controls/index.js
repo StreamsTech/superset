@@ -48,6 +48,7 @@ import DndColumnSelectControl, {
 import XAxisSortControl from './XAxisSortControl';
 import CurrencyControl from './CurrencyControl';
 import ColumnConfigControl from './ColumnConfigControl';
+import ColumnColorFormatingControl from './ColumnColorFormattingControl/ColumnColorFormattingControl';
 
 const controlMap = {
   AnnotationLayerControl,
@@ -79,6 +80,7 @@ const controlMap = {
   AdhocFilterControl,
   FilterBoxItemControl,
   ConditionalFormattingControl,
+  ColumnColorFormatingControl,
   XAxisSortControl,
   ...sharedControlComponents,
 };

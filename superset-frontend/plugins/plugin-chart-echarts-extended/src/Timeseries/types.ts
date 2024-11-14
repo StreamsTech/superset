@@ -20,6 +20,7 @@ import { OptionName } from 'echarts/types/src/util/types';
 import {
   AnnotationLayer,
   AxisType,
+  ColumnColorScheme,
   ContributionType,
   QueryFormColumn,
   QueryFormData,

@@ -145,6 +145,7 @@ export function transformSeries(
   series: SeriesOption,
   colorScale: CategoricalColorScale,
   colorScaleKey: string,
+  columnColorFormatting : any,
   opts: {
     area?: boolean;
     filterState?: FilterState;
@@ -241,6 +242,11 @@ export function transformSeries(
     color: colorScale(colorScaleKey, sliceId),
     opacity,
   };
+  
+  if( seriesType === 'bar' && columnColorFormatting && columnColorFormatting.length > 0) {
+    const result = columnColorFormatting?.find((item: any) => item.column === colorScaleKey);
+    itemStyle.color = result?.colorScheme;
+  }
   let emphasis = {};
   let showSymbol = false;
   if (!isConfidenceBand) {

@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { t } from '@superset-ui/core';
+import { t, GenericDataType } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
@@ -29,6 +29,7 @@ import {
   getStandardizedControls,
   sections,
   sharedControls,
+  Dataset
 } from '@superset-ui/chart-controls';
 import {
   legendSection,
@@ -338,6 +339,49 @@ const config: ControlPanelConfig = {
         ...richTooltipSection,
         [<ControlSubSectionHeader>{t('Y Axis')}</ControlSubSectionHeader>],
         ...createAxisControl('y'),
+        [
+          {
+            name: 'column_color_formatting',
+            config: {
+              type: 'ColumnColorFormatingControl',
+              renderTrigger: true,
+              label: t('Conditional formatting'),
+              description: t(
+                'Apply conditional color formatting to numeric columns',
+              ),
+              shouldMapStateToProps() {
+                return true;
+              },
+              mapStateToProps(explore, _, chart) {
+                const verboseMap = explore?.datasource?.hasOwnProperty(
+                  'verbose_map',
+                )
+                  ? (explore?.datasource as Dataset)?.verbose_map
+                  : explore?.datasource?.columns ?? {};
+                const chartStatus = chart?.chartStatus;
+                const { colnames, coltypes } =
+                  chart?.queriesResponse?.[0] ?? {};
+                const numericColumns =
+                  Array.isArray(colnames) && Array.isArray(coltypes)
+                    ? colnames
+                        .filter(
+                          (colname: string, index: number) =>
+                            coltypes[index] === GenericDataType.NUMERIC,
+                        )
+                        .map(colname => ({
+                          value: colname,
+                          label: verboseMap[colname] ?? colname,
+                        }))
+                    : [];
+                return {
+                  removeIrrelevantConditions: chartStatus === 'success',
+                  columnOptions: numericColumns,
+                  verboseMap,
+                };
+              },
+            },
+          },
+        ],
       ],
     },
   ],

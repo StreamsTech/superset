@@ -173,6 +173,7 @@ export default function transformProps(
     showLabelsThreshold,
     sliceId,
     showTotal,
+    columnColorFormatting,
   }: EchartsPieFormData = {
     ...DEFAULT_LEGEND_FORM_DATA,
     ...DEFAULT_PIE_FORM_DATA,
@@ -233,11 +234,17 @@ export default function transformProps(
       totalValue += convertInteger(value);
     }
 
+    let portionColor = "";
+    if( columnColorFormatting && columnColorFormatting.length > 0) {
+      const result = columnColorFormatting?.find((item: any) => item.columnEntity === name);
+      portionColor = result?.colorScheme;
+    }
+    
     return {
       value,
       name,
       itemStyle: {
-        color: colorFn(name, sliceId),
+        color: (portionColor === '') ? colorFn(name, sliceId) : portionColor,
         opacity: isFiltered
           ? OpacityEnum.SemiTransparent
           : OpacityEnum.NonTransparent,
