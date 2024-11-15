@@ -22,7 +22,6 @@ import Icons from 'src/components/Icons';
 import ControlHeader from 'src/explore/components/ControlHeader';
 import { FormattingPopover } from './FormattingPopover';
 import {
-  COMPARATOR,
   ColumnColorFormatingConfig,
   ColumnColorFormatingControlProps,
 } from './types';
@@ -96,8 +95,6 @@ const ColumnColorFormatingControl = ({
         setConditionalFormattingConfigs(newFormattingConfigs);
       }
     }
-
-    console.log(props);
   }, [conditionalFormattingConfigs, columnOptions, removeIrrelevantConditions]);
 
   const onDelete = (index: number) => {
@@ -118,26 +115,9 @@ const ColumnColorFormatingControl = ({
 
   const createLabel = ({
     column,
-    operator,
-    targetValue,
-    targetValueLeft,
-    targetValueRight,
   }: ColumnColorFormatingConfig) => {
     const columnName = (column && verboseMap?.[column]) ?? column;
-    switch (operator) {
-      case COMPARATOR.NONE:
-        return `${columnName}`;
-      case COMPARATOR.BETWEEN:
-        return `${targetValueLeft} ${COMPARATOR.LESS_THAN} ${columnName} ${COMPARATOR.LESS_THAN} ${targetValueRight}`;
-      case COMPARATOR.BETWEEN_OR_EQUAL:
-        return `${targetValueLeft} ${COMPARATOR.LESS_OR_EQUAL} ${columnName} ${COMPARATOR.LESS_OR_EQUAL} ${targetValueRight}`;
-      case COMPARATOR.BETWEEN_OR_LEFT_EQUAL:
-        return `${targetValueLeft} ${COMPARATOR.LESS_OR_EQUAL} ${columnName} ${COMPARATOR.LESS_THAN} ${targetValueRight}`;
-      case COMPARATOR.BETWEEN_OR_RIGHT_EQUAL:
-        return `${targetValueLeft} ${COMPARATOR.LESS_THAN} ${columnName} ${COMPARATOR.LESS_OR_EQUAL} ${targetValueRight}`;
-      default:
-        return `${columnName} ${operator} ${targetValue}`;
-    }
+    return `${columnName}`;
   };
 
   return (
