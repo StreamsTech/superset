@@ -32,7 +32,6 @@ import {
   Label,
   OptionControlContainer,
 } from '../OptionControls';
-import { prop } from 'lodash/fp';
 
 const FormattersContainer = styled.div`
   ${({ theme }) => css`
