@@ -234,9 +234,9 @@ export default function transformProps(
       totalValue += convertInteger(value);
     }
 
-    let portionColor = "";
-    if( columnColorFormatting && columnColorFormatting.length > 0) {
-      const result = columnColorFormatting?.find((item: any) => item.columnEntity === name);
+    let portionColor = colorFn(name, sliceId);
+    if (columnColorFormatting && columnColorFormatting.length > 0) {
+      const result = columnColorFormatting?.find((item: any) => item.column === name);
       portionColor = result?.colorScheme;
     }
     
@@ -244,7 +244,7 @@ export default function transformProps(
       value,
       name,
       itemStyle: {
-        color: (portionColor === '') ? colorFn(name, sliceId) : portionColor,
+        color: portionColor,
         opacity: isFiltered
           ? OpacityEnum.SemiTransparent
           : OpacityEnum.NonTransparent,
@@ -339,7 +339,16 @@ export default function transformProps(
 
   // Calculate the percentage
   const percent = totalValue > 0 ? (convertInteger(numericValue) / totalValue) * 100 : 0;
-  const sliceColor = colorFn(name, sliceId) || '#000000';
+  let sliceColor = colorFn(name, sliceId) || '#000000';
+
+  if (columnColorFormatting && columnColorFormatting.length > 0) {
+    const result = columnColorFormatting?.find((item: any) => item.column === name);
+    sliceColor = result?.colorScheme;
+  }
+  else {
+    sliceColor = colorFn(name, sliceId) || '#000000';
+  }
+  
   return {
    
     name,

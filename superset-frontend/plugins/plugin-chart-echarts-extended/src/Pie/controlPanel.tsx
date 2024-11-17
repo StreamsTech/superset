@@ -266,16 +266,26 @@ const config: ControlPanelConfig = {
                 const chartStatus = chart?.chartStatus;
                 const { colnames, coltypes } =
                   chart?.queriesResponse?.[0] ?? {};
+                let groupBy = explore?.form_data?.groupby;
+                const ColumnValue = chart?.queriesResponse?.[0].data?.map((item: string) => {
+                  const value = groupBy?.map((key : string) => item[key]).join(", ");
+                  return {
+                      value: value,
+                      label: value
+                  };
+                });
+                console.log("End of all : ", ColumnValue);
+
                 const numericColumns =
-                  Array.isArray(colnames) && Array.isArray(coltypes)
-                    ? colnames
+                  Array.isArray(ColumnValue) && Array.isArray(coltypes)
+                    ? ColumnValue
                         // .filter(
                         //   (colname: string, index: number) =>
                         //     coltypes[index] === GenericDataType.STRING,
                         // )
                         .map(colname => ({
-                          value: colname,
-                          label: verboseMap[colname] ?? colname,
+                          value: colname.value,
+                          label: colname.label,
                         }))
                     : [];
                 return {

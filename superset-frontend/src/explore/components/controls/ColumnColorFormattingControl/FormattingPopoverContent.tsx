@@ -63,16 +63,29 @@ export const FormattingPopoverContent = ({
       layout="vertical"
     >
       <Row gutter={12}>
-        <Col span={12}>
-          <FormItem
-            name="column"
-            label={t('Column')}
-            rules={rulesRequired}
-            initialValue={columns[0]?.value}
-          >
+        {
+        // (vizType === 'pie-extend') ? 
+        //   <Col span={12}>
+        //     <FormItem
+        //       name="columnEntity"
+        //       label={t('Column Entity')}
+        //       rules={rulesRequired}
+        //       initialValue={''}
+        //     >
+        //       <Input aria-label={t('Column value')} placeholder={t('Enter column value')} />
+        //     </FormItem>
+        //   </Col> : 
+          <Col span={12}>
+            <FormItem
+              name="column"
+              label={t('Column')}
+              rules={rulesRequired}
+              initialValue={columns[0]?.value}
+            >
             <Select ariaLabel={t('Select column')} options={columns} />
-          </FormItem>
-        </Col>
+            </FormItem>
+          </Col>
+        }
         <Col span={12}>
           <FormItem
             name="colorScheme"
@@ -84,18 +97,6 @@ export const FormattingPopoverContent = ({
           </FormItem>
         </Col>
       </Row>
-      {(vizType === 'pie-extend') && <Row>
-        <Col span={12}>
-          <FormItem
-            name="columnEntity"
-            label={t('Column Entity')}
-            rules={rulesRequired}
-            initialValue={colorScheme[0].value}
-          >
-            <Input aria-label={t('Column value')} placeholder={t('Enter column value')} />
-          </FormItem>
-        </Col>
-      </Row>}
       <FormItem>
         <JustifyEnd>
           <Button htmlType="submit" buttonStyle="primary">
