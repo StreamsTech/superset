@@ -217,6 +217,14 @@ export default function transformProps(
   );
 
   let totalValue = 0;
+  
+  const colorMap: Record<string, string> | undefined = columnColorFormatting?.reduce(
+    (map: Record<string, string>, item: { column: string; colorScheme: string }) => {
+      map[item.column] = item.colorScheme;
+      return map;
+    },
+    {}
+  );
 
   const transformedData: PieSeriesOption[] = data.map(datum => {
     const name = extractGroupbyLabel({
@@ -234,17 +242,13 @@ export default function transformProps(
       totalValue += convertInteger(value);
     }
 
-    let portionColor = colorFn(name, sliceId);
-    if (columnColorFormatting && columnColorFormatting.length > 0) {
-      const result = columnColorFormatting?.find((item: any) => item.column === name);
-      portionColor = result?.colorScheme;
-    }
+    const sliceColor = colorMap?.[name] || colorFn(name, sliceId) || '#000000';
     
     return {
       value,
       name,
       itemStyle: {
-        color: portionColor,
+        color: sliceColor,
         opacity: isFiltered
           ? OpacityEnum.SemiTransparent
           : OpacityEnum.NonTransparent,
@@ -339,15 +343,7 @@ export default function transformProps(
 
   // Calculate the percentage
   const percent = totalValue > 0 ? (convertInteger(numericValue) / totalValue) * 100 : 0;
-  let sliceColor = colorFn(name, sliceId) || '#000000';
-
-  if (columnColorFormatting && columnColorFormatting.length > 0) {
-    const result = columnColorFormatting?.find((item: any) => item.column === name);
-    sliceColor = result?.colorScheme;
-  }
-  else {
-    sliceColor = colorFn(name, sliceId) || '#000000';
-  }
+  const sliceColor = colorMap?.[name] || colorFn(name, sliceId) || '#000000';
   
   return {
    
