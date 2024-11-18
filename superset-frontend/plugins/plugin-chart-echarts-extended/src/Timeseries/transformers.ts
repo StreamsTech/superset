@@ -245,7 +245,9 @@ export function transformSeries(
   
   if( seriesType === 'bar' && columnColorFormatting && columnColorFormatting.length > 0) {
     const result = columnColorFormatting?.find((item: any) => item.column === colorScaleKey);
-    itemStyle.color = result?.colorScheme;
+    if (result) {
+      itemStyle.color = result?.colorScheme;
+    }
   }
   let emphasis = {};
   let showSymbol = false;

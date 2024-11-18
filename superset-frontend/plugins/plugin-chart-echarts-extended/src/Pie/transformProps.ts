@@ -242,8 +242,12 @@ export default function transformProps(
       totalValue += convertInteger(value);
     }
 
-    const sliceColor = colorMap?.[name] || colorFn(name, sliceId) || '#000000';
-    
+
+    let sliceColor = colorFn(name, sliceId) || '#000000';
+    if (colorMap?.[name]) {
+      sliceColor = colorMap?.[name]
+    }
+
     return {
       value,
       name,
