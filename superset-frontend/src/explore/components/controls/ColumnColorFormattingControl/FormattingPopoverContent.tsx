@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { styled, SupersetTheme, t, useTheme } from '@superset-ui/core';
+import { styled, t } from '@superset-ui/core';
 import { Form, FormItem } from 'src/components/Form';
 import Select from 'src/components/Select/Select';
 import { Col, Row } from 'src/components';
@@ -32,15 +32,6 @@ const JustifyEnd = styled.div`
   justify-content: flex-end;
 `;
 
-const colorSchemeOptions = (theme: SupersetTheme) => [
-  { value: theme.colors.success.light1, label: t('success') },
-  { value: theme.colors.alert.light1, label: t('alert') },
-  { value: theme.colors.error.light1, label: t('error') },
-  { value: theme.colors.success.dark1, label: t('success dark') },
-  { value: theme.colors.alert.dark1, label: t('alert dark') },
-  { value: theme.colors.error.dark1, label: t('error dark') },
-];
-
 const rulesRequired = [{ required: true, message: t('Required') }];
 export const FormattingPopoverContent = ({
   config,
@@ -53,8 +44,7 @@ export const FormattingPopoverContent = ({
   columns: { label: string; value: string }[];
   vizType: string;
 }) => {
-  const theme = useTheme();
-  const colorScheme = colorSchemeOptions(theme);
+
   return (
     <Form
       onFinish={onChange}
@@ -64,17 +54,6 @@ export const FormattingPopoverContent = ({
     >
       <Row gutter={12}>
         {
-        // (vizType === 'pie-extend') ? 
-        //   <Col span={12}>
-        //     <FormItem
-        //       name="columnEntity"
-        //       label={t('Column Entity')}
-        //       rules={rulesRequired}
-        //       initialValue={''}
-        //     >
-        //       <Input aria-label={t('Column value')} placeholder={t('Enter column value')} />
-        //     </FormItem>
-        //   </Col> : 
           <Col span={12}>
             <FormItem
               name="column"
@@ -91,7 +70,7 @@ export const FormattingPopoverContent = ({
             name="colorScheme"
             label={t('Color scheme')}
             rules={rulesRequired}
-            initialValue={colorScheme[0].value}
+            initialValue= ""
           >
             <Input aria-label={t('Color scheme')} placeholder={t('Enter color scheme')} />
           </FormItem>

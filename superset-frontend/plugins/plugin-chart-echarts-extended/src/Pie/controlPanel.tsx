@@ -250,7 +250,7 @@ const config: ControlPanelConfig = {
               type: 'ColumnColorFormatingControl',
               vizType: 'pie-extend',
               renderTrigger: true,
-              label: t('Column Color formatting'),
+              label: t('Slice Color formatting'),
               description: t(
                 'Apply conditional color formatting to numeric columns',
               ),
@@ -268,7 +268,10 @@ const config: ControlPanelConfig = {
                   chart?.queriesResponse?.[0] ?? {};
                 let groupBy = explore?.form_data?.groupby;
                 const ColumnValue = chart?.queriesResponse?.[0].data?.map((item: string) => {
-                  const value = groupBy?.map((key : string) => item[key]).join(", ");
+                  const value = groupBy?.map((key : string) => {
+                    const columnValue = item[key];
+                    return columnValue === null || columnValue === undefined ? "<NULL>" : columnValue;
+                  }).join(", ");
                   return {
                       value: value,
                       label: value

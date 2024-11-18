@@ -345,7 +345,7 @@ const config: ControlPanelConfig = {
             config: {
               type: 'ColumnColorFormatingControl',
               renderTrigger: true,
-              label: t('Conditional formatting'),
+              label: t('Bar Color formatting'),
               description: t(
                 'Apply conditional color formatting to numeric columns',
               ),
