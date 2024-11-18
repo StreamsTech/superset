@@ -248,7 +248,6 @@ const config: ControlPanelConfig = {
             name: 'column_color_formatting',
             config: {
               type: 'ColumnColorFormatingControl',
-              vizType: 'pie-extend',
               renderTrigger: true,
               label: t('Slice Color formatting'),
               description: t(

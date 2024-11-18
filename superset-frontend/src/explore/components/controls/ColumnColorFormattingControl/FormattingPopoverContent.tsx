@@ -37,12 +37,10 @@ export const FormattingPopoverContent = ({
   config,
   onChange,
   columns = [],
-  vizType,
 }: {
   config?: ColumnColorFormatingConfig;
   onChange: (config: ColumnColorFormatingConfig) => void;
   columns: { label: string; value: string }[];
-  vizType: string;
 }) => {
 
   return (

@@ -60,7 +60,6 @@ export type ColumnColorFormatingControlProps = ControlComponentProps<
   verboseMap: Record<string, string>;
   label: string;
   description: string;
-  vizType: string;
 };
 
 export type ColumnColorFormattingPopoverProps = PopoverProps & {
@@ -69,7 +68,6 @@ export type ColumnColorFormattingPopoverProps = PopoverProps & {
   config?: ColumnColorFormatingConfig;
   title: string;
   children: ReactNode;
-  vizType: string;
 };
 
 

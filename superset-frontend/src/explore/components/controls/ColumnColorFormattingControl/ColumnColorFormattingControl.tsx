@@ -133,7 +133,6 @@ const ColumnColorFormatingControl = ({
               title={t('Edit formatter')}
               config={config}
               columns={columnOptions}
-              vizType={props.vizType}
               onChange={(newConfig: ColumnColorFormatingConfig) =>
                 onEdit(newConfig, index)
               }
@@ -152,7 +151,6 @@ const ColumnColorFormatingControl = ({
           title={t('Add new formatter')}
           columns={columnOptions}
           onChange={onSave}
-          vizType={props.vizType}
           destroyTooltipOnHide
         >
           <AddControlLabel>

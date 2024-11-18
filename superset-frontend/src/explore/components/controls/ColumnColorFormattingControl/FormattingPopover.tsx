@@ -46,7 +46,6 @@ export const FormattingPopover = ({
           onChange={handleSave}
           config={config}
           columns={columns}
-          vizType={props?.vizType}
         />
       }
       visible={visible}
