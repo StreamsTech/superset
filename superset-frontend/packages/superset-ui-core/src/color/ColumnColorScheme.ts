@@ -24,11 +24,11 @@ export interface ColumnColorSchemeConfig {
 
 export default class ColumnColorScheme {
   colorScheme: string;
+
   column: string;
-  constructor({
-    colorScheme = '',
-    column = '',
-  }: ColumnColorSchemeConfig) {
+
+  constructor({ colorScheme = '', column = '',}: 
+    ColumnColorSchemeConfig) {
     this.colorScheme = colorScheme;
     this.column = column;
   }

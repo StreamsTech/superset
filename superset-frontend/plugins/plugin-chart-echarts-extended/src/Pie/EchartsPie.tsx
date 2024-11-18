@@ -22,14 +22,7 @@ import Echart from '../components/Echart';
 import { allEventHandlers } from '../utils/eventHandlers';
 
 export default function EchartsPie(props: PieChartTransformedProps) {
-  const { height, width, echartOptions, selectedValues, refs, tableData, formData } = props;
-  // console.log("12234 : ",formData.columnColorFormatting);
-  // const hj : any = echartOptions.series;
-  // const sgdfg : any = hj[0];
-  // hj[0].data[0].itemStyle.color = formData.columnColorFormatting[0].colorScheme;
-  // console.log(hj);
-  // echartOptions.series = hj
-
+  const { height, width, echartOptions, selectedValues, refs, tableData } = props;
   const eventHandlers = allEventHandlers(props);
 
   return (

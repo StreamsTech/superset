@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from 'react';
-import { ensureIsInt, GenericDataType, t, validateNonEmpty } from '@superset-ui/core';
+import { ensureIsInt, t, validateNonEmpty } from '@superset-ui/core';
 import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
@@ -264,7 +264,7 @@ const config: ControlPanelConfig = {
                   ? (explore?.datasource as Dataset)?.verbose_map
                   : explore?.datasource?.columns ?? {};
                 const chartStatus = chart?.chartStatus;
-                const { colnames, coltypes } =
+                const {coltypes } =
                   chart?.queriesResponse?.[0] ?? {};
                 let groupBy = explore?.form_data?.groupby;
                 const ColumnValue = chart?.queriesResponse?.[0].data?.map((item: string) => {

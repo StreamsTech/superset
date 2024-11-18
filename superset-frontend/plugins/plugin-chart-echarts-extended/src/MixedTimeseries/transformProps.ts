@@ -193,6 +193,7 @@ export default function transformProps(
     percentageThreshold,
     metrics = [],
     metricsB = [],
+    columnColorFormatting,
   }: EchartsMixedTimeseriesFormData = { ...DEFAULT_FORM_DATA, ...formData };
 
   const refs: Refs = {};
@@ -368,6 +369,7 @@ export default function transformProps(
       entry,
       colorScale,
       colorScaleKey,
+      columnColorFormatting,
       {
         area,
         markerEnabled,
@@ -413,6 +415,7 @@ export default function transformProps(
       entry,
       colorScale,
       colorScaleKey,
+      columnColorFormatting,
       {
         area: areaB,
         markerEnabled: markerEnabledB,
