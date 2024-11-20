@@ -376,6 +376,9 @@ export class TableRenderer extends React.Component {
           : this.expandAttr(false, attrIdx, colKeys);
       subArrow = attrIdx + 1 < maxColVisible ? arrowExpanded : arrowCollapsed;
     }
+    if(attrName === 'Metric') {
+      attrName = '';
+    }
     const attrNameCell = (
       <th key="label" className="pvtAxisLabel">
         {displayHeaderCell(
