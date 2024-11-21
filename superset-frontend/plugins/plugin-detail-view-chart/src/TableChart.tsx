@@ -227,6 +227,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     setDataMask,
     ColumnNumber,
     grid,
+    keyTextAlignment,
+    valueTextAlignment,
     showCellBars = true,
     dashboardUrl = '',
     showUrls = false,
@@ -728,6 +730,9 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       <DataTable<D>
         ColumnNumber={ColumnNumber}
         grid ={grid}
+        keyTextAlignment={keyTextAlignment}
+        valueTextAlignment={valueTextAlignment}
+        columnsMeta={columnsMeta}
         columns={columns}
         config = {config}
         data={data}

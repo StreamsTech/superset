@@ -250,6 +250,8 @@ const transformProps = (
     allow_rearrange_columns: allowRearrangeColumns,
     ColumnNumber,
     grid,
+    key_text_alignment,
+    value_text_alignment,
   } = formData;
   const timeGrain = extractTimegrain(formData);
 
@@ -296,6 +298,8 @@ const transformProps = (
     rowCount,
     ColumnNumber,
     grid,
+    keyTextAlignment: key_text_alignment,
+    valueTextAlignment : value_text_alignment,
     pageSize: serverPagination
       ? serverPageLength
       : getPageSize(pageLength, data.length, columns.length),

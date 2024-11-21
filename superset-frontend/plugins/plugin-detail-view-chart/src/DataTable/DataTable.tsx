@@ -72,6 +72,9 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   config?: showURLType[] | any;
   ColumnNumber?:number | any;
   grid?:boolean;
+  keyTextAlignment?: string | any,
+  valueTextAlignment?: string | any,
+  columnsMeta?: any,
   wrapperRef?: MutableRefObject<HTMLDivElement>;
   onColumnOrderChange: () => void;
 }
@@ -88,6 +91,9 @@ const sortTypes = {
 export default typedMemo(function DataTable<D extends object>({
   ColumnNumber,
   grid,
+  keyTextAlignment,
+  valueTextAlignment,
+  columnsMeta,
   config,
   tableClassName,
   columns,
@@ -267,8 +273,9 @@ export default typedMemo(function DataTable<D extends object>({
       {Object.keys(data[0]).length > 0 ? (
         Object.entries(data[0]).map(([key, value], index) => (
           <div className = {columnSize} key={key} style={{paddingRight: '10px', paddingLeft: '10px'}}>
-            <div className="col-md-6" style={{ padding: '10px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ...(isGridView && keyStyle)}}> <strong> {key} </strong>  </div>
-            <div className="col-md-6" style={{ padding: '10px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minHeight: '41px', ...(isGridView && valueStyle) }}> {!isGridView && ' :'}  {config[index].showURL ? (dataRender(data[0], value, index)) : (<>{value}</>)}</div>
+            <div className="col-md-5" style={{ padding: '10px', display: 'flex', alignItems: 'center' , justifyContent: keyTextAlignment, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ...(isGridView && keyStyle)}}> <strong> {columnsMeta[index].label} </strong>  </div>
+            {!isGridView && <div className="col-md-1" style={{ padding: '10px', display: 'flex', alignItems: 'center' , justifyContent: 'center', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}> {':'}  </div>}
+            <div className="col-md-6" style={{ padding: '10px', display: 'flex',alignItems: 'center' , justifyContent: valueTextAlignment, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minHeight: '41px', ...(isGridView && valueStyle) }}> {config[index].showURL ? (dataRender(data[0], value, index)) : (<>{value}</>)}</div>
           </div>
         ))
       ) : (

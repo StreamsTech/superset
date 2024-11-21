@@ -353,11 +353,64 @@ const config: ControlPanelConfig = {
         //     },
         //   },
         // ],
+        [
+          {
+            name: 'key_text_alignment',
+            config: {
+              type: 'SelectControl',
+              label: t('key text alignmen'),
+              renderTrigger: true,
+              clearable: false,
+              default: 'flex-start',
+              options: [
+                {
+                  label: t('Left'),
+                  value: 'flex-start',
+                },
+                {
+                  label: t('Center'),
+                  value: 'center',
+                },
+                {
+                  label: t('Right'),
+                  value: 'flex-end',
+                },
+              ],
+            },
+          }
+        ],
+        [
+          {
+            name: 'value_text_alignment',
+            config: {
+              type: 'SelectControl',
+              label: t('value text alignmen'),
+              renderTrigger: true,
+              clearable: false,
+              default: 'flex-start',
+              options: [
+                {
+                  label: t('Left'),
+                  value: 'flex-start',
+                },
+                {
+                  label: t('Center'),
+                  value: 'center',
+                },
+                {
+                  label: t('Right'),
+                  value: 'flex-end',
+                },
+              ],
+            },
+          }
+        ],
         // [
         //   {
         //     name: 'row_limit',
         //     override: {
-        //       default: 1000,
+        //       default: 1,
+        //       choices: [1,5,10,100],
         //       visibility: ({ controls }: ControlPanelsContainerProps) =>
         //         !controls?.server_pagination?.value,
         //     },
@@ -368,7 +421,7 @@ const config: ControlPanelConfig = {
         //       type: 'SelectControl',
         //       freeForm: true,
         //       label: t('Server Page Length'),
-        //       default: 10,
+        //       default: 1,
         //       choices: PAGE_SIZE_OPTIONS,
         //       description: t('Rows per page, 0 means no pagination'),
         //       visibility: ({ controls }: ControlPanelsContainerProps) =>
@@ -376,21 +429,21 @@ const config: ControlPanelConfig = {
         //     },
         //   },
         // ],
-      //   [
-      //     {
-      //       name: 'order_desc',
-      //       config: {
-      //         type: 'CheckboxControl',
-      //         label: t('Sort descending'),
-      //         default: true,
-      //         description: t(
-      //           'If enabled, this control sorts the results/values descending, otherwise it sorts the results ascending.',
-      //         ),
-      //         visibility: isAggMode,
-      //         resetOnHide: false,
-      //       },
-      //     },
-      //   ],
+        // [
+        //   {
+        //     name: 'order_desc',
+        //     config: {
+        //       type: 'CheckboxControl',
+        //       label: t('Sort descending'),
+        //       default: true,
+        //       description: t(
+        //         'If enabled, this control sorts the results/values descending, otherwise it sorts the results ascending.',
+        //       ),
+        //       visibility: isAggMode,
+        //       resetOnHide: false,
+        //     },
+        //   },
+        // ],
       //   [
       //     {
       //       name: 'show_totals',
