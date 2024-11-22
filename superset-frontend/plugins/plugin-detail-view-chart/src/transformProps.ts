@@ -67,7 +67,11 @@ const processDataRecords = memoizeOne(function processDataRecords(
     column => column.dataType === GenericDataType.TEMPORAL,
   );
 
-  if (timeColumns.length > 0) {
+  const numberColumns = columns.filter (
+    column => column.dataType === GenericDataType.NUMERIC,
+  );
+
+  if (timeColumns.length > 0 || numberColumns.length > 0) {
     return data.map(x => {
       const datum = { ...x };
       timeColumns.forEach(({ key, formatter }) => {
@@ -84,6 +88,17 @@ const processDataRecords = memoizeOne(function processDataRecords(
           datum[key] = datum[key].toString();
         }
 
+      });
+      numberColumns.forEach(({ key, formatter, config }) => {
+        const numberFormat = config?.d3NumberFormat || undefined;
+        const numberFormatter = formatter || getNumberFormatter(numberFormat);
+  
+        if (datum[key] == null || datum[key] === undefined) {
+          datum[key] = "No Data Available";
+        } else {
+          // @ts-ignore
+          datum[key] = numberFormatter( Number(datum[key]));
+        }
       });
       return datum;
     });

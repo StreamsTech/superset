@@ -150,12 +150,12 @@ const config: ControlPanelConfig = {
       label: t('Query'),
       expanded: true,
       controlSetRows: [
-        // [
-        //   {
-        //     name: 'query_mode',
-        //     config: queryMode,
-        //   },
-        // ],
+        [
+          {
+            name: 'query_mode',
+            config: queryMode,
+          },
+        ],
         [
           {
             name: 'groupby',
@@ -405,62 +405,46 @@ const config: ControlPanelConfig = {
             },
           }
         ],
+        [
+          {
+            name: 'row_limit',
+            override: {
+              default: 1,
+              choices: [1, 10, 50, 100, 250, 500, 5000, 10000],
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                !controls?.server_pagination?.value,
+            },
+          },
+          {
+            name: 'server_page_length',
+            config: {
+              type: 'SelectControl',
+              freeForm: true,
+              label: t('Server Page Length'),
+              default: 10,
+              choices: PAGE_SIZE_OPTIONS,
+              description: t('Rows per page, 0 means no pagination'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.server_pagination?.value),
+            },
+          },
+        ],
         // [
         //   {
-        //     name: 'row_limit',
-        //     override: {
-        //       default: 1,
-        //       choices: [1,5,10,100],
-        //       visibility: ({ controls }: ControlPanelsContainerProps) =>
-        //         !controls?.server_pagination?.value,
-        //     },
-        //   },
-        //   {
-        //     name: 'server_page_length',
-        //     config: {
-        //       type: 'SelectControl',
-        //       freeForm: true,
-        //       label: t('Server Page Length'),
-        //       default: 1,
-        //       choices: PAGE_SIZE_OPTIONS,
-        //       description: t('Rows per page, 0 means no pagination'),
-        //       visibility: ({ controls }: ControlPanelsContainerProps) =>
-        //         Boolean(controls?.server_pagination?.value),
-        //     },
-        //   },
-        // ],
-        // [
-        //   {
-        //     name: 'order_desc',
+        //     name: 'show_totals',
         //     config: {
         //       type: 'CheckboxControl',
-        //       label: t('Sort descending'),
-        //       default: true,
+        //       label: t('Show summary'),
+        //       default: false,
         //       description: t(
-        //         'If enabled, this control sorts the results/values descending, otherwise it sorts the results ascending.',
+        //         'Show total aggregations of selected metrics. Note that row limit does not apply to the result.',
         //       ),
         //       visibility: isAggMode,
         //       resetOnHide: false,
         //     },
         //   },
         // ],
-      //   [
-      //     {
-      //       name: 'show_totals',
-      //       config: {
-      //         type: 'CheckboxControl',
-      //         label: t('Show summary'),
-      //         default: false,
-      //         description: t(
-      //           'Show total aggregations of selected metrics. Note that row limit does not apply to the result.',
-      //         ),
-      //         visibility: isAggMode,
-      //         resetOnHide: false,
-      //       },
-      //     },
-      //   ],
       ],
-      
     },
     {
       label: t('Options'),

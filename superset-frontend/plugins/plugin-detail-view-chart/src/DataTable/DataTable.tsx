@@ -275,7 +275,7 @@ export default typedMemo(function DataTable<D extends object>({
           <div className = {columnSize} key={key} style={{paddingRight: '10px', paddingLeft: '10px'}}>
             <div className="col-md-5" style={{ padding: '10px', display: 'flex', alignItems: 'center' , justifyContent: keyTextAlignment, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ...(isGridView && keyStyle)}}> <strong> {columnsMeta[index].label} </strong>  </div>
             {!isGridView && <div className="col-md-1" style={{ padding: '10px', display: 'flex', alignItems: 'center' , justifyContent: 'center', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}> {':'}  </div>}
-            <div className="col-md-6" style={{ padding: '10px', display: 'flex',alignItems: 'center' , justifyContent: valueTextAlignment, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minHeight: '41px', ...(isGridView && valueStyle) }}> {config[index].showURL ? (dataRender(data[0], value, index)) : (<>{value}</>)}</div>
+            <div className="col-md-6" style={{ padding: '10px', display: 'flex',alignItems: 'center' , justifyContent: valueTextAlignment, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minHeight: '41px', ...(isGridView && valueStyle) }}> {config[index].showURL ? (dataRender(data[0], value, index)) : (<>{String(value)}</>)}</div>
           </div>
         ))
       ) : (
@@ -300,7 +300,7 @@ export default typedMemo(function DataTable<D extends object>({
         onClick={() => messagePass(config[idx].url, queryParams, value)}
         rel="noopener noreferrer"
       >
-        {value}
+        {String(value)}
       </a>
     )
   } 
