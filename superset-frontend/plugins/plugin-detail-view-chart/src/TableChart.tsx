@@ -683,6 +683,34 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     [columnsMeta, getColumnDashboardConfigs]
   )
 
+  const customizeColumnSettingConfigs = useCallback(
+    (column: DataColumnMeta, i: number): customizeColumnSettingsType => {
+      const {
+        config = {},
+      } = column;
+      const sharedStyle: CSSProperties = getSharedStyle(column);
+      const alignPositiveNegative =  config.alignPositiveNegative === undefined
+                                      ? defaultAlignPN
+                                      : config.alignPositiveNegative;
+      const colorPositiveNegative = config.colorPositiveNegative === undefined
+                                      ? defaultColorPN
+                                      : config.colorPositiveNegative;
+      const { truncateLongCells } = config;
+      return {
+        alignPositiveNegative,
+        colorPositiveNegative,
+        truncateLongCells,
+        sharedStyle
+      };
+    },
+    [],
+  );
+
+  const customizeColumnSettings = useMemo(
+    () => columnsMeta.map(customizeColumnSettingConfigs),
+    [columnsMeta, customizeColumnSettingConfigs]
+  ) 
+
   const handleServerPaginationChange = useCallback(
     (pageNumber: number, pageSize: number) => {
       updateExternalFormData(setDataMask, pageNumber, pageSize);
@@ -753,6 +781,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         selectPageSize={pageSize !== null && SelectPageSize}
         // not in use in Superset, but needed for unit tests
         sticky={sticky}
+        customizeColumnSettings={customizeColumnSettings}
       />
     </Styles>
   );
@@ -763,4 +792,11 @@ export type showURLType = {
   showURL?: boolean,
   url?: string,
   urlQueryParams?: string,
+}
+
+export type customizeColumnSettingsType = {
+  alignPositiveNegative?: boolean,
+  colorPositiveNegative?: boolean,
+  truncateLongCells?: boolean,
+  sharedStyle: CSSProperties
 }

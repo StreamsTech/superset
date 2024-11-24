@@ -51,7 +51,7 @@ import SimplePagination from './components/Pagination';
 import useSticky from './hooks/useSticky';
 import { PAGE_SIZE_OPTIONS } from '../consts';
 import { sortAlphanumericCaseInsensitive } from './utils/sortAlphanumericCaseInsensitive';
-import { showURLType } from '../TableChart';
+import { customizeColumnSettingsType, showURLType } from '../TableChart';
 
 export interface DataTableProps<D extends object> extends TableOptions<D> {
   tableClassName?: string;
@@ -72,8 +72,9 @@ export interface DataTableProps<D extends object> extends TableOptions<D> {
   config?: showURLType[] | any;
   ColumnNumber?:number | any;
   grid?:boolean;
-  keyTextAlignment?: string | any,
-  valueTextAlignment?: string | any,
+  keyTextAlignment?: string | any;
+  valueTextAlignment?: string | any;
+  customizeColumnSettings?: customizeColumnSettingsType[] | any;
   columnsMeta?: any,
   wrapperRef?: MutableRefObject<HTMLDivElement>;
   onColumnOrderChange: () => void;
@@ -115,6 +116,7 @@ export default typedMemo(function DataTable<D extends object>({
   serverPagination,
   wrapperRef: userWrapperRef,
   onColumnOrderChange,
+  customizeColumnSettings,
   ...moreUseTableOptions
 }: DataTableProps<D>): JSX.Element {
   const tableHooks: PluginHook<D>[] = [
@@ -273,7 +275,7 @@ export default typedMemo(function DataTable<D extends object>({
       {Object.keys(data[0]).length > 0 ? (
         Object.entries(data[0]).map(([key, value], index) => (
           <div className = {columnSize} key={key} style={{paddingRight: '10px', paddingLeft: '10px'}}>
-            <div className="col-md-5" style={{ padding: '10px', display: 'flex', alignItems: 'center' , justifyContent: keyTextAlignment, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ...(isGridView && keyStyle)}}> <strong> {columnsMeta[index].label} </strong>  </div>
+            <div className="col-md-5" style={{ padding: '10px', textAlign: customizeColumnSettings[index].sharedStyle.textAlign ,overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ...(isGridView && keyStyle)}}> <strong> {columnsMeta[index].label} </strong>  </div>
             {!isGridView && <div className="col-md-1" style={{ padding: '10px', display: 'flex', alignItems: 'center' , justifyContent: 'center', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}> {':'}  </div>}
             <div className="col-md-6" style={{ padding: '10px', display: 'flex',alignItems: 'center' , justifyContent: valueTextAlignment, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minHeight: '41px', ...(isGridView && valueStyle) }}> {config[index].showURL ? (dataRender(data[0], value, index)) : (<>{String(value)}</>)}</div>
           </div>
