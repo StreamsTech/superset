@@ -293,9 +293,10 @@ export default typedMemo(function DataTable<D extends object>({
       let params = config[idx].urlQueryParams?.split(',').map((param: string) => param.trim());
       if (params.length > 0) {
         params.forEach((key: string) => {
-          queryParams[key] = data.row.original[key];
+          if (data[key])
+            queryParams[key] = data[key];
         });
-      }
+      } 
     }
     return (
       <a
