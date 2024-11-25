@@ -26,6 +26,8 @@ import os
 from celery.schedules import crontab
 from flask_caching.backends.filesystemcache import FileSystemCache
 from typing import Any
+from custom_security_manager import CustomSecurityManager
+from flask_appbuilder.security.sqla.models import User
 
 logger = logging.getLogger()
 
@@ -90,6 +92,7 @@ class CeleryConfig:
         },
     }
 
+CUSTOM_SECURITY_MANAGER = CustomSecurityManager
 
 CELERY_CONFIG = CeleryConfig
 
@@ -114,6 +117,16 @@ try:
     )
 except ImportError:
     logger.info("Using default Docker config...")
+
+
+
+# Custom welcome message or HTML to add above the login form
+APP_EXTRA_HTML = """
+<div style="text-align: center; margin-bottom: 20px;">
+    <h2>Welcome to My Superset</h2>
+    <p>Please log in to access analytics</p>
+</div>
+"""
 
 
 ######
@@ -148,6 +161,9 @@ FEATURE_FLAGS = {
 #      'origins': ['*']
 # }
 
+# Path to custom templates
+FAB_TEMPLATE_FOLDER = "/app/superset/templates"
+
 FAB_ADD_SECURITY_API = True
 ENABLE_CORS = True
 SECRET_KEY='4IETlIrDFFVmSr2OiKqT3WTsbpWALJBtSMuE2JfKEacp6p9WpBRZ4e49'
@@ -159,3 +175,4 @@ HTML_SANITIZATION_SCHEMA_EXTENSIONS: dict[str, Any] = {
     },
     "tagNames": ["style"],
 }
+

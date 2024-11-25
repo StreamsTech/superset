@@ -1,0 +1,13 @@
+{% extends "appbuilder/general/security/login_oauth.html" %}
+
+{% block head_css %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/assets/css/custom_login.css">
+{% endblock %}
+
+{% block content %}
+<div class="custom-login-container">
+    <h1>Welcome to My Superset</h1>
+    {{ super() }}
+</div>
+{% endblock %}
