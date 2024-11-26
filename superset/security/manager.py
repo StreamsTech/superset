@@ -2003,6 +2003,10 @@ class SupersetSecurityManager(  # pylint: disable=too-many-public-methods
         if user.is_anonymous:
             public_role = current_app.config.get("AUTH_ROLE_PUBLIC")
             return [self.get_public_role()] if public_role else []
+        
+        logger.info("Adeeb now")
+        data = self.get_session.query(User).filter(User.created_by_fk == user.id)
+        logger.info(data)
         return user.roles
 
     def get_guest_rls_filters(

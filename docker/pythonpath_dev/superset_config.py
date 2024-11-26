@@ -28,6 +28,7 @@ from flask_caching.backends.filesystemcache import FileSystemCache
 from typing import Any
 from custom_security_manager import CustomSecurityManager
 from flask_appbuilder.security.sqla.models import User
+from flask_appbuilder.security.manager import AUTH_OAUTH
 
 logger = logging.getLogger()
 
@@ -74,6 +75,29 @@ CACHE_CONFIG = {
 }
 DATA_CACHE_CONFIG = CACHE_CONFIG
 
+# Set up OAuth
+AUTH_TYPE = AUTH_OAUTH
+OAUTH_PROVIDERS = [
+    {
+        'name': 'google',
+        'token_key': 'access_token',
+        'icon': 'fa-google',
+        'remote_app': {
+            'client_id': '<your-client-id>',
+            'client_secret': '<your-client-secret>',
+            'api_base_url': 'https://www.googleapis.com/oauth2/v2/',
+            'client_kwargs': {
+                'scope': 'email profile',
+            },
+            'access_token_url': 'https://oauth2.googleapis.com/token',
+            'authorize_url': 'https://accounts.google.com/o/oauth2/auth',
+        },
+    }
+]
+
+# Other configurations
+AUTH_USER_REGISTRATION = True  # Automatically register users
+AUTH_USER_REGISTRATION_ROLE = 'Public'  # Default role for new users
 
 class CeleryConfig:
     broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
@@ -93,8 +117,8 @@ class CeleryConfig:
     }
 
 CUSTOM_SECURITY_MANAGER = CustomSecurityManager
-
 CELERY_CONFIG = CeleryConfig
+DEBUG = True
 
 FEATURE_FLAGS = {"ALERT_REPORTS": True}
 ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
