@@ -75,29 +75,37 @@ CACHE_CONFIG = {
 DATA_CACHE_CONFIG = CACHE_CONFIG
 
 CUSTOM_SECURITY_MANAGER = CustomSsoSecurityManager
+
+# Enable Database Authentication (Basic Auth)
+AUTH_DB_ENABLED = True
+
 # Set the authentication type to OAuth
 AUTH_TYPE = AUTH_OAUTH
 
 OAUTH_PROVIDERS = [
-    {   'name':'binsight-idp',
+    {   
+        'name':'binsight',
         'token_key':'access_token', # Name of the token in the response of access_token_url
         'remote_app': {
-            'client_id':'mne-web-client-rc',  # Client Id (Identify Superset application)
-            #'client_secret':'01JAAXP1V9Z8EBQD3FVF3MDVZJ', # Secret for this Client Id (Identify Superset application)
-            'client_kwargs':{
+            'client_id': 'mne-web-client-rc',  # Client Id (Identify Superset application)
+            #'client_secret':'01JAAXP1V8N5N84S4GY5FVJRX4', # Secret for this Client Id (Identify Superset application)
+            'client_kwargs': {
                 'scope': 'openid profile email offline_access idp core-api superset-api superset-service', # Scope for the Authorization
                 'code_challenge_method': 'S256'
             },
-            'access_token_method':'GET',    # HTTP Method to call access_token_url
-            'access_token_params':{        # Additional parameters for calls to access_token_url
-                'client_id':'mne-web-client-rc'
+            'access_token_method': 'POST',    # HTTP Method to call access_token_url
+            'access_token_params': {        # Additional parameters for calls to access_token_url
+                'client_id': 'mne-web-client-rc'
             },
             # 'access_token_headers':{    # Additional headers for calls to access_token_url
             #     'Authorization': 'Basic Base64EncodedClientIdAndSecret'
             # },
-            'api_base_url':'https://preview.binsight-idp.streamstech.com',
-            'access_token_url':'https://preview.binsight-idp.streamstech.com/connect/token',
-            'authorize_url':'https://preview.binsight-idp.streamstech.com/connect/authorize'
+            'api_base_url': 'https://preview.binsight-idp.streamstech.com',
+            'access_token_url': 'https://preview.binsight-idp.streamstech.com/connect/token',
+            'authorize_url': 'https://preview.binsight-idp.streamstech.com/connect/authorize',
+            'server_metadata_url': 'https://preview.binsight-idp.streamstech.com/.well-known/openid-configuration',
+            # 'request_token_url': 'https://preview.binsight-idp.streamstech.com/connect/token',
+            'jwks_url': 'https://preview.binsight-idp.streamstech.com/.well-known/jwks'
         }
     }
 ]
@@ -107,6 +115,8 @@ AUTH_USER_REGISTRATION = True
 
 # The default user self registration role
 AUTH_USER_REGISTRATION_ROLE = "Public"
+
+AUTH_ROLE_PUBLIC = "Gamma"
 class CeleryConfig:
     broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
     imports = ("superset.sql_lab",)
