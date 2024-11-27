@@ -82,21 +82,22 @@ OAUTH_PROVIDERS = [
     {   'name':'binsight-idp',
         'token_key':'access_token', # Name of the token in the response of access_token_url
         'remote_app': {
-            'client_id':'superset-service-rc',  # Client Id (Identify Superset application)
-            'client_secret':'01JAAXP1V9Z8EBQD3FVF3MDVZJ', # Secret for this Client Id (Identify Superset application)
+            'client_id':'mne-web-client-rc',  # Client Id (Identify Superset application)
+            #'client_secret':'01JAAXP1V9Z8EBQD3FVF3MDVZJ', # Secret for this Client Id (Identify Superset application)
             'client_kwargs':{
-                'scope': 'openid profile offline_access email profile superset-api' # Scope for the Authorization
+                'scope': 'openid profile email offline_access idp core-api superset-api superset-service', # Scope for the Authorization
+                'code_challenge_method': 'S256'
             },
-            'access_token_method':'POST',    # HTTP Method to call access_token_url
+            'access_token_method':'GET',    # HTTP Method to call access_token_url
             'access_token_params':{        # Additional parameters for calls to access_token_url
-                'client_id':'superset-service-rc'
+                'client_id':'mne-web-client-rc'
             },
             # 'access_token_headers':{    # Additional headers for calls to access_token_url
             #     'Authorization': 'Basic Base64EncodedClientIdAndSecret'
             # },
             'api_base_url':'https://preview.binsight-idp.streamstech.com',
             'access_token_url':'https://preview.binsight-idp.streamstech.com/connect/token',
-            'authorize_url':'https://preview.binsight-idp.streamstech.com/connect/authoize'
+            'authorize_url':'https://preview.binsight-idp.streamstech.com/connect/authorize'
         }
     }
 ]
