@@ -24,8 +24,10 @@ import logging
 import os
 
 from celery.schedules import crontab
+from security_manager import OIDCSecurityManager
 from flask_caching.backends.filesystemcache import FileSystemCache
 from typing import Any
+from flask_appbuilder.security.manager import AUTH_OID
 
 logger = logging.getLogger()
 
@@ -72,6 +74,22 @@ CACHE_CONFIG = {
 }
 DATA_CACHE_CONFIG = CACHE_CONFIG
 
+'''
+---------------------------KEYCLOACK ----------------------------
+'''
+curr  =  os.path.abspath(os.getcwd())
+AUTH_TYPE = AUTH_OID
+OIDC_CLIENT_SECRETS = curr + '/docker/pythonpath_dev/client_secret.json'
+OIDC_ID_TOKEN_COOKIE_SECURE = False
+# OIDC_REQUIRE_VERIFIED_EMAIL = False
+OIDC_SCOPES = ['openid', 'profile', 'email', 'offline_access', 'idp', 'core-api', 'superset-api', 'superset-service']
+CUSTOM_SECURITY_MANAGER = OIDCSecurityManager
+AUTH_USER_REGISTRATION = True
+AUTH_USER_REGISTRATION_ROLE = 'Gamma'
+# OIDC_VALID_ISSUERS = ['https://preview.binsight-idp.streamstech.com']
+'''
+--------------------------------------------------------------
+'''
 
 class CeleryConfig:
     broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
