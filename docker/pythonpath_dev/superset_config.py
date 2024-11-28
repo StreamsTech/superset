@@ -81,34 +81,58 @@ AUTH_DB_ENABLED = True
 
 # Set the authentication type to OAuth
 AUTH_TYPE = AUTH_OAUTH
-
+#'client_secret':'01JAAXP1V8N5N84S4GY5FVJRX4', # Secret for this Client Id (Identify Superset application)
 OAUTH_PROVIDERS = [
     {   
         'name':'binsight',
         'token_key':'access_token', # Name of the token in the response of access_token_url
         'remote_app': {
-            'client_id': 'mne-web-client-rc',  # Client Id (Identify Superset application)
-            #'client_secret':'01JAAXP1V8N5N84S4GY5FVJRX4', # Secret for this Client Id (Identify Superset application)
+            'client_id': 'mne-superset-api-client-local',  # Client Id (Identify Superset application)
+            # 'client_secret': '01J8J22ZG2HEXJ4D5YY20FBMCQ',
             'client_kwargs': {
-                'scope': 'openid profile email offline_access idp core-api superset-api superset-service', # Scope for the Authorization
+                'scope': 'openid profile email offline_access idp superset-api', # Scope for the Authorization
                 'code_challenge_method': 'S256'
             },
             'access_token_method': 'POST',    # HTTP Method to call access_token_url
             'access_token_params': {        # Additional parameters for calls to access_token_url
-                'client_id': 'mne-web-client-rc'
+                'client_id': 'mne-superset-api-client-local',
+                # 'client_secret': '01J8J22ZG2HEXJ4D5YY20FBMCQ'
             },
             # 'access_token_headers':{    # Additional headers for calls to access_token_url
             #     'Authorization': 'Basic Base64EncodedClientIdAndSecret'
             # },
-            'api_base_url': 'https://preview.binsight-idp.streamstech.com',
-            'access_token_url': 'https://preview.binsight-idp.streamstech.com/connect/token',
-            'authorize_url': 'https://preview.binsight-idp.streamstech.com/connect/authorize',
-            'server_metadata_url': 'https://preview.binsight-idp.streamstech.com/.well-known/openid-configuration',
+            'api_base_url': 'https://localhost:7029/',
+            'access_token_url': 'https://localhost:7029/connect/token',
+            'authorize_url': 'https://localhost:7029/connect/authorize',
+            'server_metadata_url': 'https://localhost:7029/.well-known/openid-configuration',
             # 'request_token_url': 'https://preview.binsight-idp.streamstech.com/connect/token',
-            'jwks_url': 'https://preview.binsight-idp.streamstech.com/.well-known/jwks'
+            'jwks_url': 'https://localhost:7029/.well-known/jwks'
         }
     }
 ]
+
+# OAUTH_PROVIDERS = [
+#     {   
+#         'name': 'binsight',
+#         'token_key': 'access_token',  # Name of the token in the response of access_token_url
+#         'remote_app': {
+#             'client_id': 'mne-web-client-rc',  # Client ID registered with the IdP
+#             'client_kwargs': {
+#                 'scope': 'openid profile email offline_access idp core-api superset-api superset-service',  # Scopes to request
+#                 'code_challenge_method': 'S256'  # Recommended PKCE method
+#             },
+#             'access_token_method': 'POST',  # HTTP Method to call access_token_url
+#             'access_token_params': {        # Additional parameters for calls to access_token_url
+#                 'client_id': 'mne-web-client-rc'  # Ensure the client_id matches
+#             },
+#             'api_base_url': 'https://preview.binsight-idp.streamstech.com',  # Base URL for API calls
+#             'access_token_url': 'https://preview.binsight-idp.streamstech.com/connect/token',  # URL to exchange authorization code for tokens
+#             'authorize_url': 'https://preview.binsight-idp.streamstech.com/connect/authorize',  # URL for user authorization
+#             'server_metadata_url': 'https://preview.binsight-idp.streamstech.com/.well-known/openid-configuration',  # Metadata discovery endpoint
+#             'jwks_url': 'https://preview.binsight-idp.streamstech.com/.well-known/jwks'  # URL to fetch JWKS for token validation
+#         }
+#     }
+# ]
 
 # Will allow user self registration, allowing to create Flask users from Authorized User
 AUTH_USER_REGISTRATION = True
