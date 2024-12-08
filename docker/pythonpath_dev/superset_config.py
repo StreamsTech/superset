@@ -73,28 +73,72 @@ CACHE_CONFIG = {
 DATA_CACHE_CONFIG = CACHE_CONFIG
 
 
+# Starting configuration
 class CeleryConfig:
-    broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
-    imports = ("superset.sql_lab",)
-    result_backend = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_RESULTS_DB}"
-    worker_prefetch_multiplier = 1
-    task_acks_late = False
-    beat_schedule = {
-        "reports.scheduler": {
-            "task": "reports.scheduler",
-            "schedule": crontab(minute="*", hour="*"),
+    broker_url = 'redis://%s:%s/0' % (REDIS_HOST, REDIS_PORT)
+    imports = ('superset.sql_lab', "superset.tasks", "superset.tasks.thumbnails", )
+    result_backend = 'redis://%s:%s/0' % (REDIS_HOST, REDIS_PORT)
+    worker_prefetch_multiplier = 10
+    task_acks_late = True
+    task_annotations = {
+        'sql_lab.get_sql_results': {
+            'rate_limit': '100/s',
         },
-        "reports.prune_log": {
-            "task": "reports.prune_log",
-            "schedule": crontab(minute=10, hour=0),
+        'email_reports.send': {
+            'rate_limit': '1/s',
+            'time_limit': 600,
+            'soft_time_limit': 600,
+            'ignore_result': True,
+        },
+    }
+    beat_schedule = {
+        'reports.scheduler': {
+            'task': 'reports.scheduler',
+            'schedule': crontab(minute='*', hour='*'),
+        },
+        'reports.prune_log': {
+            'task': 'reports.prune_log',
+            'schedule': crontab(minute=0, hour=0),
         },
     }
 
-
 CELERY_CONFIG = CeleryConfig
 
-FEATURE_FLAGS = {"ALERT_REPORTS": True}
-ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
+SCREENSHOT_LOCATE_WAIT = 100
+SCREENSHOT_LOAD_WAIT = 600
+
+# Slack configuration
+SLACK_API_TOKEN = "xoxb-"
+
+# Email configuration
+SMTP_HOST = "XXXXXXXXX" # change to your host
+SMTP_PORT = 587 # your port, e.g. 587
+SMTP_STARTTLS = True
+SMTP_SSL_SERVER_AUTH = True # If your using an SMTP server with a valid certificate
+SMTP_SSL = False
+SMTP_USER = "support@streamstech.com" # use the empty string "" if using an unauthenticated SMTP server
+SMTP_PASSWORD = "XXXXXXXX" # use the empty string "" if using an unauthenticated SMTP server
+SMTP_MAIL_FROM = "XXXXXXXX"
+EMAIL_REPORTS_SUBJECT_PREFIX = "[Superset] " # optional - overwrites default value in config.py of "[Report] "
+
+
+# WebDriver configuration
+# If you use Firefox, you can stick with default values
+# If you use Chrome, then add the following WEBDRIVER_TYPE and WEBDRIVER_OPTION_ARGS
+WEBDRIVER_TYPE = "chrome"
+WEBDRIVER_OPTION_ARGS = [
+    "--force-device-scale-factor=2.0",
+    "--high-dpi-support=2.0",
+    "--headless",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-extensions",
+]
+# End of configuration
+#  Before WEBDRIVER_BASEURL
+
 WEBDRIVER_BASEURL = "http://superset:8088/"
 # The base URL for the email report hyperlinks.
 WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
@@ -139,7 +183,8 @@ FEATURE_FLAGS = {
     "DRILL_TO_DETAIL":True,
     "DRILL_BY":True,
     "DASHBOARD_CROSS_FILTERS": True,
-    "ENABLE_JAVASCRIPT_CONTROLS": True
+    "ENABLE_JAVASCRIPT_CONTROLS": True,
+    "ALERT_REPORTS": True
 }
 # CORS_OPTIONS = {
 #      'supports_credentials': True, 
