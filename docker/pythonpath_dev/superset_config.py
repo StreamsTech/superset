@@ -114,29 +114,6 @@ CELERY_CONFIG = CeleryConfig
 
 SQLLAB_CTAS_NO_LIMIT = True
 
-# -------------------------------------------------------------------
-#For Avoiding Overflow of sqlAlchemy_pool
-# SQLALCHEMY_POOL_SIZE = 100
-
-# SQLALCHEMY_MAX_OVERFLOW = 80
-
-# SQLALCHEMY_POOL_TIMEOUT = 180
-
-#------------------------------------------------------------------------
-EMAIL_NOTIFICATIONS = True
-
-# Email configuration
-ENABLE_SCHEDULED_EMAIL_REPORTS = True
-SMTP_HOST = "smtp.office365.com" # change to your host
-SMTP_PORT = 587 # your port, e.g. 587
-SMTP_STARTTLS = True
-SMTP_SSL_SERVER_AUTH = True # If your using an SMTP server with a valid certificate
-SMTP_SSL = False
-SMTP_USER = "support@streamstech.com" # use the empty string "" if using an unauthenticated SMTP server
-SMTP_PASSWORD = "0ff1c3@J@ntrik" # use the empty string "" if using an unauthenticated SMTP server
-SMTP_MAIL_FROM = "support@streamstech.com" # use the empty string "" if using an unauthenticated SMTP server
-EMAIL_REPORTS_SUBJECT_PREFIX = "[Superset] " # optional - overwrites default value in config.py of "[Report] "
-
 #
 # Optionally import superset_config_docker.py (which will have been included on
 # the PYTHONPATH) in order to allow for local settings to be overridden
@@ -180,11 +157,6 @@ FEATURE_FLAGS = {
     "ALERT_REPORTS": True,
 }
 
-ALERT_REPORTS_NOTIFICATION_DRY_RUN = False
-SCREENSHOT_LOCATE_WAIT = 1000
-SCREENSHOT_LOAD_WAIT = 1600
-ENABLE_ALERTS = True
-ENABLE_SCHEDULED_EMAIL_REPORTS = True
 # CORS_OPTIONS = {
 #      'supports_credentials': True, 
 #      'allow_headers': ['*'], 
@@ -203,6 +175,31 @@ HTML_SANITIZATION_SCHEMA_EXTENSIONS: dict[str, Any] = {
     },
     "tagNames": ["style"],
 }
+
+
+################################################################
+# For report and schedule
+################################################################
+
+EMAIL_NOTIFICATIONS = True
+# Email configuration
+ENABLE_SCHEDULED_EMAIL_REPORTS = True
+SMTP_HOST = "smtp.office365.com" # change to your host
+SMTP_PORT = 587 # your port, e.g. 587
+SMTP_STARTTLS = True
+SMTP_SSL_SERVER_AUTH = True # If your using an SMTP server with a valid certificate
+SMTP_SSL = False
+SMTP_USER = "support@streamstech.com" # use the empty string "" if using an unauthenticated SMTP server
+SMTP_PASSWORD = "0ff1c3@J@ntrik" # use the empty string "" if using an unauthenticated SMTP server
+SMTP_MAIL_FROM = "support@streamstech.com" # use the empty string "" if using an unauthenticated SMTP server
+EMAIL_REPORTS_SUBJECT_PREFIX = "[Superset] " # optional - overwrites default value in config.py of "[Report] "
+
+
+ALERT_REPORTS_NOTIFICATION_DRY_RUN = False
+SCREENSHOT_LOCATE_WAIT = 1000
+SCREENSHOT_LOAD_WAIT = 1600
+ENABLE_ALERTS = True
+ENABLE_SCHEDULED_EMAIL_REPORTS = True
 
 # WebDriver configuration
 # If you use Firefox, you can stick with default values
