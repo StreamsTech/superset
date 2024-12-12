@@ -139,6 +139,15 @@ RUN pip install --no-cache-dir -r /app/requirements/docker.txt \
 
 USER superset
 
+######################################################################
+# CI image...
+######################################################################
+FROM lean AS ci
+
+COPY --chown=superset --chmod=755 ./docker/*.sh /app/docker/
+
+CMD ["/app/docker/docker-ci.sh"]
+
 # FROM lean AS reportscheduler
 ################################################################
 # For report and schedule
@@ -201,12 +210,3 @@ RUN CHROMEDRIVER_VERSION=$(wget -qO- https://googlechromelabs.github.io/chrome-f
     rm -f chromedriver-linux64.zip
  
 USER superset
-
-######################################################################
-# CI image...
-######################################################################
-FROM lean AS ci
-
-COPY --chown=superset --chmod=755 ./docker/*.sh /app/docker/
-
-CMD ["/app/docker/docker-ci.sh"]
