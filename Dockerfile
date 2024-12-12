@@ -131,16 +131,6 @@ RUN apt-get update -q \
     && ln -s /opt/firefox/firefox /usr/local/bin/firefox \
     && apt-get autoremove -yqq --purge wget && rm -rf /var/lib/apt/lists/* && apt-get clean
 
-RUN apt-get update && \
-    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt-get install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
-    rm -f google-chrome-stable_current_amd64.deb
-RUN export CHROMEDRIVER_VERSION=$(curl --silent https://chromedriver.storage.googleapis.com/LATEST_RELEASE_102) && \
-    wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip && \
-    unzip chromedriver_linux64.zip -d /usr/bin && \
-    chmod 755 /usr/bin/chromedriver && \
-    rm -f chromedriver_linux64.zip
-RUN pip install --no-cache gevent psycopg2 redis
 
 COPY ./requirements/*.txt ./docker/requirements-*.txt/ /app/requirements/
 # Cache everything for dev purposes...
@@ -148,6 +138,70 @@ RUN pip install --no-cache-dir -r /app/requirements/docker.txt \
     && pip install --no-cache-dir -r /app/requirements/requirements-local.txt || true
 
 USER superset
+
+# FROM lean AS reportscheduler
+################################################################
+# For report and schedule
+################################################################
+ 
+FROM lean AS reportscheduler
+ 
+USER root
+ 
+# Install necessary dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    wget \
+    jq \
+    unzip \
+    fonts-liberation \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libatspi2.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libdrm2 \
+    libgbm1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libvulkan1 \
+    libx11-6 \
+    libxcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxkbcommon0 \
+    libxrandr2 \
+    xdg-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ 
+# Install Google Chrome
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
+    rm -f google-chrome-stable_current_amd64.deb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Chrome Driver
+RUN CHROMEDRIVER_VERSION=$(wget -qO- https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json | \
+    jq -r '.channels.Stable.chromeDriverVersion // .channels.Stable.version') && \
+    if [ "$CHROMEDRIVER_VERSION" = "null" ] || [ -z "$CHROMEDRIVER_VERSION" ]; then \
+        echo "Error: Failed to fetch ChromeDriver version."; exit 1; \
+    fi && \
+    wget -q https://storage.googleapis.com/chrome-for-testing-public/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip && \
+    unzip -j chromedriver-linux64.zip -d /usr/bin && \
+    chmod 755 /usr/bin/chromedriver && \
+    rm -f chromedriver-linux64.zip
+ 
+USER superset
+
 ######################################################################
 # CI image...
 ######################################################################

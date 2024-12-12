@@ -73,77 +73,69 @@ CACHE_CONFIG = {
 DATA_CACHE_CONFIG = CACHE_CONFIG
 
 
-# Starting configuration
 class CeleryConfig:
-    broker_url = 'redis://%s:%s/0' % (REDIS_HOST, REDIS_PORT)
-    imports = ('superset.sql_lab', "superset.tasks", "superset.tasks.thumbnails", )
-    result_backend = 'redis://%s:%s/0' % (REDIS_HOST, REDIS_PORT)
+    broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
+    imports = ("superset.sql_lab", "superset.tasks","superset.tasks.thumbnails")
+    result_backend = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_RESULTS_DB}"
     worker_prefetch_multiplier = 10
     task_acks_late = True
     task_annotations = {
-        'sql_lab.get_sql_results': {
-            'rate_limit': '100/s',
+        "sql_lab.get_sql_results": {
+            "rate_limit": "100/s",
         },
         'email_reports.send': {
             'rate_limit': '1/s',
-            'time_limit': 600,
-            'soft_time_limit': 600,
-            'ignore_result': True,
+            'time_limit': 1800,
+            'soft_time_limit': 1800,
+            'ignore_result': False,
         },
     }
     beat_schedule = {
-        'reports.scheduler': {
-            'task': 'reports.scheduler',
-            'schedule': crontab(minute='*', hour='*'),
+        "email_reports.schedule_hourly": {
+            "task": "email_reports.schedule_hourly",
+            "schedule": crontab(minute=1, hour="*"),
         },
-        'reports.prune_log': {
-            'task': 'reports.prune_log',
-            'schedule': crontab(minute=0, hour=0),
+        "reports.scheduler": {
+            "task": "reports.scheduler",
+            "schedule": crontab(minute="*", hour="*"),
+        },
+        "reports.prune_log": {
+            "task": "reports.prune_log",
+            "schedule": crontab(minute=10, hour=0),
+        },
+        "alerts.schedule_check": {
+            "task": "alerts.schedule_check",
+            "schedule": crontab(minute="*", hour="*"),
         },
     }
 
+
 CELERY_CONFIG = CeleryConfig
 
-SCREENSHOT_LOCATE_WAIT = 100
-SCREENSHOT_LOAD_WAIT = 600
+SQLLAB_CTAS_NO_LIMIT = True
 
-# Slack configuration
-SLACK_API_TOKEN = "xoxb-"
+# -------------------------------------------------------------------
+#For Avoiding Overflow of sqlAlchemy_pool
+# SQLALCHEMY_POOL_SIZE = 100
+
+# SQLALCHEMY_MAX_OVERFLOW = 80
+
+# SQLALCHEMY_POOL_TIMEOUT = 180
+
+#------------------------------------------------------------------------
+EMAIL_NOTIFICATIONS = True
 
 # Email configuration
-SMTP_HOST = "XXXXXXXXX" # change to your host
+ENABLE_SCHEDULED_EMAIL_REPORTS = True
+SMTP_HOST = "smtp.office365.com" # change to your host
 SMTP_PORT = 587 # your port, e.g. 587
 SMTP_STARTTLS = True
 SMTP_SSL_SERVER_AUTH = True # If your using an SMTP server with a valid certificate
 SMTP_SSL = False
 SMTP_USER = "support@streamstech.com" # use the empty string "" if using an unauthenticated SMTP server
-SMTP_PASSWORD = "XXXXXXXX" # use the empty string "" if using an unauthenticated SMTP server
-SMTP_MAIL_FROM = "XXXXXXXX"
+SMTP_PASSWORD = "0ff1c3@J@ntrik" # use the empty string "" if using an unauthenticated SMTP server
+SMTP_MAIL_FROM = "support@streamstech.com" # use the empty string "" if using an unauthenticated SMTP server
 EMAIL_REPORTS_SUBJECT_PREFIX = "[Superset] " # optional - overwrites default value in config.py of "[Report] "
-
-
-# WebDriver configuration
-# If you use Firefox, you can stick with default values
-# If you use Chrome, then add the following WEBDRIVER_TYPE and WEBDRIVER_OPTION_ARGS
-WEBDRIVER_TYPE = "chrome"
-WEBDRIVER_OPTION_ARGS = [
-    "--force-device-scale-factor=2.0",
-    "--high-dpi-support=2.0",
-    "--headless",
-    "--disable-gpu",
-    "--disable-dev-shm-usage",
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-extensions",
-]
-# End of configuration
-#  Before WEBDRIVER_BASEURL
-
-WEBDRIVER_BASEURL = "http://superset:8088/"
-# The base URL for the email report hyperlinks.
-WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
-
-SQLLAB_CTAS_NO_LIMIT = True
 
 #
 # Optionally import superset_config_docker.py (which will have been included on
@@ -183,9 +175,16 @@ FEATURE_FLAGS = {
     "DRILL_TO_DETAIL":True,
     "DRILL_BY":True,
     "DASHBOARD_CROSS_FILTERS": True,
+    "DYNAMIC_PLUGINS": True,
     "ENABLE_JAVASCRIPT_CONTROLS": True,
-    "ALERT_REPORTS": True
+    "ALERT_REPORTS": True,
 }
+
+ALERT_REPORTS_NOTIFICATION_DRY_RUN = False
+SCREENSHOT_LOCATE_WAIT = 1000
+SCREENSHOT_LOAD_WAIT = 1600
+ENABLE_ALERTS = True
+ENABLE_SCHEDULED_EMAIL_REPORTS = True
 # CORS_OPTIONS = {
 #      'supports_credentials': True, 
 #      'allow_headers': ['*'], 
@@ -204,3 +203,23 @@ HTML_SANITIZATION_SCHEMA_EXTENSIONS: dict[str, Any] = {
     },
     "tagNames": ["style"],
 }
+
+# WebDriver configuration
+# If you use Firefox, you can stick with default values
+# If you use Chrome, then add the following WEBDRIVER_TYPE and WEBDRIVER_OPTION_ARGS
+WEBDRIVER_TYPE = "chrome"
+WEBDRIVER_OPTION_ARGS = [
+    "--force-device-scale-factor=2.0",
+    "--high-dpi-support=2.0",
+    "--headless",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-extensions",
+]
+
+# This is for internal use, you can keep http
+WEBDRIVER_BASEURL = "http://superset:8088" # When running using docker compose use "http://superset_app:8088'
+# This is the link sent to the recipient. Change to your domain, e.g. https://superset.mydomain.com
+WEBDRIVER_BASEURL_USER_FRIENDLY = "http://localhost:8088"
