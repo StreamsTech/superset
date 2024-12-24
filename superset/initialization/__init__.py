@@ -270,6 +270,14 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
             category="",
             category_icon="",
         )
+        appbuilder.add_link(
+            "Kobo",
+            label=__("kobo"),
+            href="https://www.kobo.com/",
+            icon="fa-table",
+            category="",
+            category_icon="",
+        )
 
         appbuilder.add_view(
             DynamicPluginsView,
@@ -344,6 +352,15 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         appbuilder.add_link(
             "SQL Editor",
             label=__("SQL Lab"),
+            href="/superset/sqllab/",
+            category_icon="fa-flask",
+            icon="fa-flask",
+            category="SQL Lab",
+            category_label=__("SQL"),
+        )
+        appbuilder.add_link(
+            "SQL Editor",
+            label=__("Hello"),
             href="/superset/sqllab/",
             category_icon="fa-flask",
             icon="fa-flask",
