@@ -360,6 +360,7 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
         {(!WelcomeTopExtension || !WelcomeMainExtension) && (
           <>
             <Collapse
+              className='stl-parent-collapse'
               activeKey={activeState}
               onChange={handleCollapse}
               ghost
