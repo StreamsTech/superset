@@ -524,7 +524,7 @@ const config: ControlPanelConfig = {
                     ? colnames
                         .filter(
                           (colname: string, index: number) =>
-                            coltypes[index] === GenericDataType.NUMERIC,
+                            coltypes[index] === GenericDataType.NUMERIC|| coltypes[index] === GenericDataType.STRING,
                         )
                         .map(colname => ({
                           value: colname,

@@ -437,6 +437,11 @@ export default function TableChart<D extends DataRecord = DataRecord>(
         Array.isArray(columnColorFormatters) &&
         columnColorFormatters.length > 0;
 
+      const hasColumnColorFormattersText = 
+        !isNumeric &&
+        Array.isArray(columnColorFormatters) &&
+        columnColorFormatters.length > 0;
+
       const valueRange =
         !hasColumnColorFormatters &&
         (config.showCellBars === undefined
@@ -462,6 +467,20 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
           let backgroundColor;
           if (hasColumnColorFormatters) {
+            columnColorFormatters!
+              .filter(formatter => formatter.column === column.key)
+              .forEach(formatter => {
+                const formatterResult =
+                  value || value === 0
+                    ? formatter.getColorFromValue(value as number)
+                    : false;
+                if (formatterResult) {
+                  backgroundColor = formatterResult;
+                }
+              });
+          }
+   
+          if (hasColumnColorFormattersText) {
             columnColorFormatters!
               .filter(formatter => formatter.column === column.key)
               .forEach(formatter => {

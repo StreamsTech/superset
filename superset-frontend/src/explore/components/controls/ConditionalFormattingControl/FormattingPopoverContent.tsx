@@ -21,7 +21,7 @@ import { styled, SupersetTheme, t, useTheme } from '@superset-ui/core';
 import { Form, FormItem, FormProps } from 'src/components/Form';
 import Select from 'src/components/Select/Select';
 import { Col, Row } from 'src/components';
-import { InputNumber } from 'src/components/Input';
+import { Input, InputNumber } from 'src/components/Input';
 import Button from 'src/components/Button';
 import {
   COMPARATOR,
@@ -30,6 +30,10 @@ import {
 } from './types';
 
 const FullWidthInputNumber = styled(InputNumber)`
+  width: 100%;
+`;
+
+const FullWidthInput = styled(Input)`
   width: 100%;
 `;
 
@@ -93,6 +97,9 @@ const isOperatorMultiValue = (operator?: COMPARATOR) =>
 
 const isOperatorNone = (operator?: COMPARATOR) =>
   !operator || operator === COMPARATOR.NONE;
+
+const isOperatorEqual = (operator?: COMPARATOR) =>
+  !operator || operator === COMPARATOR.EQUAL;
 
 const rulesRequired = [{ required: true, message: t('Required') }];
 
@@ -164,6 +171,19 @@ const renderOperatorFields = ({ getFieldValue }: GetFieldValue) =>
           trigger="onBlur"
         >
           <FullWidthInputNumber />
+        </FormItem>
+      </Col>
+    </Row>
+  ) : isOperatorEqual(getFieldValue('operator')) ? (
+    <Row gutter={12}>
+      <Col span={6}>{operatorField}</Col>
+      <Col span={18}>
+        <FormItem
+          name="targetValue"
+          label={t('Target value')}
+          rules={rulesRequired}
+        >
+          <FullWidthInput />
         </FormItem>
       </Col>
     </Row>
