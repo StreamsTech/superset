@@ -58,6 +58,7 @@ const operatorOptions = [
   { value: COMPARATOR.GREATER_OR_EQUAL, label: '≥' },
   { value: COMPARATOR.LESS_OR_EQUAL, label: '≤' },
   { value: COMPARATOR.EQUAL, label: '=' },
+  { value: COMPARATOR.EQUALTO, label: '?' },
   { value: COMPARATOR.NOT_EQUAL, label: '≠' },
   { value: COMPARATOR.BETWEEN, label: '< x <' },
   { value: COMPARATOR.BETWEEN_OR_EQUAL, label: '≤ x ≤' },
@@ -98,8 +99,8 @@ const isOperatorMultiValue = (operator?: COMPARATOR) =>
 const isOperatorNone = (operator?: COMPARATOR) =>
   !operator || operator === COMPARATOR.NONE;
 
-const isOperatorEqual = (operator?: COMPARATOR) =>
-  !operator || operator === COMPARATOR.EQUAL;
+const isOperatorEqualTo = (operator?: COMPARATOR) =>
+  !operator || operator === COMPARATOR.EQUALTO;;
 
 const rulesRequired = [{ required: true, message: t('Required') }];
 
@@ -174,7 +175,7 @@ const renderOperatorFields = ({ getFieldValue }: GetFieldValue) =>
         </FormItem>
       </Col>
     </Row>
-  ) : isOperatorEqual(getFieldValue('operator')) ? (
+  ) :isOperatorEqualTo(getFieldValue('operator')) ? (
     <Row gutter={12}>
       <Col span={6}>{operatorField}</Col>
       <Col span={18}>
@@ -213,6 +214,7 @@ export const FormattingPopoverContent = ({
 }) => {
   const theme = useTheme();
   const colorScheme = colorSchemeOptions(theme);
+  console.log("config : " + config?.targetValue);
   return (
     <Form
       onFinish={onChange}

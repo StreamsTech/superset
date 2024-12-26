@@ -179,7 +179,7 @@ function SelectPageSize({
       <select
         className="form-control input-sm"
         value={current}
-        onBlur={() => {}}
+        onBlur={() => { }}
         onChange={e => {
           onChange(Number((e.target as HTMLSelectElement).value));
         }}
@@ -236,6 +236,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     allowRearrangeColumns = false,
     onContextMenu,
     emitCrossFilters,
+    conditionalFormatting,
   } = props;
   const timestampFormatter = useCallback(
     value => getTimeFormatterForGranularity(timeGrain)(value),
@@ -315,21 +316,21 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             groupBy.length === 0
               ? []
               : groupBy.map(col => {
-                  const val = ensureIsArray(updatedFilters?.[col]);
-                  if (!val.length)
-                    return {
-                      col,
-                      op: 'IS NULL' as const,
-                    };
+                const val = ensureIsArray(updatedFilters?.[col]);
+                if (!val.length)
                   return {
                     col,
-                    op: 'IN' as const,
-                    val: val.map(el =>
-                      el instanceof Date ? el.getTime() : el!,
-                    ),
-                    grain: col === DTTM_ALIAS ? timeGrain : undefined,
+                    op: 'IS NULL' as const,
                   };
-                }),
+                return {
+                  col,
+                  op: 'IN' as const,
+                  val: val.map(el =>
+                    el instanceof Date ? el.getTime() : el!,
+                  ),
+                  grain: col === DTTM_ALIAS ? timeGrain : undefined,
+                };
+              }),
         },
         filterState: {
           label: labelElements.join(', '),
@@ -359,8 +360,8 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     const textAlign = config.horizontalAlign
       ? config.horizontalAlign
       : isNumeric
-      ? 'right'
-      : 'left';
+        ? 'right'
+        : 'left';
     return {
       textAlign,
     };
@@ -369,46 +370,46 @@ export default function TableChart<D extends DataRecord = DataRecord>(
   const handleContextMenu =
     onContextMenu && !isRawRecords
       ? (
-          value: D,
-          cellPoint: {
-            key: string;
-            value: DataRecordValue;
-            isMetric?: boolean;
-          },
-          clientX: number,
-          clientY: number,
-        ) => {
-          const drillToDetailFilters: BinaryQueryObjectFilterClause[] = [];
-          columnsMeta.forEach(col => {
-            if (!col.isMetric) {
-              const dataRecordValue = value[col.key];
-              drillToDetailFilters.push({
-                col: col.key,
-                op: '==',
-                val: dataRecordValue as string | number | boolean,
-                formattedVal: formatColumnValue(col, dataRecordValue)[1],
-              });
-            }
-          });
-          onContextMenu(clientX, clientY, {
-            drillToDetail: drillToDetailFilters,
-            crossFilter: cellPoint.isMetric
-              ? undefined
-              : getCrossFilterDataMask(cellPoint.key, cellPoint.value),
-            drillBy: cellPoint.isMetric
-              ? undefined
-              : {
-                  filters: [
-                    {
-                      col: cellPoint.key,
-                      op: '==',
-                      val: cellPoint.value as string | number | boolean,
-                    },
-                  ],
-                  groupbyFieldName: 'groupby',
+        value: D,
+        cellPoint: {
+          key: string;
+          value: DataRecordValue;
+          isMetric?: boolean;
+        },
+        clientX: number,
+        clientY: number,
+      ) => {
+        const drillToDetailFilters: BinaryQueryObjectFilterClause[] = [];
+        columnsMeta.forEach(col => {
+          if (!col.isMetric) {
+            const dataRecordValue = value[col.key];
+            drillToDetailFilters.push({
+              col: col.key,
+              op: '==',
+              val: dataRecordValue as string | number | boolean,
+              formattedVal: formatColumnValue(col, dataRecordValue)[1],
+            });
+          }
+        });
+        onContextMenu(clientX, clientY, {
+          drillToDetail: drillToDetailFilters,
+          crossFilter: cellPoint.isMetric
+            ? undefined
+            : getCrossFilterDataMask(cellPoint.key, cellPoint.value),
+          drillBy: cellPoint.isMetric
+            ? undefined
+            : {
+              filters: [
+                {
+                  col: cellPoint.key,
+                  op: '==',
+                  val: cellPoint.value as string | number | boolean,
                 },
-          });
-        }
+              ],
+              groupbyFieldName: 'groupby',
+            },
+        });
+      }
       : undefined;
 
   const getColumnConfigs = useCallback(
@@ -432,12 +433,14 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
       const { truncateLongCells } = config;
 
+      console.log("conditionalFormatting : ", conditionalFormatting);
+
       const hasColumnColorFormatters =
         isNumeric &&
         Array.isArray(columnColorFormatters) &&
         columnColorFormatters.length > 0;
 
-      const hasColumnColorFormattersText = 
+      const hasColumnColorFormattersText =
         !isNumeric &&
         Array.isArray(columnColorFormatters) &&
         columnColorFormatters.length > 0;
@@ -466,21 +469,38 @@ export default function TableChart<D extends DataRecord = DataRecord>(
           const html = isHtml ? { __html: text } : undefined;
 
           let backgroundColor;
-          if (hasColumnColorFormatters) {
+          // if (hasColumnColorFormatters) {
+          //   columnColorFormatters!
+          //     .filter(formatter => formatter.column === column.key)
+          //     .forEach(formatter => {
+          //       const formatterResult =
+          //         value || value === 0
+          //           ? formatter.getColorFromValue(value as number)
+          //           : false;
+          //       if (formatterResult) {
+          //         backgroundColor = formatterResult;
+          //       }
+          //     });
+          // }
+
+          if (hasColumnColorFormattersText) {
             columnColorFormatters!
               .filter(formatter => formatter.column === column.key)
               .forEach(formatter => {
+                console.log(value);
                 const formatterResult =
                   value || value === 0
                     ? formatter.getColorFromValue(value as number)
                     : false;
-                if (formatterResult) {
-                  backgroundColor = formatterResult;
+                const color = conditionalFormatting.find((item: any) => item.targetValue === value)
+                const colorScheme = color ? color.colorScheme : null;
+                if (colorScheme) {
+                  backgroundColor = colorScheme;
                 }
               });
           }
-   
-          if (hasColumnColorFormattersText) {
+
+          else if(hasColumnColorFormatters) {
             columnColorFormatters!
               .filter(formatter => formatter.column === column.key)
               .forEach(formatter => {
@@ -509,19 +529,19 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             ${valueRange &&
             `
                 width: ${`${cellWidth({
-                  value: value as number,
-                  valueRange,
-                  alignPositiveNegative,
-                })}%`};
+              value: value as number,
+              valueRange,
+              alignPositiveNegative,
+            })}%`};
                 left: ${`${cellOffset({
-                  value: value as number,
-                  valueRange,
-                  alignPositiveNegative,
-                })}%`};
+              value: value as number,
+              valueRange,
+              alignPositiveNegative,
+            })}%`};
                 background-color: ${cellBackground({
-                  value: value as number,
-                  colorPositiveNegative,
-                })};
+              value: value as number,
+              colorPositiveNegative,
+            })};
               `}
           `;
 
@@ -531,11 +551,11 @@ export default function TableChart<D extends DataRecord = DataRecord>(
             onClick:
               emitCrossFilters && !valueRange && !isMetric
                 ? () => {
-                    // allow selecting text in a cell
-                    if (!getSelectedText()) {
-                      toggleFilter(key, value);
-                    }
+                  // allow selecting text in a cell
+                  if (!getSelectedText()) {
+                    toggleFilter(key, value);
                   }
+                }
                 : undefined,
             onContextMenu: (e: MouseEvent) => {
               if (handleContextMenu) {
@@ -741,7 +761,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
     <Styles>
       <DataTable<D>
         columns={columns}
-        config = {config}
+        config={config}
         data={data}
         rowCount={rowCount}
         tableClassName="table table-striped table-condensed"

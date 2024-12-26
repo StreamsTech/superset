@@ -296,6 +296,7 @@ const transformProps = (
     timeGrain,
     allowRearrangeColumns,
     onContextMenu,
+    conditionalFormatting,
   };
 };
 
