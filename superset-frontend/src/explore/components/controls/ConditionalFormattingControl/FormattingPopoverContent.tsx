@@ -58,7 +58,7 @@ const operatorOptions = [
   { value: COMPARATOR.GREATER_OR_EQUAL, label: '≥' },
   { value: COMPARATOR.LESS_OR_EQUAL, label: '≤' },
   { value: COMPARATOR.EQUAL, label: '=' },
-  { value: COMPARATOR.EQUALTO, label: '?' },
+  { value: COMPARATOR.EQUALTO, label: 'EqualTo' },
   { value: COMPARATOR.NOT_EQUAL, label: '≠' },
   { value: COMPARATOR.BETWEEN, label: '< x <' },
   { value: COMPARATOR.BETWEEN_OR_EQUAL, label: '≤ x ≤' },

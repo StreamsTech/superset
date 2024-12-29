@@ -28,7 +28,7 @@ export enum COMPARATOR {
   GREATER_OR_EQUAL = '≥',
   LESS_OR_EQUAL = '≤',
   EQUAL = '=',
-  EQUALTO = '?',
+  EQUALTO = 'EqualTo',
   NOT_EQUAL = '≠',
   BETWEEN = '< x <',
   BETWEEN_OR_EQUAL = '≤ x ≤',
