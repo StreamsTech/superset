@@ -37,10 +37,6 @@ const FullWidthInput = styled(Input)`
   width: 100%;
 `;
 
-const FullWidthInput = styled(Input)`
-  width: 100%;
-`;
-
 const JustifyEnd = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -102,9 +98,6 @@ const isOperatorMultiValue = (operator?: COMPARATOR) =>
 
 const isOperatorNone = (operator?: COMPARATOR) =>
   !operator || operator === COMPARATOR.NONE;
-
-const isOperatorEqualTo = (operator?: COMPARATOR) =>
-  !operator || operator === COMPARATOR.EQUALTO;;
 
 const isOperatorEqualTo = (operator?: COMPARATOR) =>
   !operator || operator === COMPARATOR.EQUALTO;;
