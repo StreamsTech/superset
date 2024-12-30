@@ -433,8 +433,6 @@ export default function TableChart<D extends DataRecord = DataRecord>(
 
       const { truncateLongCells } = config;
 
-      console.log("conditionalFormatting : ", conditionalFormatting);
-
       const hasColumnColorFormatters =
         isNumeric &&
         Array.isArray(columnColorFormatters) &&
@@ -469,38 +467,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
           const html = isHtml ? { __html: text } : undefined;
 
           let backgroundColor;
-          // if (hasColumnColorFormatters) {
-          //   columnColorFormatters!
-          //     .filter(formatter => formatter.column === column.key)
-          //     .forEach(formatter => {
-          //       const formatterResult =
-          //         value || value === 0
-          //           ? formatter.getColorFromValue(value as number)
-          //           : false;
-          //       if (formatterResult) {
-          //         backgroundColor = formatterResult;
-          //       }
-          //     });
-          // }
-
-          if (hasColumnColorFormattersText) {
-            columnColorFormatters!
-              .filter(formatter => formatter.column === column.key)
-              .forEach(formatter => {
-                console.log(value);
-                const formatterResult =
-                  value || value === 0
-                    ? formatter.getColorFromValue(value as number)
-                    : false;
-                const color = conditionalFormatting.find((item: any) => item.targetValue === value)
-                const colorScheme = color ? color.colorScheme : null;
-                if (colorScheme) {
-                  backgroundColor = colorScheme;
-                }
-              });
-          }
-
-          else if(hasColumnColorFormatters) {
+          if (hasColumnColorFormatters) {
             columnColorFormatters!
               .filter(formatter => formatter.column === column.key)
               .forEach(formatter => {
@@ -510,6 +477,18 @@ export default function TableChart<D extends DataRecord = DataRecord>(
                     : false;
                 if (formatterResult) {
                   backgroundColor = formatterResult;
+                }
+              });
+          }
+
+          if (hasColumnColorFormattersText) {
+            columnColorFormatters!
+              .filter(formatter => formatter.column === column.key)
+              .forEach(formatter => {
+                const color = conditionalFormatting.find((item: any) => item.targetValue === value)
+                const colorScheme = color ? color.colorScheme : null;
+                if (colorScheme) {
+                  backgroundColor = colorScheme;
                 }
               });
           }
