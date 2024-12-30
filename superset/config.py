@@ -100,7 +100,7 @@ PACKAGE_JSON_FILE = pkg_resources.resource_filename(
 #     "type": "image/png"
 #     "rel": "icon"
 # },
-FAVICONS = [{"href": "/static/assets/images/favicon.png"}]
+FAVICONS = [{"href": "/static/assets/images/fevicon_queryix.png"}]
 
 
 def _try_json_readversion(filepath: str) -> str | None:
@@ -289,7 +289,7 @@ AUTH_RATE_LIMIT = "5 per second"
 APP_NAME = "QueryiX"
 
 # Specify the App icon
-APP_ICON = "/static/assets/images/superset-logo-horiz.png"
+APP_ICON = "/static/assets/images/queryix-logo-horiz.png" #"/static/assets/images/superset-logo-horiz.png"
 
 # Specify where clicking the logo would take the user
 # e.g. setting it to '/' would take the user to '/superset/welcome/'
