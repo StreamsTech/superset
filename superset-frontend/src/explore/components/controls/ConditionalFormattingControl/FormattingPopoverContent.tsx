@@ -188,19 +188,6 @@ const renderOperatorFields = ({ getFieldValue }: GetFieldValue) =>
         </FormItem>
       </Col>
     </Row>
-  ) :isOperatorEqualTo(getFieldValue('operator')) ? (
-    <Row gutter={12}>
-      <Col span={6}>{operatorField}</Col>
-      <Col span={18}>
-        <FormItem
-          name="targetValue"
-          label={t('Target value')}
-          rules={rulesRequired}
-        >
-          <FullWidthInput />
-        </FormItem>
-      </Col>
-    </Row>
   ) : (
     <Row gutter={12}>
       <Col span={6}>{operatorField}</Col>
