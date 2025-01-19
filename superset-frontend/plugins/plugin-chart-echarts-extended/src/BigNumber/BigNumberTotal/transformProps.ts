@@ -23,7 +23,6 @@ import {
 } from '@superset-ui/chart-controls';
 import {
   GenericDataType,
-  getMetricLabel,
   extractTimegrain,
   QueryFormData,
   getValueFormatter,
@@ -32,6 +31,7 @@ import { BigNumberTotalChartProps, BigNumberVizProps } from '../types';
 import { getDateFormatter, parseMetricValue } from '../utils';
 import { Refs } from '../../types';
 
+const maxChart= 20;
 export default function transformProps(
   chartProps: BigNumberTotalChartProps,
 ): BigNumberVizProps {
@@ -54,14 +54,20 @@ export default function transformProps(
     yAxisFormat,
     conditionalFormatting,
     currencyFormat,
+    textColor,
+    subHeadTextColor,
+    backgroundColor,
+    textAlignment,
+    cardDisplay,
   } = formData;
   const refs: Refs = {};
   const { data = [], coltypes = [] } = queriesData[0];
   const granularity = extractTimegrain(rawFormData as QueryFormData);
-  const metricName = getMetricLabel(metric);
   const formattedSubheader = subheader;
   const bigNumber =
-    data.length === 0 ? null : parseMetricValue(data[0][metricName]);
+    data.length === 0 ? null : parseMetricValue(data[0][queriesData[0].colnames[0]]);
+  
+  let bigNumberConfig = bigNumberConfigProvider(formData, queriesData[0]);
 
   let metricEntry: Metric | undefined;
   if (chartProps.datasource?.metrics) {
@@ -98,7 +104,7 @@ export default function transformProps(
   const colorThresholdFormatters =
     getColorFormatters(conditionalFormatting, data, false) ??
     defaultColorFormatters;
-
+  
   return {
     width,
     height,
@@ -106,9 +112,49 @@ export default function transformProps(
     headerFormatter,
     headerFontSize,
     subheaderFontSize,
+    textColor,
+    subHeadTextColor,
+    backgroundColor,
+    textAlignment,
+    cardDisplay,
     subheader: formattedSubheader,
     onContextMenu,
     refs,
     colorThresholdFormatters,
+    bigNumberConfig,
+    maxChart,
   };
 }
+
+function bigNumberConfigProvider(formData: any, queriesData: any) {
+ const subHeaders = [];
+ const backgroundColors = [];
+ const textColors = [];
+ const subHeaderTextColors = [];
+
+ // Loop through 1 to 10 to dynamically add values to arrays
+ for (let i = 1; i <=  maxChart; i++) {
+  subHeaders.push(formData[`subHeader${i}`]);
+   backgroundColors.push(formData[`backgroundColor${i}`]);
+   textColors.push(formData[`textColor${i}`]);
+   subHeaderTextColors.push(formData[`subHeaderTextColor${i}`]);
+ }
+  let bigNumberConfig = [];
+  const columns = queriesData.colnames;
+  
+  if (queriesData.data) {
+    for (let i = 0; i < columns.length; i++) {
+      const key = columns[i];
+      bigNumberConfig.push({
+        subHeader: subHeaders[i] || '',
+        subHeaderTextColour: subHeaderTextColors[i] || '',
+        bigNumberText: queriesData.data[0][key] || '',
+        textColour: textColors[i] || '',
+        backgoundColour: backgroundColors[i] || ''
+      });
+    }
+  }
+
+  return bigNumberConfig;
+}
+

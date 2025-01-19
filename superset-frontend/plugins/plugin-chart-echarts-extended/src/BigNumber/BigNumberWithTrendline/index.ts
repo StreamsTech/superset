@@ -34,7 +34,7 @@ const metadata = {
     'Showcases a single number accompanied by a simple line chart, to call attention to an important metric along with its change over time or other dimension.',
   ),
   exampleGallery: [{ url: example }],
-  name: t('Big Number with Trendline'),
+  name: t('Big Number with Trendline Extended'),
   tags: [
     t('Advanced-Analytics'),
     t('Line'),
@@ -48,7 +48,7 @@ const metadata = {
   behaviors: [Behavior.DRILL_TO_DETAIL],
 };
 
-export default class BigNumberWithTrendlineChartPlugin extends EchartsChartPlugin<
+export default class BigNumberWithTrendlineChartPluginExtended extends EchartsChartPlugin<
   BigNumberWithTrendlineFormData,
   BigNumberWithTrendlineChartProps
 > {

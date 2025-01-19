@@ -71,6 +71,8 @@ import {
 import {
   EchartsTimeseriesBarChartPluginExtended,
   EchartsPieChartPluginExtend,
+  BigNumberWithTrendlineChartPluginExtended, 
+  BigNumberTotalChartPluginExtended,
 } from '@superset-ui/plugin-chart-echarts-extended';
 
 import {
@@ -85,7 +87,6 @@ import { PivotTableChartPlugin as PivotTableChartPluginV2 } from '@superset-ui/p
 import { HandlebarsChartPlugin } from '@superset-ui/plugin-chart-handlebars';
 import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
-import { BigNumberWithTrendlineChartPluginExtended, BigNumberTotalChartPluginExtended } from 'plugin-chart-custom-big-number';
 import { CircumplexChartPlugin } from 'superset-plugin-chart-circumplex';
 import DetailViewChart from '@superset-ui/plugin-detail-view-chart';
 export default class MainPreset extends Preset {

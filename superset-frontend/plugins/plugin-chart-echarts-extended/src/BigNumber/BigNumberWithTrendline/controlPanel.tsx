@@ -27,11 +27,10 @@ import {
   temporalColumnMixin,
 } from '@superset-ui/chart-controls';
 import React from 'react';
-import { headerFontSize, subheaderFontSize } from '../sharedControls';
+import { headerFontSize, subheaderFontSize, textColor, backgroundColor, subHeadTextColor } from '../sharedControls';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
-    sections.genericTime,
     {
       label: t('Query'),
       expanded: true,
@@ -135,6 +134,9 @@ const config: ControlPanelConfig = {
         ['color_picker', null],
         [headerFontSize],
         [subheaderFontSize],
+        [textColor],
+        [backgroundColor],
+        [subHeadTextColor],
         ['y_axis_format'],
         ['currency_format'],
         [

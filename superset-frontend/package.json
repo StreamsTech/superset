@@ -169,7 +169,6 @@
     "mousetrap": "^1.6.1",
     "mustache": "^2.2.1",
     "native-request": "^1.1.2",
-    "plugin-chart-custom-big-number": "^1.0.12",
     "polished": "^3.7.2",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.7",
