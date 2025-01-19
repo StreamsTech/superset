@@ -31,14 +31,18 @@ import { BigNumberVizProps } from './types';
 import { EventHandlers } from '../types';
 
 const defaultNumberFormatter = getNumberFormatter();
-
+let lastclicked = 1;
 const PROPORTION = {
   // text size: proportion of the chart container sans trendline
   KICKER: 0.1,
   HEADER: 0.3,
   SUBHEADER: 0.125,
-  // trendline size: proportion of the whole chart container
+  // trendline size: proportion of the whole chart container  { useEffect }
   TRENDLINE: 0.3,
+  text: 'black',
+  subheadtext: 'black',
+  bgColor: 'white',
+  testAlignment: 'flex-start'
 };
 
 class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
@@ -54,7 +58,11 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
     startYAxisAtZero: true,
     subheader: '',
     subheaderFontSize: PROPORTION.SUBHEADER,
+    textColor : PROPORTION.text,
+    subHeadTextColor: PROPORTION.subheadtext,
+    backgroundColor:PROPORTION.bgColor,
     timeRangeFixed: false,
+    testAlignment: PROPORTION.testAlignment
   };
 
   getClassName() {
@@ -64,6 +72,34 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
     }`;
     if (showTrendLine) return names;
     return `${names} no-trendline`;
+  }
+
+  initialChartControllerAdd() {
+    const { maxChart } = this.props;
+    for (let i = 1; i <= maxChart; i++) {
+      let subheaderTextSelector = 'input[aria-label="subHeader_' + i + '"]';
+      let bgColorSelector = 'input[aria-label="background_color_' + i + '"]';
+      let subHeaderColorSelector = 'input[aria-label="Sub_Header_Text_Color_' + i + '"]';
+      let headerColorSelector = 'input[aria-label="Text_Color_' + i + '"]';
+      let selectors =[subheaderTextSelector,bgColorSelector,subHeaderColorSelector,headerColorSelector]
+      selectors.forEach( (ele) => {
+          if (lastclicked === i) {
+            const element = document.querySelector(ele);
+            const closestDiv = element?.closest('div.col-lg-12');
+            if (closestDiv) {
+              // @ts-ignore
+              closestDiv.style.display = 'block';
+            }
+          } else {
+            const element = document.querySelector(ele);
+            const closestDiv = element?.closest('div.col-lg-12');
+            if (closestDiv) {
+              // @ts-ignore
+              closestDiv.style.display = 'none';
+            }
+          }
+      })
+    } 
   }
 
   createTemporaryContainer() {
@@ -128,7 +164,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
   }
 
   renderHeader(maxHeight: number) {
-    const { bigNumber, headerFormatter, width, colorThresholdFormatters } =
+    const { bigNumber, headerFormatter, width, colorThresholdFormatters, textColor } =
       this.props;
     // @ts-ignore
     const text = bigNumber === null ? t('No data') : headerFormatter(bigNumber);
@@ -148,7 +184,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
         }
       });
     } else {
-      numberColor = 'black';
+      numberColor = textColor;
     }
 
     const container = this.createTemporaryContainer();
@@ -181,11 +217,68 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
       >
         {text}
       </div>
-    );
+    ); 
+  }
+
+  renderCusHeader(maxHeight: number, index: number) {
+    const { headerFormatter, width, colorThresholdFormatters, bigNumberConfig } =
+      this.props;
+    // @ts-ignore
+    const text = bigNumberConfig[index].bigNumberText === null ? t('No data') : headerFormatter(bigNumberConfig[index].bigNumberText);
+
+    const hasThresholdColorFormatter =
+      Array.isArray(colorThresholdFormatters) &&
+      colorThresholdFormatters.length > 0;
+
+    let numberColor;
+    if (hasThresholdColorFormatter) {
+      colorThresholdFormatters!.forEach(formatter => {
+        const formatterResult = bigNumberConfig[index].bigNumberText
+          ? formatter.getColorFromValue(bigNumberConfig[index].bigNumberText as number)
+          : false;
+        if (formatterResult) {
+          numberColor = formatterResult;
+        }
+      });
+    } else {
+      numberColor = bigNumberConfig[index].textColour;
+    }
+
+    const container = this.createTemporaryContainer();
+    document.body.append(container);
+    const fontSize = computeMaxFontSize({
+      text,
+      maxWidth: width - 8, // Decrease 8px for more precise font size
+      maxHeight,
+      className: 'header-line',
+      container,
+    });
+    container.remove();
+
+    const onContextMenu = (e: MouseEvent<HTMLDivElement>) => {
+      if (this.props.onContextMenu) {
+        e.preventDefault();
+        this.props.onContextMenu(e.nativeEvent.clientX, e.nativeEvent.clientY);
+      }
+    };
+
+    return (
+      <div
+        className="header-line"
+        style={{
+          fontSize,
+          height: maxHeight,
+          color: numberColor,
+        }}
+        onContextMenu={onContextMenu}
+      >
+        {text}
+      </div>
+    ); 
   }
 
   renderSubheader(maxHeight: number) {
-    const { bigNumber, subheader, width, bigNumberFallback } = this.props;
+    const { bigNumber, subheader, width, bigNumberFallback, subHeadTextColor } = this.props;
     let fontSize = 0;
 
     const NO_DATA_OR_HASNT_LANDED = t(
@@ -216,6 +309,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
           style={{
             fontSize,
             height: maxHeight,
+            color:subHeadTextColor,
           }}
         >
           {text}
@@ -224,6 +318,84 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
     }
     return null;
   }
+
+  renderCusSubheader(maxHeight: number, idx: number) {
+    const { bigNumber, subheader, width, bigNumberFallback, bigNumberConfig } = this.props;
+    let fontSize = 0;
+
+    const NO_DATA_OR_HASNT_LANDED = t(
+      'No data after filtering or data is NULL for the latest time record',
+    );
+    const NO_DATA = t(
+      'Try applying different filters or ensuring your datasource has data',
+    );
+    let text = subheader;
+    if (bigNumber === null) {
+      text = bigNumberFallback ? NO_DATA : NO_DATA_OR_HASNT_LANDED;
+    }
+
+    text = bigNumberConfig[idx].subHeader;
+
+    if (text) {
+      const container = this.createTemporaryContainer();
+      document.body.append(container);
+      fontSize = computeMaxFontSize({
+        text,
+        maxWidth: width,
+        maxHeight,
+        className: 'subheader-line',
+        container,
+      });
+      container.remove();
+
+      return (
+        <div
+          className="subheader-line"
+          style={{
+            fontSize,
+            height: maxHeight,
+            color:bigNumberConfig[idx].subHeaderTextColour,
+          }}
+        >
+          {text}
+        </div>
+      );
+    }
+    return null;
+  }
+
+  handleClick = (param:any) => () => { 
+    // Handle the click event and use the parameter
+    const { maxChart } = this.props;
+    
+    for (let i = 1; i <= maxChart; i++) {
+      let subheaderTextSelector = 'input[aria-label="subHeader_' + i + '"]';
+      let bgColorSelector = 'input[aria-label="background_color_' + i + '"]';
+      let subHeaderColorSelector = 'input[aria-label="Sub_Header_Text_Color_' + i + '"]';
+      let headerColorSelector = 'input[aria-label="Text_Color_' + i + '"]';
+      let selectors =[subheaderTextSelector,bgColorSelector,subHeaderColorSelector,headerColorSelector]
+      selectors.forEach((ele)=>{
+        if (param + 1 === i) {
+          const element = document.querySelector(ele);
+          const closestDiv = element?.closest('div.col-lg-12');
+          if (closestDiv) {
+            // @ts-ignore
+            closestDiv.style.display = 'block';
+          }
+          lastclicked = param + 1;
+        } else {
+          const element = document.querySelector(ele);
+          const closestDiv = element?.closest('div.col-lg-12');
+          if (closestDiv) {
+            // @ts-ignore
+            closestDiv.style.display = 'none';
+          }
+        }
+      })
+    }
+  };
+
+
 
   renderTrendline(maxHeight: number) {
     const { width, trendLineData, echartOptions, refs } = this.props;
@@ -278,6 +450,10 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
       kickerFontSize,
       headerFontSize,
       subheaderFontSize,
+      backgroundColor,
+      bigNumberConfig,
+      textAlignment,
+      cardDisplay,
     } = this.props;
     const className = this.getClassName();
 
@@ -286,7 +462,7 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
       const allTextHeight = height - chartHeight;
 
       return (
-        <div className={className}>
+        <div className={className} style={{backgroundColor: backgroundColor }}>
           <div className="text-container" style={{ height: allTextHeight }}>
             {this.renderFallbackWarning()}
             {this.renderKicker(
@@ -309,11 +485,30 @@ class BigNumberVis extends React.PureComponent<BigNumberVizProps> {
     }
 
     return (
-      <div className={className} style={{ height }}>
-        {this.renderFallbackWarning()}
-        {this.renderKicker((kickerFontSize || 0) * height)}
-        {this.renderHeader(Math.ceil(headerFontSize * height))}
-        {this.renderSubheader(Math.ceil(subheaderFontSize * height))}
+      <div style={{ height: height, overflow: 'auto', display:'flex', flexDirection: cardDisplay,}}>
+      {bigNumberConfig.map((val: any, index: number) => (
+        <div 
+        className={className} 
+        style={{ 
+          height: 'auto',
+          backgroundColor: bigNumberConfig[index].backgoundColour, 
+          display: 'flex',
+          alignItems: textAlignment,
+          justifyContent: 'center',
+          margin:'10px',
+          width: 'auto',
+          padding: '50px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          position: 'relative' }}     
+          onClick={this.handleClick(index)}> 
+          {this.renderFallbackWarning()}
+          {this.initialChartControllerAdd()}
+          {this.renderKicker((kickerFontSize || 0) * height)}
+          {this.renderCusHeader(Math.ceil(headerFontSize * height), index)}
+          {this.renderCusSubheader(Math.ceil(subheaderFontSize * height), index)}
+        </div>
+      ))}
       </div>
     );
   }
@@ -326,7 +521,7 @@ export default styled(BigNumberVis)`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    border-radius: ${theme.gridUnit * 2}px; 
 
     &.no-trendline .subheader-line {
       padding-bottom: 0.3em;
@@ -336,7 +531,7 @@ export default styled(BigNumberVis)`
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
+
       .alert {
         font-size: ${theme.typography.sizes.s};
         margin: -0.5em 0 0.4em;
@@ -354,6 +549,7 @@ export default styled(BigNumberVis)`
     .header-line {
       position: relative;
       line-height: 1em;
+      white-space: nowrap;
       span {
         position: absolute;
         bottom: 0;

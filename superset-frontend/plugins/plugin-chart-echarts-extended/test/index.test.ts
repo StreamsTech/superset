@@ -33,8 +33,8 @@ import {
   EchartsGaugeChartPlugin,
   EchartsRadarChartPlugin,
   EchartsTreeChartPlugin,
-  BigNumberChartPlugin,
-  BigNumberTotalChartPlugin,
+  BigNumberWithTrendlineChartPluginExtended,
+  BigNumberTotalChartPluginExtended,
   EchartsSunburstChartPlugin,
 } from '../src';
 
@@ -57,8 +57,8 @@ test('@superset-ui/plugin-chart-echarts exists', () => {
   expect(EchartsGaugeChartPlugin).toBeDefined();
   expect(EchartsRadarChartPlugin).toBeDefined();
   expect(EchartsTreeChartPlugin).toBeDefined();
-  expect(BigNumberChartPlugin).toBeDefined();
-  expect(BigNumberTotalChartPlugin).toBeDefined();
+  expect(BigNumberWithTrendlineChartPluginExtended).toBeDefined();
+  expect(BigNumberTotalChartPluginExtended).toBeDefined();
   expect(EchartsSunburstChartPlugin).toBeDefined();
 });
 
@@ -112,11 +112,11 @@ test('@superset-ui/plugin-chart-echarts-parsemethod-validation', () => {
     new EchartsTreeChartPlugin().configure({
       key: 'tree',
     }),
-    new BigNumberChartPlugin().configure({
-      key: 'big_number',
+    new BigNumberWithTrendlineChartPluginExtended().configure({
+      key: 'big_number_extended',
     }),
-    new BigNumberTotalChartPlugin().configure({
-      key: 'big_number_total',
+    new BigNumberTotalChartPluginExtended().configure({
+      key: 'big_number_total_extended',
     }),
     new EchartsSunburstChartPlugin().configure({
       key: 'sunburst',

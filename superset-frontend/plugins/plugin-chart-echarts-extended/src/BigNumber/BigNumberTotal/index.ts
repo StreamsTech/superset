@@ -20,8 +20,8 @@ import { t, Behavior } from '@superset-ui/core';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import buildQuery from './buildQuery';
-import example1 from './images/BigNumber.jpg';
-import example2 from './images/BigNumber2.jpg';
+import example2 from './images/BigNumberHorizontal.png';
+import example1 from './images/BigNumber3.png';
 import thumbnail from './images/thumbnail.png';
 import { BigNumberTotalChartProps, BigNumberTotalFormData } from '../types';
 import { EchartsChartPlugin } from '../../types';
@@ -29,13 +29,13 @@ import { EchartsChartPlugin } from '../../types';
 const metadata = {
   category: t('KPI'),
   description: t(
-    'Showcases a single metric front-and-center. Big number is best used to call attention to a KPI or the one thing you want your audience to focus on.',
+    'Showcases a metric front-and-center. Big number is best used to call attention to a KPI or the one thing you want your audience to focus on. The Big Number Extended enhances this concept by allowing customization of background color, font color, subheader color, and subheader text. It also supports generating multiple big numbers, each representing different columns and metrics, providing a versatile and visually appealing way to present important data.',
   ),
   exampleGallery: [
     { url: example1, caption: t('A Big Number') },
     { url: example2, caption: t('With a subheader') },
   ],
-  name: t('Big Number'),
+  name: t('Big Number Extended'),
   tags: [
     t('Additive'),
     t('Business'),
@@ -47,9 +47,10 @@ const metadata = {
   ],
   thumbnail,
   behaviors: [Behavior.DRILL_TO_DETAIL],
+ // behaviors: [Behavior.DrillToDetail],
 };
 
-export default class BigNumberTotalChartPlugin extends EchartsChartPlugin<
+export default class BigNumberTotalChartPluginExtended extends EchartsChartPlugin<
   BigNumberTotalFormData,
   BigNumberTotalChartProps
 > {
