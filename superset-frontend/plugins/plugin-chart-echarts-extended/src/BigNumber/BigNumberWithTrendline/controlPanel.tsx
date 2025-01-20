@@ -23,7 +23,6 @@ import {
   D3_FORMAT_DOCS,
   D3_TIME_FORMAT_OPTIONS,
   getStandardizedControls,
-  sections,
   temporalColumnMixin,
 } from '@superset-ui/chart-controls';
 import React from 'react';

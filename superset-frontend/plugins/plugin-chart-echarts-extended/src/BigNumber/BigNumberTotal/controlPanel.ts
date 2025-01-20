@@ -23,7 +23,6 @@ import {
   D3_TIME_FORMAT_OPTIONS,
   Dataset,
   getStandardizedControls,
-  sections,
 } from '@superset-ui/chart-controls';
 import { headerFontSize, subheaderFontSize, textAlignment, cardDisplay } from '../sharedControls';
 import { backgroundColorControl, generateTextControls, subHeadTextColorControl } from './extendControlPanelSections';
