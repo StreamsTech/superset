@@ -28,6 +28,46 @@ from flask_caching.backends.filesystemcache import FileSystemCache
 from typing import Any
 
 logger = logging.getLogger()
+from flask_appbuilder.security.manager import AUTH_OAUTH
+
+AUTH_TYPE = AUTH_OAUTH
+OAUTH_PROVIDERS = [
+    {
+        'name': 'google',
+        'token_key': 'access_token',
+        'icon': 'fa-google',
+        'remote_app': {
+            'client_id': '1021998243386-1lrvpojgrcsvi919o840uir399tvu5pq.apps.googleusercontent.com',
+            'client_secret': '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',
+            'request_token_params': {
+                'scope': 'profile email'
+            },
+            'api_base_url': 'https://www.googleapis.com/oauth2/v2/',
+            'request_token_url': None,
+            'access_token_url': 'https://accounts.google.com/o/oauth2/token',
+            'authorize_url': 'https://accounts.google.com/o/oauth2/auth',
+        }
+    },
+    {
+        'name': 'github',
+        'token_key': 'access_token',
+        'icon': 'fa-github',
+        'remote_app': {
+            'client_id': 'Ov23lis5Dng0v789TBkN',
+            'client_secret': '0b23d14939dd3cce89b449d2afa9974d9aa1c1c8',
+            'request_token_params': {
+                'scope': 'openid profile email offline_access'
+            },
+            'api_base_url': 'https://api.github.com/',
+            'request_token_url': None,
+            'access_token_url': 'https://github.com/login/oauth/access_token',
+            'authorize_url': 'https://github.com/login/oauth/authorize',
+        }
+    }
+]
+
+AUTH_USER_REGISTRATION = True
+AUTH_USER_REGISTRATION_ROLE = 'Admin'
 
 DATABASE_DIALECT = os.getenv("DATABASE_DIALECT")
 DATABASE_USER = os.getenv("DATABASE_USER")
