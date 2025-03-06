@@ -60,16 +60,16 @@ OAUTH_PROVIDERS = [
         {   
         'name':'localIdentityProvider',
         'token_key':'access_token', # Name of the token in the response of access_token_url
-        'icon':'thumb-tack',   # Icon for the provider
+        'icon':'fa-thumb-tack',   # Icon for the provider
         'remote_app': {
-            'client_id':'mne-superset-api-client-local',  # Client Id (Identify Superset application)
+            'client_id':'mne-superset-api-client-local-new',  # Client Id (Identify Superset application)
             'client_secret':'01J8J22ZG2HEXJ4D5YY20FBMCQ', # Secret for this Client Id (Identify Superset application)
             'client_kwargs':{
                 'scope': 'openid profile email offline_access superset-service-local superset-api-local'               # Scope for the Authorization
             },
             'access_token_method':'POST',    # HTTP Method to call access_token_url
             'access_token_params':{        # Additional parameters for calls to access_token_url
-                'client_id':'mne-superset-api-client-new-predev'
+                'client_id':'mne-superset-api-client-local-new'
             },
             'jwks_uri':'http://localhost:5000/.well-known/jwks', # may be required to generate token
             'access_token_headers':{    # Additional headers for calls to access_token_url
