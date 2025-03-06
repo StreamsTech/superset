@@ -39,7 +39,7 @@ OAUTH_PROVIDERS = [
         'remote_app': {
             'client_id': '1021998243386-1lrvpojgrcsvi919o840uir399tvu5pq.apps.googleusercontent.com',
             'client_secret': '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',
-            'request_token_params': {
+            'client_kwargs': {
                 'scope': 'profile email'
             },
             'api_base_url': 'https://www.googleapis.com/oauth2/v2/',
@@ -55,8 +55,8 @@ OAUTH_PROVIDERS = [
         'remote_app': {
             'client_id': 'Ov23lis5Dng0v789TBkN',
             'client_secret': '0b23d14939dd3cce89b449d2afa9974d9aa1c1c8',
-            'request_token_params': {
-                'scope': 'openid profile email offline_access'
+            'client_kwargs': {
+                'scope': 'profile email'
             },
             'api_base_url': 'https://api.github.com/',
             'request_token_url': None,
@@ -67,7 +67,9 @@ OAUTH_PROVIDERS = [
 ]
 
 AUTH_USER_REGISTRATION = True
-AUTH_USER_REGISTRATION_ROLE = 'Admin'
+AUTH_DB_ENABLED = True
+AUTH_USER_REGISTRATION_ROLE = "Public"
+AUTH_ROLE_PUBLIC = "Gamma"
 
 DATABASE_DIALECT = os.getenv("DATABASE_DIALECT")
 DATABASE_USER = os.getenv("DATABASE_USER")
