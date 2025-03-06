@@ -26,13 +26,15 @@ import os
 from celery.schedules import crontab
 from flask_caching.backends.filesystemcache import FileSystemCache
 from typing import Any
+from custom_security_manager import CustomSecurityManager
+from flask_appbuilder.security.manager import AUTH_DB, AUTH_OAUTH
 
-logger = logging.getLogger()
-from flask_appbuilder.security.manager import AUTH_OAUTH
+# CUSTOM_SECURITY_MANAGER = CustomSecurityManager
 
 AUTH_TYPE = AUTH_OAUTH
+
 OAUTH_PROVIDERS = [
-        {   
+    {   
         'name':'predevIdentityProvider',
         'token_key':'access_token', # Name of the token in the response of access_token_url
         'icon':'fa-address-card',   # Icon for the provider
@@ -53,6 +55,29 @@ OAUTH_PROVIDERS = [
             'api_base_url':'https://identityprovider.predev.mne.binsight.streamstech.com/',
             'access_token_url':'https://identityprovider.predev.mne.binsight.streamstech.com/connect/token',
             'authorize_url':'https://identityprovider.predev.mne.binsight.streamstech.com/connect/authorize'
+        }
+    },
+        {   
+        'name':'localIdentityProvider',
+        'token_key':'access_token', # Name of the token in the response of access_token_url
+        'icon':'thumb-tack',   # Icon for the provider
+        'remote_app': {
+            'client_id':'mne-superset-api-client-local',  # Client Id (Identify Superset application)
+            'client_secret':'01J8J22ZG2HEXJ4D5YY20FBMCQ', # Secret for this Client Id (Identify Superset application)
+            'client_kwargs':{
+                'scope': 'openid profile email offline_access superset-service-local superset-api-local'               # Scope for the Authorization
+            },
+            'access_token_method':'POST',    # HTTP Method to call access_token_url
+            'access_token_params':{        # Additional parameters for calls to access_token_url
+                'client_id':'mne-superset-api-client-new-predev'
+            },
+            'jwks_uri':'http://localhost:5000/.well-known/jwks', # may be required to generate token
+            'access_token_headers':{    # Additional headers for calls to access_token_url
+                'Authorization': 'Basic Base64EncodedClientIdAndSecret'
+            },
+            'api_base_url':'http://localhost:5000/',
+            'access_token_url':'http://localhost:5000/connect/token',
+            'authorize_url':'http://localhost:5000/connect/authorize'
         }
     },
     {
@@ -137,6 +162,7 @@ CACHE_CONFIG = {
 }
 DATA_CACHE_CONFIG = CACHE_CONFIG
 
+logger = logging.getLogger()
 
 class CeleryConfig:
     broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
@@ -216,7 +242,6 @@ FEATURE_FLAGS = {
 FAB_ADD_SECURITY_API = True
 ENABLE_CORS = True
 SECRET_KEY='4IETlIrDFFVmSr2OiKqT3WTsbpWALJBtSMuE2JfKEacp6p9WpBRZ4e49'
-
 HTML_SANITIZATION = True
 HTML_SANITIZATION_SCHEMA_EXTENSIONS: dict[str, Any] = {
     "attributes": {
