@@ -32,6 +32,29 @@ from flask_appbuilder.security.manager import AUTH_OAUTH
 
 AUTH_TYPE = AUTH_OAUTH
 OAUTH_PROVIDERS = [
+        {   
+        'name':'predevIdentityProvider',
+        'token_key':'access_token', # Name of the token in the response of access_token_url
+        'icon':'fa-address-card',   # Icon for the provider
+        'remote_app': {
+            'client_id':'mne-superset-api-client-new-predev',  # Client Id (Identify Superset application)
+            'client_secret':'01J8J22ZG2HEXJ4D5YY20FBMCQ', # Secret for this Client Id (Identify Superset application)
+            'client_kwargs':{
+                'scope': 'openid profile email offline_access superset-service-predev superset-api-predev'               # Scope for the Authorization
+            },
+            'access_token_method':'POST',    # HTTP Method to call access_token_url
+            'access_token_params':{        # Additional parameters for calls to access_token_url
+                'client_id':'mne-superset-api-client-new-predev'
+            },
+            'jwks_uri':'https://identityprovider.predev.mne.binsight.streamstech.com/.well-known/jwks', # may be required to generate token
+            'access_token_headers':{    # Additional headers for calls to access_token_url
+                'Authorization': 'Basic Base64EncodedClientIdAndSecret'
+            },
+            'api_base_url':'https://identityprovider.predev.mne.binsight.streamstech.com/',
+            'access_token_url':'https://identityprovider.predev.mne.binsight.streamstech.com/connect/token',
+            'authorize_url':'https://identityprovider.predev.mne.binsight.streamstech.com/connect/authorize'
+        }
+    },
     {
         'name': 'google',
         'token_key': 'access_token',
