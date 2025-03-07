@@ -26,8 +26,7 @@ import os
 from celery.schedules import crontab
 from flask_caching.backends.filesystemcache import FileSystemCache
 from typing import Any
-from custom_security_manager import CustomSecurityManager
-from flask_appbuilder.security.manager import AUTH_DB, AUTH_OAUTH
+from flask_appbuilder.security.manager import AUTH_OAUTH
 
 # CUSTOM_SECURITY_MANAGER = CustomSecurityManager
 
