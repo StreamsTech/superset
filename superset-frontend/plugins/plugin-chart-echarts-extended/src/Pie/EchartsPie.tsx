@@ -22,7 +22,7 @@ import Echart from '../components/Echart';
 import { allEventHandlers } from '../utils/eventHandlers';
 
 export default function EchartsPie(props: PieChartTransformedProps) {
-  const { height, width, echartOptions, selectedValues, refs, tableData } = props;
+  const { height, width, echartOptions, selectedValues, refs, tableData, showTable } = props;
   const eventHandlers = allEventHandlers(props);
 
   return (
@@ -35,7 +35,8 @@ export default function EchartsPie(props: PieChartTransformedProps) {
         eventHandlers={eventHandlers}
         selectedValues={selectedValues}
       />
-      
+
+    {showTable && (  
       <table className="pie-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
@@ -67,6 +68,8 @@ export default function EchartsPie(props: PieChartTransformedProps) {
           ))}
         </tbody>  
       </table>
+      )}
     </div>
   );
+  
 }

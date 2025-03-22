@@ -173,6 +173,7 @@ export default function transformProps(
     showLabelsThreshold,
     sliceId,
     showTotal,
+    showTable,
     columnColorFormatting,
   }: EchartsPieFormData = {
     ...DEFAULT_LEGEND_FORM_DATA,
@@ -408,5 +409,6 @@ export default function transformProps(
     emitCrossFilters,
     coltypeMapping,
     tableData,
+    showTable,
   };
 }

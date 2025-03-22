@@ -197,6 +197,18 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'show_table',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Table'),
+              default: false,
+              renderTrigger: true,
+              description: t('Whether to display the Pie Table'),
+            },
+          },
+        ],
         // eslint-disable-next-line react/jsx-key
         [<ControlSubSectionHeader>{t('Pie shape')}</ControlSubSectionHeader>],
         [

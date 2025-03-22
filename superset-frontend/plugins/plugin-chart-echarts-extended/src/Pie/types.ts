@@ -45,6 +45,7 @@ export type EchartsPieFormData = QueryFormData &
     numberFormat: string;
     dateFormat: string;
     showLabelsThreshold: number;
+    showTable: boolean;
   };
 
 export enum EchartsPieLabelType {
@@ -83,6 +84,7 @@ export type PieChartTransformedProps =
   BaseTransformedProps<EchartsPieFormData> &
     ContextMenuTransformedProps &
     CrossFilterTransformedProps&{
+      showTable: boolean;
       tableData: Array<{
         name: string;
         value: string | number ;
