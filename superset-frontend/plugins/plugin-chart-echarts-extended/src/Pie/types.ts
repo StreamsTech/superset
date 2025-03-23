@@ -66,6 +66,7 @@ export interface EchartsPieChartProps
 export const DEFAULT_FORM_DATA: EchartsPieFormData = {
   ...DEFAULT_LEGEND_FORM_DATA,
   donut: false,
+  highlight: false,
   groupby: [],
   innerRadius: 30,
   labelLine: false,

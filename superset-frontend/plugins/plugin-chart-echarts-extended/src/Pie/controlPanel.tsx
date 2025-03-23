@@ -35,6 +35,7 @@ import { legendSection } from '../controls';
 
 const {
   donut,
+  highlight,
   innerRadius,
   labelsOutside,
   labelType,
@@ -257,6 +258,62 @@ const config: ControlPanelConfig = {
         ],
         [
           {
+            name: 'highlight',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Highlight a Value'),
+              default:  highlight,
+              renderTrigger: true,
+              description: t('Do you want to highlight a value in the pie?'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'selectHighlight',
+            config: {
+              type: 'SelectControl',
+              label: t('Select the Value to Highlight'),
+              default: "",
+              renderTrigger: true,
+              shouldMapStateToProps() {
+                return true;
+              },
+        
+              mapStateToProps: (explore, _, chart) => {
+                const data = chart?.queriesResponse?.[0]?.data || [];
+                const groupBy = explore?.form_data?.groupby || [];
+        
+                // Convert column options to an array of values only
+                const columnOptions = Array.isArray(data) && data.length > 0
+                  ? data.map((item: any) => {
+                      const value = groupBy.map((key: string) => {
+                        const columnValue = item?.[key];
+                        return columnValue === null || columnValue === undefined ? "<NULL>" : columnValue;
+                      }).join(", ");
+                      return [String(value), t(value) || String(value)]; // Wrap the value in an array to ensure it becomes an array of strings
+                    }) // Flatten the nested arrays
+                  : [];
+                    console.log("columnOptions", columnOptions);
+                return {
+                  verboseMap: explore?.datasource?.hasOwnProperty('verbose_map')
+                    ? (explore?.datasource as Dataset)?.verbose_map
+                    : explore?.datasource?.columns ?? {},
+                  choices:columnOptions, // The choices should now be an array of strings
+                  removeIrrelevantConditions: chart?.chartStatus === 'success',
+                };
+              },
+        
+              description: t('What should be shown on the label?'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.highlight?.value),
+            },
+          },
+        ]
+        
+        ,        
+        [
+          {
             name: 'column_color_formatting',
             config: {
               type: 'ColumnColorFormatingControl',
@@ -288,8 +345,7 @@ const config: ControlPanelConfig = {
                       label: value
                   };
                 });
-                console.log("End of all : ", ColumnValue);
-
+              
                 const numericColumns =
                   Array.isArray(ColumnValue) && Array.isArray(coltypes)
                     ? ColumnValue

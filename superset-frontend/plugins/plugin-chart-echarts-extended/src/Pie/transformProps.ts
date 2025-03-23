@@ -154,6 +154,8 @@ export default function transformProps(
 
   const {
     colorScheme,
+    highlight,
+    selectHighlight,
     donut,
     groupby,
     innerRadius,
@@ -244,6 +246,10 @@ export default function transformProps(
     }
 
     let sliceColor = colorFn(name, sliceId) || '#000000';
+    console.log("selectHighlight  "+selectHighlight+"  name  "+name+" highlight"+ highlight)
+    if (selectHighlight && selectHighlight===name) {
+      sliceColor = '#000000';
+    }
     if (colorMap?.[name]) {
       sliceColor = colorMap?.[name]
     }
@@ -381,6 +387,18 @@ export default function transformProps(
       data: keys,
     },
     graphic: showTotal
+      ? {
+          type: 'text',
+          ...getTotalValuePadding({ chartPadding, donut, width, height }),
+          style: {
+            text: t('Total: %s', numberFormatter(totalValue)),
+            fontSize: 16,
+            fontWeight: 'bold',
+          },
+          z: 10,
+        }
+      : null,
+      highlight: highlight
       ? {
           type: 'text',
           ...getTotalValuePadding({ chartPadding, donut, width, height }),
