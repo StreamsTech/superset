@@ -365,8 +365,28 @@ export default function transformProps(
    
   };
 });
+  
+// Highlight
+// Define types explicitly
+let hightlightName: { [key: string]: any } | undefined;
+let hightlightcount: number | null = null;
+let highlightPercent: number = 0;
 
+if (selectHighlight) {
+  // Find the matching item in the data
+  hightlightName = data.find(item => Object.values(item)[0] === selectHighlight);
 
+  // Get the 'count' value if the result exists, otherwise default to null
+  hightlightcount = hightlightName ? hightlightName.count ?? 0 : null;
+
+  // Calculate the highlight percentage, ensuring that hightlightcount is a valid number
+  if (totalValue > 0 && hightlightcount !== null) {
+    highlightPercent = (convertInteger(hightlightcount) / totalValue) * 100;
+  } else {
+    highlightPercent = 0;
+  }
+}
+console.log("highlightCount",hightlightcount);
   const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,
@@ -387,30 +407,33 @@ export default function transformProps(
       ...getLegendProps(legendType, legendOrientation, showLegend, theme),
       data: keys,
     },
-    graphic: showTotal
-      ? {
-          type: 'text',
-          ...getTotalValuePadding({ chartPadding, donut, width, height }),
-          style: {
-            text: t('Total: %s', numberFormatter(totalValue)),
-            fontSize: 16,
-            fontWeight: 'bold',
-          },
-          z: 10,
-        }
-      : null,
-      highlight: highlight
-      ? {
-          type: 'text',
-          ...getTotalValuePadding({ chartPadding, donut, width, height }),
-          style: {
-            text: t('Total: %s', numberFormatter(totalValue)),
-            fontSize: 16,
-            fontWeight: 'bold',
-          },
-          z: 10,
-        }
-      : null,
+    graphic: [
+      showTotal
+        ? {
+            type: 'text',
+            ...getTotalValuePadding({ chartPadding, donut, width, height }),
+            style: {
+              text: t('Total: %s', numberFormatter(totalValue)),
+              fontSize: 16,
+              fontWeight: 'bold',
+            },
+            z: 10,
+          }
+        : null,
+      highlight
+        ? {
+            type: 'text',
+            ...getTotalValuePadding({ chartPadding, donut, width, height }),
+            style: {
+              text: t('%s', highlightPercent.toFixed(2) + '%'), // Your custom highlight text
+              fontSize: 18,
+              fontWeight: 'bold',
+              color: 'red', // Highlight color
+            },
+            z: 20,
+          }
+        : null,
+    ],
     series,
   };
 
