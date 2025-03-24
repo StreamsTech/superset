@@ -275,42 +275,43 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               label: t('Select the Value to Highlight'),
               default: "",
+              freeForm: true,
               renderTrigger: true,
               shouldMapStateToProps() {
                 return true;
               },
-        
+              
               mapStateToProps: (explore, _, chart) => {
                 const data = chart?.queriesResponse?.[0]?.data || [];
                 const groupBy = explore?.form_data?.groupby || [];
-        
-                // Convert column options to an array of values only
+                
+                // Convert column options to the required structure
                 const columnOptions = Array.isArray(data) && data.length > 0
                   ? data.map((item: any) => {
-                      const value = groupBy.map((key: string) => {
+                      const key = groupBy.map((key: string) => {
                         const columnValue = item?.[key];
                         return columnValue === null || columnValue === undefined ? "<NULL>" : columnValue;
                       }).join(", ");
-                      return [String(value), t(value) || String(value)]; // Wrap the value in an array to ensure it becomes an array of strings
-                    }) // Flatten the nested arrays
+                      return [String(key), t(key)];
+                    })
                   : [];
-                    console.log("columnOptions", columnOptions);
+                
+                console.log("columnOptionsOK", columnOptions);
                 return {
                   verboseMap: explore?.datasource?.hasOwnProperty('verbose_map')
                     ? (explore?.datasource as Dataset)?.verbose_map
                     : explore?.datasource?.columns ?? {},
-                  choices:columnOptions, // The choices should now be an array of strings
+                  choices: columnOptions, // The choices are now correctly formatted
                   removeIrrelevantConditions: chart?.chartStatus === 'success',
                 };
               },
-        
+              
               description: t('What should be shown on the label?'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
                 Boolean(controls?.highlight?.value),
             },
           },
         ]
-        
         ,        
         [
           {

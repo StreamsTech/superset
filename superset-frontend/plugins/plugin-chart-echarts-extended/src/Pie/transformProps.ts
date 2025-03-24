@@ -246,10 +246,11 @@ export default function transformProps(
     }
 
     let sliceColor = colorFn(name, sliceId) || '#000000';
-    console.log("selectHighlight  "+selectHighlight+"  name  "+name+" highlight"+ highlight)
-    if (selectHighlight && selectHighlight===name) {
-      sliceColor = '#000000';
+    
+    if (selectHighlight && selectHighlight !== name) {
+      sliceColor = '#d3d3d3';
     }
+    
     if (colorMap?.[name]) {
       sliceColor = colorMap?.[name]
     }
