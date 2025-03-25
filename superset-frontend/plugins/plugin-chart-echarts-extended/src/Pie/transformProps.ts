@@ -377,7 +377,7 @@ if (selectHighlight) {
   hightlightName = data.find(item => Object.values(item)[0] === selectHighlight);
 
   // Get the 'count' value if the result exists, otherwise default to null
-  hightlightcount = hightlightName ? hightlightName.count ?? 0 : null;
+  hightlightcount = hightlightName ? hightlightName.count: null;
 
   // Calculate the highlight percentage, ensuring that hightlightcount is a valid number
   if (totalValue > 0 && hightlightcount !== null) {
@@ -387,6 +387,7 @@ if (selectHighlight) {
   }
 }
 console.log("highlightCount",hightlightcount);
+console.log("hightlightName",hightlightName);
   const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,
