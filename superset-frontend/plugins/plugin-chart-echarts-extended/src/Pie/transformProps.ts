@@ -331,6 +331,9 @@ export default function transformProps(
     },
   ];
 
+// Highlight
+// Define types explicitly
+let highlightPercent: number = 0;
 //table
  // Generate table data based on the chart data
  const tableData = data.map((datum, index) => {
@@ -355,6 +358,9 @@ export default function transformProps(
   // Calculate the percentage
   const percent = totalValue > 0 ? (convertInteger(numericValue) / totalValue) * 100 : 0;
   const sliceColor = colorMap?.[name] || colorFn(name, sliceId) || '#000000';
+  if (selectHighlight && selectHighlight == name) {
+    highlightPercent = percent;
+  }
   
   return {
    
@@ -366,28 +372,8 @@ export default function transformProps(
   };
 });
   
-// Highlight
-// Define types explicitly
-let hightlightName: { [key: string]: any } | undefined;
-let hightlightcount: number | null = null;
-let highlightPercent: number = 0;
 
-if (selectHighlight) {
-  // Find the matching item in the data
-  hightlightName = data.find(item => Object.values(item)[0] === selectHighlight);
-
-  // Get the 'count' value if the result exists, otherwise default to null
-  hightlightcount = hightlightName ? hightlightName.count: null;
-
-  // Calculate the highlight percentage, ensuring that hightlightcount is a valid number
-  if (totalValue > 0 && hightlightcount !== null) {
-    highlightPercent = (convertInteger(hightlightcount) / totalValue) * 100;
-  } else {
-    highlightPercent = 0;
-  }
-}
-console.log("highlightCount",hightlightcount);
-console.log("hightlightName",hightlightName);
+//console.log("hightlightName",highlightPercent);
   const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,

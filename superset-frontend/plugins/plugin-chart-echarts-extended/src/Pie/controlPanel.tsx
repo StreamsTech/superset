@@ -296,7 +296,7 @@ const config: ControlPanelConfig = {
                     })
                   : [];
                 
-                console.log("columnOptionsOK", columnOptions);
+                //console.log("columnOptionsOK", columnOptions);
                 return {
                   verboseMap: explore?.datasource?.hasOwnProperty('verbose_map')
                     ? (explore?.datasource as Dataset)?.verbose_map
