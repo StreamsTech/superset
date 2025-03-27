@@ -220,3 +220,6 @@ WEBDRIVER_OPTION_ARGS = [
 WEBDRIVER_BASEURL = "http://superset:8088" # When running using docker compose use "http://superset_app:8088'
 # This is the link sent to the recipient. Change to your domain, e.g. https://superset.mydomain.com
 WEBDRIVER_BASEURL_USER_FRIENDLY = "http://localhost:8088"
+
+# Set this API key to enable Mapbox visualizations
+MAPBOX_API_KEY = "pk.eyJ1IjoiYW5pa2EtaXNsYW0iLCJhIjoiY204cXpheWZvMGg1ajJrczg4bmJ4NmJibyJ9.thlmqx2c6MVr2LU2DcY4vQ"
