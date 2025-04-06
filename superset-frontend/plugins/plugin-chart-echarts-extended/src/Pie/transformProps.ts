@@ -373,7 +373,7 @@ let highlightPercent: number = 0;
 });
   
 
-//console.log("hightlightName",highlightPercent);
+console.log("hightlightPercent",highlightPercent);
   const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,
@@ -412,7 +412,7 @@ let highlightPercent: number = 0;
             type: 'text',
             ...getTotalValuePadding({ chartPadding, donut, width, height }),
             style: {
-              text: t('%s', highlightPercent.toFixed(2) + '%'), // Your custom highlight text
+              text: t( percentFormatter(highlightPercent/100) + '%'), // Your custom highlight text
               fontSize: 18,
               fontWeight: 'bold',
               color: 'red', // Highlight color
