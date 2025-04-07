@@ -40,6 +40,7 @@ import MetricsControl from './MetricControl/MetricsControl';
 import AdhocFilterControl from './FilterControl/AdhocFilterControl';
 import FilterBoxItemControl from './FilterBoxItemControl';
 import ConditionalFormattingControl from './ConditionalFormattingControl';
+import ExtendTableConditionalFormattingControl from './ExtendTableConditionalFormattingControl';
 import DndColumnSelectControl, {
   DndColumnSelect,
   DndFilterSelect,
@@ -80,6 +81,7 @@ const controlMap = {
   AdhocFilterControl,
   FilterBoxItemControl,
   ConditionalFormattingControl,
+  ExtendTableConditionalFormattingControl,
   ColumnColorFormatingControl,
   XAxisSortControl,
   ...sharedControlComponents,
