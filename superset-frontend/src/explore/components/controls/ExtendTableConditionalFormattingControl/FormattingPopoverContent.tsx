@@ -16,12 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { styled, SupersetTheme, t, useTheme } from '@superset-ui/core';
 import { Form, FormItem, FormProps } from 'src/components/Form';
 import Select from 'src/components/Select/Select';
 import { Col, Row } from 'src/components';
 import { Input, InputNumber } from 'src/components/Input';
+import { Radio } from 'src/components/Radio';
 import Button from 'src/components/Button';
 import {
   COMPARATOR,
@@ -36,6 +37,8 @@ const FullWidthInputNumber = styled(InputNumber)`
 const FullWidthInput = styled(Input)`
   width: 100%;
 `;
+
+
 
 const JustifyEnd = styled.div`
   display: flex;
@@ -214,7 +217,9 @@ export const FormattingPopoverContent = ({
 }) => {
   const theme = useTheme();
   const colorScheme = colorSchemeOptions(theme);
-  console.log("config : " + config?.targetValue);
+  const [colorToggle, setColorToggle] = useState(false);
+  const colorSchemeLabel = colorToggle ? 'Custom Color Scheme' : 'Color scheme';
+  //console.log("config : " + config?.targetValue);
   return (
     <Form
       onFinish={onChange}
@@ -235,12 +240,40 @@ export const FormattingPopoverContent = ({
         </Col>
         <Col span={12}>
           <FormItem
-            name="colorScheme"
-            label={t('Color scheme')}
+            name="customColor"
+            label={t('Custom Color')}
             rules={rulesRequired}
-            initialValue={colorScheme[0].value}
+            initialValue={false}
           >
-            <Select ariaLabel={t('Color scheme')} options={colorScheme} />
+            <Radio.Group
+              onChange={e => setColorToggle(e.target.value)}
+              value={colorToggle}
+            >
+              <Radio value={true}>{t('Use custom color scheme')}</Radio>
+              <Radio value={false}>{t('Use default color scheme')}</Radio>
+            </Radio.Group>
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem
+            name="colorScheme"
+            label={t(colorSchemeLabel)}
+            rules={rulesRequired}
+            initialValue= "Select Colour"
+          >
+            {!colorToggle ? (
+        <Select
+          ariaLabel={t('Color scheme')}
+          options={colorScheme}
+        />
+      ) : (
+        <Input
+          type="color" style={{ width: '100%' }}
+          aria-label={t('Color scheme')}
+          placeholder={t('Enter color scheme')}
+        />
+      )}
+            
           </FormItem>
         </Col>
       </Row>
