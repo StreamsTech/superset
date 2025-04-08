@@ -2295,6 +2295,59 @@ class DeckScatterViz(BaseDeckGLViz):
             self.fixed_value = self.point_radius_fixed.get("value")
         return super().get_data(df)
 
+class DeckScatterVizExtend(BaseDeckGLViz):
+
+    """deck.gl's ScatterLayer"""
+
+    viz_type = "deck_scatter_extend"
+    verbose_name = _("Deck.gl - Scatter plot")
+    spatial_control_keys = ["spatial"]
+    is_timeseries = True
+
+    @deprecated(deprecated_in="3.0")
+    def query_obj(self) -> QueryObjectDict:
+        # pylint: disable=attribute-defined-outside-init
+        self.is_timeseries = bool(self.form_data.get("time_grain_sqla"))
+        self.point_radius_fixed = self.form_data.get("point_radius_fixed") or {
+            "type": "fix",
+            "value": 500,
+        }
+        return super().query_obj()
+
+    @deprecated(deprecated_in="3.0")
+    def get_metrics(self) -> list[str]:
+        # pylint: disable=attribute-defined-outside-init
+        self.metric = None
+        if self.point_radius_fixed.get("type") == "metric":
+            self.metric = self.point_radius_fixed["value"]
+            return [self.metric]
+        return []
+
+    @deprecated(deprecated_in="3.0")
+    def get_properties(self, data: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "metric": data.get(self.metric_label) if self.metric_label else None,
+            "radius": self.fixed_value
+            if self.fixed_value
+            else data.get(self.metric_label)
+            if self.metric_label
+            else None,
+            "cat_color": data.get(self.dim) if self.dim else None,
+            "position": data.get("spatial"),
+            DTTM_ALIAS: data.get(DTTM_ALIAS),
+        }
+
+    @deprecated(deprecated_in="3.0")
+    def get_data(self, df: pd.DataFrame) -> VizData:
+        # pylint: disable=attribute-defined-outside-init
+        self.metric_label = utils.get_metric_name(self.metric) if self.metric else None
+        self.point_radius_fixed = self.form_data.get("point_radius_fixed")
+        self.fixed_value = None
+        self.dim = self.form_data.get("dimension")
+        if self.point_radius_fixed and self.point_radius_fixed.get("type") != "metric":
+            self.fixed_value = self.point_radius_fixed.get("value")
+        return super().get_data(df)
+
 
 class DeckScreengrid(BaseDeckGLViz):
 

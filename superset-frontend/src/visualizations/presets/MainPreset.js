@@ -48,6 +48,7 @@ import {
   TimePivotChartPlugin,
 } from '@superset-ui/legacy-preset-chart-nvd3';
 import { DeckGLChartPreset } from '@superset-ui/legacy-preset-chart-deckgl';
+import { DeckGLChartPresetExtend } from '@superset-ui/legacy-preset-chart-deckgl-extend';
 import {
   BigNumberChartPlugin,
   BigNumberTotalChartPlugin,
@@ -100,7 +101,7 @@ export default class MainPreset extends Preset {
 
     super({
       name: 'Legacy charts',
-      presets: [new DeckGLChartPreset()],
+      presets: [new DeckGLChartPreset(), new DeckGLChartPresetExtend()],
       plugins: [
         new AreaChartPlugin().configure({ key: 'area' }),
         new BarChartPlugin().configure({ key: 'bar' }),
