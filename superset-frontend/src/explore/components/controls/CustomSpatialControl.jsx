@@ -32,6 +32,7 @@ const spatialTypes = {
   latlong: 'latlong',
   delimited: 'delimited',
   geohash: 'geohash',
+  region: 'region', // new
 };
 
 const propTypes = {
@@ -42,12 +43,12 @@ const propTypes = {
 };
 
 const defaultProps = {
-  onChange: () => {},
+  onChange: () => { },
   animation: true,
   choices: [],
 };
 
-export default class SpatialControl extends React.Component {
+export default class CustomSpatialControl extends React.Component {
   constructor(props) {
     super(props);
     const v = props.value || {};
@@ -63,6 +64,7 @@ export default class SpatialControl extends React.Component {
       lonlatCol: v.lonlatCol || defaultCol,
       reverseCheckbox: v.reverseCheckbox || false,
       geohashCol: v.geohashCol || defaultCol,
+      regionCol: v.regionCol || defaultCol,
       value: null,
       errors: [],
     };
@@ -100,6 +102,13 @@ export default class SpatialControl extends React.Component {
         errors.push(errMsg);
       }
     }
+    // new region type
+    else if (type === spatialTypes.region) {
+      value.regionCol = this.state.regionCol;
+      if (!value.regionCol) {
+        errors.push(t('Region column is required.'));
+      }
+    }
     this.setState({ value, errors });
     this.props.onChange(value, errors);
   }
@@ -127,6 +136,9 @@ export default class SpatialControl extends React.Component {
     }
     if (this.state.type === spatialTypes.geohash) {
       return `${this.state.geohashCol}`;
+    }
+    if (this.state.type === spatialTypes.region) {
+      return `${this.state.regionCol}`;
     }
     return null;
   }
@@ -184,7 +196,7 @@ export default class SpatialControl extends React.Component {
           title={t('Delimited long & lat single column')}
           info={t(
             'Multiple formats accepted, look the geopy.points ' +
-              'Python library for more details',
+            'Python library for more details',
           )}
           isSelected={this.state.type === spatialTypes.delimited}
           onSelect={this.setType.bind(this, spatialTypes.delimited)}
@@ -214,6 +226,18 @@ export default class SpatialControl extends React.Component {
             </Col>
           </Row>
         </PopoverSection>
+        <PopoverSection
+          title={t('Region name')}
+          isSelected={this.state.type === spatialTypes.region}
+          onSelect={this.setType.bind(this, spatialTypes.region)}
+        >
+          <Row gutter={16}>
+            <Col xs={24} md={12}>
+              {t('Region column')}
+              {this.renderSelect('regionCol', spatialTypes.region)}
+            </Col>
+          </Row>
+        </PopoverSection>
       </div>
     );
   }
@@ -234,5 +258,5 @@ export default class SpatialControl extends React.Component {
   }
 }
 
-SpatialControl.propTypes = propTypes;
-SpatialControl.defaultProps = defaultProps;
+CustomSpatialControl.propTypes = propTypes;
+CustomSpatialControl.defaultProps = defaultProps;

@@ -31,6 +31,7 @@ import SelectAsyncControl from './SelectAsyncControl';
 import SelectControl from './SelectControl';
 import SliderControl from './SliderControl';
 import SpatialControl from './SpatialControl';
+import CustomSpatialControl from './CustomSpatialControl';
 import TextAreaControl from './TextAreaControl';
 import TextControl from './TextControl';
 import TimeSeriesColumnControl from './TimeSeriesColumnControl';
@@ -72,6 +73,7 @@ const controlMap = {
   SelectControl,
   SliderControl,
   SpatialControl,
+  CustomSpatialControl,
   TextAreaControl,
   TextControl,
   TimeSeriesColumnControl,

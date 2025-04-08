@@ -2242,6 +2242,184 @@ class BaseDeckGLViz(BaseViz):
         raise NotImplementedError()
 
 
+### Custom BaseDeckGLViz classes
+class CustomBaseDeckGLViz(BaseViz):
+
+    """Base class for deck.gl visualizations"""
+
+    is_timeseries = False
+    credits = '<a href="https://uber.github.io/deck.gl/">deck.gl</a>'
+    spatial_control_keys: list[str] = []
+
+    @deprecated(deprecated_in="3.0")
+    def get_metrics(self) -> list[str]:
+        # pylint: disable=attribute-defined-outside-init
+        self.metric = self.form_data.get("size")
+        return [self.metric] if self.metric else []
+
+    @deprecated(deprecated_in="3.0")
+    def process_spatial_query_obj(self, key: str, group_by: list[str]) -> None:
+        group_by.extend(self.get_spatial_columns(key))
+
+    @deprecated(deprecated_in="3.0")
+    def get_spatial_columns(self, key: str) -> list[str]:
+        spatial = self.form_data.get(key)
+        if spatial is None:
+            raise ValueError(_("Bad spatial key"))
+
+        if spatial.get("type") == "latlong":
+            return [spatial.get("lonCol"), spatial.get("latCol")]
+
+        if spatial.get("type") == "delimited":
+            return [spatial.get("lonlatCol")]
+
+        if spatial.get("type") == "geohash":
+            return [spatial.get("geohashCol")]
+        return []
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def parse_coordinates(latlog: Any) -> tuple[float, float] | None:
+        if not latlog:
+            return None
+        try:
+            point = Point(latlog)
+            return (point.latitude, point.longitude)
+        except Exception as ex:
+            raise SpatialException(
+                _("Invalid spatial point encountered: %s" % latlog)
+            ) from ex
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def reverse_geohash_decode(geohash_code: str) -> tuple[str, str]:
+        lat, lng = geohash.decode(geohash_code)
+        return (lng, lat)
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def reverse_latlong(df: pd.DataFrame, key: str) -> None:
+        df[key] = [tuple(reversed(o)) for o in df[key] if isinstance(o, (list, tuple))]
+
+    @deprecated(deprecated_in="3.0")
+    def process_spatial_data_obj(self, key: str, df: pd.DataFrame) -> pd.DataFrame:
+        spatial = self.form_data.get(key)
+        if spatial is None:
+            raise ValueError(_("Bad spatial key"))
+
+        if spatial.get("type") == "latlong":
+            df[key] = list(
+                zip(
+                    pd.to_numeric(df[spatial.get("lonCol")], errors="coerce"),
+                    pd.to_numeric(df[spatial.get("latCol")], errors="coerce"),
+                )
+            )
+        elif spatial.get("type") == "delimited":
+            lon_lat_col = spatial.get("lonlatCol")
+            df[key] = df[lon_lat_col].apply(self.parse_coordinates)
+            del df[lon_lat_col]
+        elif spatial.get("type") == "geohash":
+            df[key] = df[spatial.get("geohashCol")].map(self.reverse_geohash_decode)
+            del df[spatial.get("geohashCol")]
+
+        if spatial.get("reverseCheckbox"):
+            self.reverse_latlong(df, key)
+
+        if df.get(key) is None:
+            raise NullValueException(
+                _(
+                    "Encountered invalid NULL spatial entry, \
+                                       please consider filtering those out"
+                )
+            )
+        return df
+
+    @deprecated(deprecated_in="3.0")
+    def add_null_filters(self) -> None:
+        spatial_columns = set()
+        for key in self.spatial_control_keys:
+            for column in self.get_spatial_columns(key):
+                spatial_columns.add(column)
+
+        if self.form_data.get("adhoc_filters") is None:
+            self.form_data["adhoc_filters"] = []
+
+        if line_column := self.form_data.get("line_column"):
+            spatial_columns.add(line_column)
+
+        for column in sorted(spatial_columns):
+            filter_ = simple_filter_to_adhoc(
+                {"col": column, "op": "IS NOT NULL", "val": ""}
+            )
+            self.form_data["adhoc_filters"].append(filter_)
+
+    @deprecated(deprecated_in="3.0")
+    def query_obj(self) -> QueryObjectDict:
+        # add NULL filters
+        if self.form_data.get("filter_nulls", True):
+            self.add_null_filters()
+
+        query_obj = super().query_obj()
+        group_by: list[str] = []
+
+        for key in self.spatial_control_keys:
+            self.process_spatial_query_obj(key, group_by)
+
+        if self.form_data.get("dimension"):
+            group_by += [self.form_data["dimension"]]
+
+        if self.form_data.get("js_columns"):
+            group_by += self.form_data.get("js_columns") or []
+        # Ensure this value is sorted so that it does not
+        # cause the cache key generation (which hashes the
+        # query object) to generate different keys for values
+        # that should be considered the same.
+        group_by = sorted(set(group_by))
+        if metrics := self.get_metrics():
+            query_obj["groupby"] = group_by
+            query_obj["metrics"] = metrics
+            query_obj["columns"] = []
+            first_metric = query_obj["metrics"][0]
+            query_obj["orderby"] = [
+                (first_metric, not self.form_data.get("order_desc", True))
+            ]
+        else:
+            query_obj["columns"] = group_by
+        return query_obj
+
+    @deprecated(deprecated_in="3.0")
+    def get_js_columns(self, data: dict[str, Any]) -> dict[str, Any]:
+        cols = self.form_data.get("js_columns") or []
+        return {col: data.get(col) for col in cols}
+
+    @deprecated(deprecated_in="3.0")
+    def get_data(self, df: pd.DataFrame) -> VizData:
+        if df.empty:
+            return None
+
+        # Processing spatial info
+        for key in self.spatial_control_keys:
+            df = self.process_spatial_data_obj(key, df)
+
+        features = []
+        for data in df.to_dict(orient="records"):
+            feature = self.get_properties(data)
+            extra_props = self.get_js_columns(data)
+            if extra_props:
+                feature["extraProps"] = extra_props
+            features.append(feature)
+
+        return {
+            "features": features,
+            "mapboxApiKey": config["MAPBOX_API_KEY"],
+            "metricLabels": self.metric_labels,
+        }
+
+    @deprecated(deprecated_in="3.0")
+    def get_properties(self, data: dict[str, Any]) -> dict[str, Any]:
+        raise NotImplementedError()
+
+
 class DeckScatterViz(BaseDeckGLViz):
 
     """deck.gl's ScatterLayer"""
@@ -2295,7 +2473,7 @@ class DeckScatterViz(BaseDeckGLViz):
             self.fixed_value = self.point_radius_fixed.get("value")
         return super().get_data(df)
 
-class DeckScatterVizExtend(BaseDeckGLViz):
+class DeckScatterVizExtend(CustomBaseDeckGLViz):
 
     """deck.gl's ScatterLayer"""
 

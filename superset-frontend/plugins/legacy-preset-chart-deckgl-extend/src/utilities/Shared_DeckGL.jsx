@@ -303,7 +303,7 @@ export const viewport = {
 export const spatial = {
   name: 'spatial',
   config: {
-    type: 'SpatialControl',
+    type: 'CustomSpatialControl',
     label: t('Longitude & Latitude'),
     validators: [validateNonEmpty],
     description: t('Point to your spatial columns'),
