@@ -42,6 +42,10 @@ from deprecation import deprecated
 from flask import request
 from flask_babel import lazy_gettext as _
 from geopy.point import Point
+## Newly added geopy
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
+
 from pandas.tseries.frequencies import to_offset
 
 from superset import app
@@ -91,6 +95,11 @@ stats_logger = config["STATS_LOGGER"]
 relative_start = config["DEFAULT_RELATIVE_START_TIME"]
 relative_end = config["DEFAULT_RELATIVE_END_TIME"]
 logger = logging.getLogger(__name__)
+
+##New 
+# Initialize geolocator
+geolocator = Nominatim(user_agent="superset_deckgl", timeout=5)
+
 
 METRIC_KEYS = [
     "metric",
@@ -2260,6 +2269,24 @@ class CustomBaseDeckGLViz(BaseViz):
     @deprecated(deprecated_in="3.0")
     def process_spatial_query_obj(self, key: str, group_by: list[str]) -> None:
         group_by.extend(self.get_spatial_columns(key))
+    
+    ##New
+    # ✅ Added region to coordinates converter
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def get_coordinates_from_region(region_name: str) -> list[float] | None:
+        try:
+            location = geolocator.geocode(region_name)
+            print(f"latitude longitude location: {location.latitude}, {location.longitude}, {location.address}")
+            if location:
+                print(f"longitude latitude hi location: {location.latitude}, {location.longitude}, {location.address}")
+                return (location.longitude, location.latitude)
+            print(f"Could not geocode region: {region_name}")
+            # Optional: fallback to 0,0 or raise
+            return [0.0, 0.0]  # or return None
+        except GeocoderTimedOut:
+            print(f"Geocoder timed out for: {region_name}")
+            return [0.0, 0.0]  # or return None
 
     @deprecated(deprecated_in="3.0")
     def get_spatial_columns(self, key: str) -> list[str]:
@@ -2275,6 +2302,8 @@ class CustomBaseDeckGLViz(BaseViz):
 
         if spatial.get("type") == "geohash":
             return [spatial.get("geohashCol")]
+        if spatial.get("type") == "region":
+            return [spatial.get("regionCol")]
         return []
 
     @staticmethod
@@ -2314,6 +2343,7 @@ class CustomBaseDeckGLViz(BaseViz):
                     pd.to_numeric(df[spatial.get("latCol")], errors="coerce"),
                 )
             )
+            print(f"latlong df[key]: {df[key]}")
         elif spatial.get("type") == "delimited":
             lon_lat_col = spatial.get("lonlatCol")
             df[key] = df[lon_lat_col].apply(self.parse_coordinates)
@@ -2321,6 +2351,11 @@ class CustomBaseDeckGLViz(BaseViz):
         elif spatial.get("type") == "geohash":
             df[key] = df[spatial.get("geohashCol")].map(self.reverse_geohash_decode)
             del df[spatial.get("geohashCol")]
+        elif spatial.get("type") == "region":
+            region_col = spatial.get("regionCol")
+            df[key] = df[region_col].apply(self.get_coordinates_from_region)
+            print(f"region df[key]: {df[key]}")
+            ##del df[region_col]
 
         if spatial.get("reverseCheckbox"):
             self.reverse_latlong(df, key)
@@ -2400,6 +2435,7 @@ class CustomBaseDeckGLViz(BaseViz):
         # Processing spatial info
         for key in self.spatial_control_keys:
             df = self.process_spatial_data_obj(key, df)
+            print(f"spatial df[key]: {df[key]}")
 
         features = []
         for data in df.to_dict(orient="records"):
