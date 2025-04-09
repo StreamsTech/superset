@@ -98,7 +98,7 @@ logger = logging.getLogger(__name__)
 
 ##New 
 # Initialize geolocator
-geolocator = Nominatim(user_agent="superset_deckgl", timeout=5)
+geolocator = Nominatim(user_agent="superset_deckgl", timeout=120)
 
 
 METRIC_KEYS = [
