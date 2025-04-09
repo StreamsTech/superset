@@ -412,7 +412,7 @@ console.log("hightlightPercent",highlightPercent);
             type: 'text',
             ...getTotalValuePadding({ chartPadding, donut, width, height }),
             style: {
-              text: t( percentFormatter(highlightPercent/100) + '%'), // Your custom highlight text
+              text: t( percentFormatter(highlightPercent/100)), // Your custom highlight text
               fontSize: 18,
               fontWeight: 'bold',
               color: 'red', // Highlight color
