@@ -373,7 +373,7 @@ let highlightPercent: number = 0;
 });
   
 
-console.log("hightlightPercent",highlightPercent);
+//console.log("hightlightPercent",highlightPercent);
   const echartOptions: EChartsCoreOption = {
     grid: {
       ...defaultGrid,
