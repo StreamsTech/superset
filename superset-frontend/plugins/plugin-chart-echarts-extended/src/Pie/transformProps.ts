@@ -176,6 +176,9 @@ export default function transformProps(
     sliceId,
     showTotal,
     showTable,
+    categoryAlignment,
+    valueAlignment,
+    percentAlignment,
     columnColorFormatting,
   }: EchartsPieFormData = {
     ...DEFAULT_LEGEND_FORM_DATA,
@@ -358,6 +361,9 @@ let highlightPercent: number = 0;
   // Calculate the percentage
   const percent = totalValue > 0 ? (convertInteger(numericValue) / totalValue) * 100 : 0;
   const sliceColor = colorMap?.[name] || colorFn(name, sliceId) || '#000000';
+  const categoryAlignmentStyle = categoryAlignment;
+  const valueAlignmentStyle = valueAlignment;
+  const percentAlignmentStyle = percentAlignment;
   if (selectHighlight && selectHighlight == name) {
     highlightPercent = percent;
   }
@@ -368,6 +374,9 @@ let highlightPercent: number = 0;
     value: numericValue, // Use numeric value to avoid type issues
     percent: percent > 0 ? percent.toFixed(2) + '%' : '0.00%', // Format percentage to two decimal places
     color: sliceColor,
+    categoryAlignmentStyle: categoryAlignmentStyle,
+    valueAlignmentStyle: valueAlignmentStyle,
+    percentAlignmentStyle: percentAlignmentStyle,
    
   };
 });

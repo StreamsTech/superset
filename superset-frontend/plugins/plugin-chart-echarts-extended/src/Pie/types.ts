@@ -91,5 +91,8 @@ export type PieChartTransformedProps =
         value: string | number ;
         percent?: string; // Optional field for percent
         color: string;
+        categoryAlignmentStyle?: string; // Optional field for category alignment
+        valueAlignmentStyle?: string; // Optional field for value alignment
+        percentAlignmentStyle?: string; // Optional field for percent alignment
       }>;
     };

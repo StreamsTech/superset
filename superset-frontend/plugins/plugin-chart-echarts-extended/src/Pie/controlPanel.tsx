@@ -210,6 +210,63 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'category_alignment',
+            config: {
+              type: 'SelectControl',
+              label: t('Category Alignment'),
+              default: 'left',
+              renderTrigger: true,
+              choices: [
+                ['left', t('Left')],
+                ['center', t('Center')],
+                ['right', t('Right')],
+              ],
+              description: t('Align the category values in the table'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_table?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'value_alignment',
+            config: {
+              type: 'SelectControl',
+              label: t('Value Alignment'),
+              default: 'left',
+              renderTrigger: true,
+              choices: [
+                ['left', t('Left')],
+                ['center', t('Center')],
+                ['right', t('Right')],
+              ],
+              description: t('Align the values in the table'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_table?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'percent_alignment',
+            config: {
+              type: 'SelectControl',
+              label: t('Percent Alignment'),
+              default: 'left',
+              renderTrigger: true,
+              choices: [
+                ['left', t('Left')],
+                ['center', t('Center')],
+                ['right', t('Right')],
+              ],
+              description: t('Align the category values in the table'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_table?.value),
+            },
+          },
+        ],
         // eslint-disable-next-line react/jsx-key
         [<ControlSubSectionHeader>{t('Pie shape')}</ControlSubSectionHeader>],
         [

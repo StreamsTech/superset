@@ -20,13 +20,14 @@ import React from 'react';
 import { PieChartTransformedProps } from './types';
 import Echart from '../components/Echart';
 import { allEventHandlers } from '../utils/eventHandlers';
+import type { TextAlignProperty } from 'csstype';
 
 export default function EchartsPie(props: PieChartTransformedProps) {
   const { height, width, echartOptions, selectedValues, refs, tableData, showTable } = props;
   const eventHandlers = allEventHandlers(props);
 
   return (
-    <div style={{overflowX: 'auto', overflowY: 'auto', height: height,  width:width }} >
+    <div style={{ overflowX: 'auto', overflowY: 'auto', height: height, width: width }} >
       <Echart
         refs={refs}
         height={height}
@@ -36,40 +37,44 @@ export default function EchartsPie(props: PieChartTransformedProps) {
         selectedValues={selectedValues}
       />
 
-    {showTable && (  
-      <table className="pie-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Category</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Value</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Percent</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row, index) => (
-            <tr key={index}>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div
-                    style={{
-                      width: '12px',
-                      height: '12px',
-                      backgroundColor: typeof row.color === 'string' ? row.color : '#000', // Fallback color if not a string
-                      marginRight: '8px',
-                      borderRadius: '2px',
-                    }}
-                  ></div>
-                  <span>{row.name}</span>
-                </div>
-              </td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{row.value}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{row.percent}</td>
+      {showTable && (
+        <table className="pie-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Category</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Value</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Percent</th>
             </tr>
-          ))}
-        </tbody>  
-      </table>
+          </thead>
+          <tbody>
+            {tableData.map((row, index) => (
+              <tr key={index}>
+                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: row.categoryAlignmentStyle as TextAlignProperty, }}>
+                  <div style={{
+                    display: 'inline-flex', 
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <div
+                      style={{
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor: typeof row.color === 'string' ? row.color : '#000', // Fallback color if not a string
+                        marginRight: '8px',
+                        borderRadius: '2px',
+                      }}
+                    ></div>
+                    <span>{row.name}</span>
+                  </div>
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: row.valueAlignmentStyle as TextAlignProperty, }}>{row.value}</td>
+                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: row.percentAlignmentStyle as TextAlignProperty }}>{row.percent}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
-  
+
 }
