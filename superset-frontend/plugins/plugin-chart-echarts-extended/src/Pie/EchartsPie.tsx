@@ -23,7 +23,7 @@ import { allEventHandlers } from '../utils/eventHandlers';
 import type { TextAlignProperty } from 'csstype';
 
 export default function EchartsPie(props: PieChartTransformedProps) {
-  const { height, width, echartOptions, selectedValues, refs, tableData, showTable } = props;
+  const { height, width, echartOptions, selectedValues, refs, tableData, showTable, headerAlignment } = props;
   const eventHandlers = allEventHandlers(props);
 
   return (
@@ -41,9 +41,9 @@ export default function EchartsPie(props: PieChartTransformedProps) {
         <table className="pie-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Category</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Value</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Percent</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: headerAlignment as TextAlignProperty }}>Category</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: headerAlignment as TextAlignProperty }}>Value</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: headerAlignment as TextAlignProperty }}>Percent</th>
             </tr>
           </thead>
           <tbody>

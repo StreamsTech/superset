@@ -176,6 +176,7 @@ export default function transformProps(
     sliceId,
     showTotal,
     showTable,
+    headerAlignment,
     categoryAlignment,
     valueAlignment,
     percentAlignment,
@@ -448,5 +449,6 @@ let highlightPercent: number = 0;
     coltypeMapping,
     tableData,
     showTable,
+    headerAlignment
   };
 }

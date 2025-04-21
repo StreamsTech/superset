@@ -86,6 +86,7 @@ export type PieChartTransformedProps =
     ContextMenuTransformedProps &
     CrossFilterTransformedProps&{
       showTable: boolean;
+      headerAlignment: string; // Alignment for the table header
       tableData: Array<{
         name: string;
         value: string | number ;

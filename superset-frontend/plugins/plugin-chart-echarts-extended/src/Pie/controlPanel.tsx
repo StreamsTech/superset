@@ -212,6 +212,25 @@ const config: ControlPanelConfig = {
         ],
         [
           {
+            name: 'header_alignment',
+            config: {
+              type: 'SelectControl',
+              label: t('Header Alignment'),
+              default: 'left',
+              renderTrigger: true,
+              choices: [
+                ['left', t('Left')],
+                ['center', t('Center')],
+                ['right', t('Right')],
+              ],
+              description: t('Align the headers in the table'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_table?.value),
+            },
+          },
+        ],
+        [
+          {
             name: 'category_alignment',
             config: {
               type: 'SelectControl',
