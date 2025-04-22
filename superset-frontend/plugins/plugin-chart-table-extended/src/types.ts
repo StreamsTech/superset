@@ -34,7 +34,7 @@ import {
   CurrencyFormatter,
   Currency,
 } from '@superset-ui/core';
-import { ColorFormatters, ColorFormattersExtend } from '@superset-ui/chart-controls';
+import {ColorFormattersExtend } from '@superset-ui/chart-controls';
 
 export type CustomFormatter = (value: DataRecordValue) => string;
 

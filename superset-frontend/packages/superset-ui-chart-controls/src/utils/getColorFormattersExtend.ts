@@ -19,7 +19,6 @@
 import memoizeOne from 'memoize-one';
 import { addAlpha, DataRecord } from '@superset-ui/core';
 import {
-  ColorFormatters,
   ColorFormattersExtend,
   COMPARATOR,
   ConditionalFormattingConfig,

@@ -34,7 +34,6 @@ import {
 } from '@superset-ui/core';
 import {
   ColorFormatters,
-  getColorFormatters,
   getColorFormattersExtend,
 } from '@superset-ui/chart-controls';
 
