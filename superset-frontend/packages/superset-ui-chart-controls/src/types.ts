@@ -450,6 +450,15 @@ export type ConditionalFormattingConfig = {
   column?: string;
   colorScheme?: string;
 };
+export type ConditionalFormattingConfigExtend = {
+  operator?: COMPARATOR;
+  targetValue?: number;
+  targetValueLeft?: number;
+  targetValueRight?: number;
+  column?: string;
+  colorScheme?: string;
+  solidFill?: boolean;
+};
 
 export type ColumnColorFormatingControl = {
   operator?: COMPARATOR;
@@ -461,6 +470,11 @@ export type ColumnColorFormatingControl = {
 };
 
 export type ColorFormatters = {
+  column: string;
+  getColorFromValue: (value: number) => string | undefined;
+}[];
+export type ColorFormattersExtend = {
+  solidColor?: boolean;
   column: string;
   getColorFromValue: (value: number) => string | undefined;
 }[];

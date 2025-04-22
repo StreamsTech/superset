@@ -34,7 +34,7 @@ import {
   CurrencyFormatter,
   Currency,
 } from '@superset-ui/core';
-import { ColorFormatters } from '@superset-ui/chart-controls';
+import { ColorFormatters, ColorFormattersExtend } from '@superset-ui/chart-controls';
 
 export type CustomFormatter = (value: DataRecordValue) => string;
 
@@ -134,7 +134,7 @@ export interface TableChartTransformedProps<D extends DataRecord = DataRecord> {
   filters?: DataRecordFilters;
   emitCrossFilters?: boolean;
   onChangeFilter?: ChartProps['hooks']['onAddFilter'];
-  columnColorFormatters?: ColorFormatters;
+  columnColorFormatters?: ColorFormattersExtend;
   allowRearrangeColumns?: boolean;
   onContextMenu?: (
     clientX: number,

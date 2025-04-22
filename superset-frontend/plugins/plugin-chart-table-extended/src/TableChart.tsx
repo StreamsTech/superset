@@ -476,7 +476,13 @@ export default function TableChart<D extends DataRecord = DataRecord>(
                     ? formatter.getColorFromValue(value as number)
                     : false;
                 if (formatterResult) {
-                  backgroundColor = formatterResult;
+                  if (formatter.solidColor&&formatterResult.startsWith('#') && formatterResult.length === 9) {
+                    // If hex has 8 characters (includes alpha), trim to 6 (remove alpha)
+                    backgroundColor = formatterResult.slice(0, 7);
+                  } else {
+                    // Assume it's already a solid color
+                    backgroundColor = formatterResult;
+                  }
                 }
               });
           }

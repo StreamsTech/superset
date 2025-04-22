@@ -23,6 +23,7 @@ import Select from 'src/components/Select/Select';
 import { Col, Row } from 'src/components';
 import { Input, InputNumber } from 'src/components/Input';
 import { Radio } from 'src/components/Radio';
+import Checkbox from 'src/components/Checkbox';
 import Button from 'src/components/Button';
 import {
   COMPARATOR,
@@ -218,6 +219,7 @@ export const FormattingPopoverContent = ({
   const theme = useTheme();
   const colorScheme = colorSchemeOptions(theme);
   const [colorToggle, setColorToggle] = useState(false);
+  const [colorType, setColorType] = useState(false);
   const colorSchemeLabel = colorToggle ? 'Custom Color Scheme' : 'Color scheme';
   //console.log("config : " + config?.targetValue);
   return (
@@ -254,6 +256,21 @@ export const FormattingPopoverContent = ({
             </Radio.Group>
           </FormItem>
         </Col>
+        <Col span={12}>
+  <FormItem
+    name="solidFill"
+    label={t('Solid Fill')}
+    valuePropName="checked"
+    initialValue={false}
+  >
+    <Checkbox
+      checked={colorType}
+      onChange={val => setColorType(!!val)}
+      style={{ cursor: 'pointer' }}
+      className="custom-color-checkbox"
+    />
+  </FormItem>
+</Col>
         <Col span={12}>
           <FormItem
             name="colorScheme"

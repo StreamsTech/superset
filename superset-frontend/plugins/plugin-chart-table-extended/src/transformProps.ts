@@ -35,6 +35,7 @@ import {
 import {
   ColorFormatters,
   getColorFormatters,
+  getColorFormattersExtend,
 } from '@superset-ui/chart-controls';
 
 import isEqualColumns from './utils/isEqualColumns';
@@ -262,7 +263,7 @@ const transformProps = (
       ? totalQuery?.data[0]
       : undefined;
   const columnColorFormatters =
-    getColorFormatters(conditionalFormatting, data) ?? defaultColorFormatters;
+  getColorFormattersExtend(conditionalFormatting, data) ?? defaultColorFormatters;
 
   return {
     height,
