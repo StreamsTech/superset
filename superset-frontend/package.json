@@ -103,6 +103,7 @@
     "@superset-ui/legacy-plugin-chart-parallel-coordinates": "file:./plugins/legacy-plugin-chart-parallel-coordinates",
     "@superset-ui/legacy-plugin-chart-partition": "file:./plugins/legacy-plugin-chart-partition",
     "@superset-ui/legacy-plugin-chart-partition-extended": "file:./plugins/legacy-plugin-chart-partition-extended",
+    "@superset-ui/formChart": "file:./plugins/formChart",
     "@superset-ui/legacy-plugin-chart-rose": "file:./plugins/legacy-plugin-chart-rose",
     "@superset-ui/legacy-plugin-chart-sankey": "file:./plugins/legacy-plugin-chart-sankey",
     "@superset-ui/legacy-plugin-chart-sankey-loop": "file:./plugins/legacy-plugin-chart-sankey-loop",

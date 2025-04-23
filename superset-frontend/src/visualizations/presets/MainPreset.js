@@ -30,6 +30,7 @@ import PairedTTestChartPlugin from '@superset-ui/legacy-plugin-chart-paired-t-te
 import ParallelCoordinatesChartPlugin from '@superset-ui/legacy-plugin-chart-parallel-coordinates';
 import PartitionChartPlugin from '@superset-ui/legacy-plugin-chart-partition';
 import PartitionChartPluginExtended from '@superset-ui/legacy-plugin-chart-partition-extended'
+import FormChart from '@superset-ui/formChart';
 import RoseChartPlugin from '@superset-ui/legacy-plugin-chart-rose';
 import SankeyChartPlugin from '@superset-ui/legacy-plugin-chart-sankey';
 import SunburstChartPlugin from '@superset-ui/legacy-plugin-chart-sunburst';
@@ -137,6 +138,7 @@ export default class MainPreset extends Preset {
         new ParallelCoordinatesChartPlugin().configure({ key: 'para' }),
         new PartitionChartPlugin().configure({ key: 'partition' }),
         new PartitionChartPluginExtended().configure({ key: 'partition_extended' }),
+        new FormChart().configure({ key: 'form_chart' }),
         new EchartsPieChartPlugin().configure({ key: 'pie' }),
         new PivotTableChartPluginV2().configure({ key: 'pivot_table_v2' }),
         new RoseChartPlugin().configure({ key: 'rose' }),
