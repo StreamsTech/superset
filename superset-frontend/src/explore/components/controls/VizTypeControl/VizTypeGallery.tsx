@@ -86,6 +86,7 @@ const DEFAULT_ORDER = [
   'histogram',
   'deck_scatter',
   'deck_scatter_extend',
+   "form_chart",
   'deck_hex',
   'time_pivot',
   'deck_arc',

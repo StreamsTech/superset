@@ -17,7 +17,7 @@
  * under the License.
  */
 export default function transformProps(chartProps) {
-  const { width, height, datasource, formData, queriesData } = chartProps;
+  const { width, height, datasource, formData, queriesData,setDataMask,database } = chartProps;
   const {
     allColumns,
     colorScheme,
@@ -38,6 +38,7 @@ export default function transformProps(chartProps) {
   const { verboseMap } = datasource;
 
   return {
+    setDataMask,
     allColumns,
     width,
     height,
@@ -56,5 +57,11 @@ export default function transformProps(chartProps) {
     sliceId,
     percentageTooltip: percentageTooltip,
     partitionDetailsLoad: partitionDetailsLoad,
+    formData: {
+      ...formData,
+      datasource_name: datasource?.name,
+      schema: datasource?.schema,
+      dbId: datasource.database.id,
+    },
   };
 }
