@@ -18,7 +18,7 @@
  */
 import React from 'react';
 import {
-  t, validateNonEmpty,
+  t, //validateNonEmpty,
   ensureIsArray,
   QueryFormColumn,
   QueryMode,
@@ -29,14 +29,14 @@ import {
   ControlStateMapping,
   ColumnMeta,
   ControlPanelConfig,
-  ControlSubSectionHeader,
-  D3_FORMAT_DOCS,
-  D3_FORMAT_OPTIONS,
-  D3_TIME_FORMAT_OPTIONS,
+  //ControlSubSectionHeader,
+  //D3_FORMAT_DOCS,
+  //D3_FORMAT_OPTIONS,
+  //D3_TIME_FORMAT_OPTIONS,
   getStandardizedControls,
   sections,
 } from '@superset-ui/chart-controls';
-import OptionDescription from './OptionDescription';
+//import OptionDescription from './OptionDescription';
 function getQueryMode(controls: ControlStateMapping): QueryMode {
   const mode = controls?.query_mode?.value;
   if (mode === QueryMode.aggregate || mode === QueryMode.raw) {
