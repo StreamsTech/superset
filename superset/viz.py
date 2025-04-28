@@ -3331,6 +3331,603 @@ class PartitionVizExtended(NVD3TimeSeriesViz):
         return self.nest_values(levels)
 
 ###Form chart###
+## FormBaseViz is a base class for form chart visualizations.
+class FormBaseViz:  # pylint: disable=too-many-public-methods
+
+    """All visualizations derive this base class"""
+
+    viz_type: str | None = None
+    verbose_name = "Base Viz"
+    credits = ""
+    is_timeseries = False
+    cache_type = "df"
+    enforce_numerical_metrics = True
+
+    @deprecated(deprecated_in="3.0")
+    def __init__(
+        self,
+        datasource: BaseDatasource,
+        form_data: dict[str, Any],
+        force: bool = False,
+        force_cached: bool = False,
+    ) -> None:
+        if not datasource:
+            raise QueryObjectValidationError(_("Viz is missing a datasource"))
+
+        self.datasource = datasource
+        self.request = request
+        self.viz_type = form_data.get("viz_type")
+        self.form_data = form_data
+
+        self.query = ""
+        self.token = utils.get_form_data_token(form_data)
+
+        self.groupby: list[Column] = self.form_data.get("groupby") or []
+        self.time_shift = timedelta()
+
+        self.status: str | None = None
+        self.error_msg = ""
+        self.results: QueryResult | None = None
+        self.applied_filter_columns: list[Column] = []
+        self.rejected_filter_columns: list[Column] = []
+        self.errors: list[dict[str, Any]] = []
+        self.force = force
+        self._force_cached = force_cached
+        self.from_dttm: datetime | None = None
+        self.to_dttm: datetime | None = None
+        self._extra_chart_data: list[tuple[str, pd.DataFrame]] = []
+
+        self.process_metrics()
+
+        self.applied_filters: list[dict[str, str]] = []
+        self.rejected_filters: list[dict[str, str]] = []
+
+    @property
+    @deprecated(deprecated_in="3.0")
+    def force_cached(self) -> bool:
+        return self._force_cached
+
+    @deprecated(deprecated_in="3.0")
+    def process_metrics(self) -> None:
+        # metrics in Viz is order sensitive, so metric_dict should be
+        # OrderedDict
+        self.metric_dict = OrderedDict()
+        for mkey in METRIC_KEYS:
+            val = self.form_data.get(mkey)
+            if val:
+                if not isinstance(val, list):
+                    val = [val]
+                for o in val:
+                    label = utils.get_metric_name(o)
+                    self.metric_dict[label] = o
+
+        # Cast to list needed to return serializable object in py3
+        self.all_metrics = list(self.metric_dict.values())
+        self.metric_labels = list(self.metric_dict.keys())
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def handle_js_int_overflow(
+        data: dict[str, list[dict[str, Any]]]
+    ) -> dict[str, list[dict[str, Any]]]:
+        for record in data.get("records", {}):
+            for k, v in list(record.items()):
+                if isinstance(v, int):
+                    # if an int is too big for Java Script to handle
+                    # convert it to a string
+                    if abs(v) > JS_MAX_INTEGER:
+                        record[k] = str(v)
+        return data
+
+    @deprecated(deprecated_in="3.0")
+    def run_extra_queries(self) -> None:
+        """Lifecycle method to use when more than one query is needed
+
+        In rare-ish cases, a visualization may need to execute multiple
+        queries. That is the case for FilterBox or for time comparison
+        in Line chart for instance.
+
+        In those cases, we need to make sure these queries run before the
+        main `get_payload` method gets called, so that the overall caching
+        metadata can be right. The way it works here is that if any of
+        the previous `get_df_payload` calls hit the cache, the main
+        payload's metadata will reflect that.
+
+        The multi-query support may need more work to become a first class
+        use case in the framework, and for the UI to reflect the subtleties
+        (show that only some of the queries were served from cache for
+        instance). In the meantime, since multi-query is rare, we treat
+        it with a bit of a hack. Note that the hack became necessary
+        when moving from caching the visualization's data itself, to caching
+        the underlying query(ies).
+        """
+
+    @deprecated(deprecated_in="3.0")
+    def apply_rolling(self, df: pd.DataFrame) -> pd.DataFrame:
+        rolling_type = self.form_data.get("rolling_type")
+        rolling_periods = int(self.form_data.get("rolling_periods") or 0)
+        min_periods = int(self.form_data.get("min_periods") or 0)
+
+        if rolling_type in ("mean", "std", "sum") and rolling_periods:
+            kwargs = dict(window=rolling_periods, min_periods=min_periods)
+            if rolling_type == "mean":
+                df = df.rolling(**kwargs).mean()
+            elif rolling_type == "std":
+                df = df.rolling(**kwargs).std()
+            elif rolling_type == "sum":
+                df = df.rolling(**kwargs).sum()
+        elif rolling_type == "cumsum":
+            df = df.cumsum()
+        if min_periods:
+            df = df[min_periods:]
+        if df.empty:
+            raise QueryObjectValidationError(
+                _(
+                    "Applied rolling window did not return any data. Please make sure "
+                    "the source query satisfies the minimum periods defined in the "
+                    "rolling window."
+                )
+            )
+        return df
+
+    @deprecated(deprecated_in="3.0")
+    def get_samples(self) -> dict[str, Any]:
+        query_obj = self.query_obj()
+        query_obj.update(
+            {
+                "is_timeseries": False,
+                "groupby": [],
+                "metrics": [],
+                "orderby": [],
+                "row_limit": config["SAMPLES_ROW_LIMIT"],
+                "columns": [o.column_name for o in self.datasource.columns],
+                "from_dttm": None,
+                "to_dttm": None,
+            }
+        )
+        payload = self.get_df_payload(query_obj)  # leverage caching logic
+        return {
+            "data": payload["df"].to_dict(orient="records"),
+            "colnames": payload.get("colnames"),
+            "coltypes": payload.get("coltypes"),
+        }
+
+    @deprecated(deprecated_in="3.0")
+    def get_df(self, query_obj: QueryObjectDict | None = None) -> pd.DataFrame:
+        """Returns a pandas dataframe based on the query object"""
+        if not query_obj:
+            query_obj = self.query_obj()
+        if not query_obj:
+            return pd.DataFrame()
+
+        self.error_msg = ""
+
+        timestamp_format = None
+        if self.datasource.type == "table":
+            granularity_col = self.datasource.get_column(query_obj["granularity"])
+            if granularity_col:
+                timestamp_format = granularity_col.python_date_format
+
+        # The datasource here can be different backend but the interface is common
+        self.results = self.datasource.query(query_obj)
+        self.applied_filter_columns = self.results.applied_filter_columns or []
+        self.rejected_filter_columns = self.results.rejected_filter_columns or []
+        self.query = self.results.query
+        self.status = self.results.status
+        self.errors = self.results.errors
+
+        df = self.results.df
+        # Transform the timestamp we received from database to pandas supported
+        # datetime format. If no python_date_format is specified, the pattern will
+        # be considered as the default ISO date format
+        # If the datetime format is unix, the parse will use the corresponding
+        # parsing logic.
+        if not df.empty:
+            utils.normalize_dttm_col(
+                df=df,
+                dttm_cols=tuple(
+                    [
+                        DateColumn.get_legacy_time_column(
+                            timestamp_format=timestamp_format,
+                            offset=self.datasource.offset,
+                            time_shift=self.form_data.get("time_shift"),
+                        )
+                    ]
+                ),
+            )
+
+            if self.enforce_numerical_metrics:
+                self.df_metrics_to_num(df)
+
+            df.replace([np.inf, -np.inf], np.nan, inplace=True)
+        return df
+
+    @deprecated(deprecated_in="3.0")
+    def df_metrics_to_num(self, df: pd.DataFrame) -> None:
+        """Converting metrics to numeric when pandas.read_sql cannot"""
+        metrics = self.metric_labels
+        for col, dtype in df.dtypes.items():
+            if dtype.type == np.object_ and col in metrics:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    @deprecated(deprecated_in="3.0")
+    def process_query_filters(self) -> None:
+        utils.convert_legacy_filters_into_adhoc(self.form_data)
+        merge_extra_filters(self.form_data)
+        utils.split_adhoc_filters_into_base_filters(self.form_data)
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def dedup_columns(*columns_args: list[Column] | None) -> list[Column]:
+        # dedup groupby and columns while preserving order
+        labels: list[str] = []
+        deduped_columns: list[Column] = []
+        for columns in columns_args:
+            for column in columns or []:
+                label = get_column_name(column)
+                if label not in labels:
+                    deduped_columns.append(column)
+        return deduped_columns
+
+    @deprecated(deprecated_in="3.0")
+    def query_obj(self) -> QueryObjectDict:  # pylint: disable=too-many-locals
+        """Building a query object"""
+        self.process_query_filters()
+
+        metrics = self.all_metrics or []
+
+        groupby = self.dedup_columns(self.groupby, self.form_data.get("columns"))
+
+        is_timeseries = self.is_timeseries
+
+        # pylint: disable=superfluous-parens
+        if DTTM_ALIAS in (groupby_labels := get_column_names(groupby)):
+            del groupby[groupby_labels.index(DTTM_ALIAS)]
+            is_timeseries = True
+
+        granularity = self.form_data.get("granularity_sqla")
+        limit = int(self.form_data.get("limit") or 0)
+        timeseries_limit_metric = self.form_data.get("timeseries_limit_metric")
+
+        # apply row limit to query
+        row_limit = int(self.form_data.get("row_limit") or config["ROW_LIMIT"])
+        row_limit = apply_max_row_limit(row_limit)
+
+        # default order direction
+        order_desc = self.form_data.get("order_desc", True)
+
+        try:
+            since, until = get_since_until(
+                relative_start=relative_start,
+                relative_end=relative_end,
+                time_range=self.form_data.get("time_range"),
+                since=self.form_data.get("since"),
+                until=self.form_data.get("until"),
+            )
+        except ValueError as ex:
+            raise QueryObjectValidationError(str(ex)) from ex
+
+        time_shift = self.form_data.get("time_shift", "")
+        self.time_shift = parse_past_timedelta(time_shift)
+        from_dttm = None if since is None else (since - self.time_shift)
+        to_dttm = None if until is None else (until - self.time_shift)
+        if from_dttm and to_dttm and from_dttm > to_dttm:
+            raise QueryObjectValidationError(
+                _("From date cannot be larger than to date")
+            )
+
+        self.from_dttm = from_dttm
+        self.to_dttm = to_dttm
+
+        # validate sql filters
+        for param in ("where", "having"):
+            clause = self.form_data.get(param)
+            if clause:
+                sanitized_clause = sanitize_clause(clause)
+                if sanitized_clause != clause:
+                    self.form_data[param] = sanitized_clause
+
+        # extras are used to query elements specific to a datasource type
+        # for instance the extra where clause that applies only to Tables
+        extras = {
+            "having": self.form_data.get("having", ""),
+            "time_grain_sqla": self.form_data.get("time_grain_sqla"),
+            "where": self.form_data.get("where", ""),
+        }
+
+        return {
+            "granularity": granularity,
+            "from_dttm": from_dttm,
+            "to_dttm": to_dttm,
+            "is_timeseries": is_timeseries,
+            "groupby": groupby,
+            "metrics": metrics,
+            "row_limit": row_limit,
+            "filter": self.form_data.get("filters", []),
+            "timeseries_limit": limit,
+            "extras": extras,
+            "timeseries_limit_metric": timeseries_limit_metric,
+            "order_desc": order_desc,
+        }
+
+    @property
+    @deprecated(deprecated_in="3.0")
+    def cache_timeout(self) -> int:
+        if self.form_data.get("cache_timeout") is not None:
+            return int(self.form_data["cache_timeout"])
+        if self.datasource.cache_timeout is not None:
+            return self.datasource.cache_timeout
+        if (
+            hasattr(self.datasource, "database")
+            and self.datasource.database.cache_timeout
+        ) is not None:
+            return self.datasource.database.cache_timeout
+        if config["DATA_CACHE_CONFIG"].get("CACHE_DEFAULT_TIMEOUT") is not None:
+            return config["DATA_CACHE_CONFIG"]["CACHE_DEFAULT_TIMEOUT"]
+        return config["CACHE_DEFAULT_TIMEOUT"]
+
+    @deprecated(deprecated_in="3.0")
+    def get_json(self) -> str:
+        return json.dumps(
+            self.get_payload(), default=utils.json_int_dttm_ser, ignore_nan=True
+        )
+
+    @deprecated(deprecated_in="3.0")
+    def cache_key(self, query_obj: QueryObjectDict, **extra: Any) -> str:
+        """
+        The cache key is made out of the key/values in `query_obj`, plus any
+        other key/values in `extra`.
+
+        We remove datetime bounds that are hard values, and replace them with
+        the use-provided inputs to bounds, which may be time-relative (as in
+        "5 days ago" or "now").
+
+        The `extra` arguments are currently used by time shift queries, since
+        different time shifts will differ only in the `from_dttm`, `to_dttm`,
+        `inner_from_dttm`, and `inner_to_dttm` values which are stripped.
+        """
+        cache_dict = copy.copy(query_obj)
+        cache_dict.update(extra)
+
+        for k in ["from_dttm", "to_dttm", "inner_from_dttm", "inner_to_dttm"]:
+            if k in cache_dict:
+                del cache_dict[k]
+
+        cache_dict["time_range"] = self.form_data.get("time_range")
+        cache_dict["datasource"] = self.datasource.uid
+        cache_dict["extra_cache_keys"] = self.datasource.get_extra_cache_keys(query_obj)
+        cache_dict["rls"] = security_manager.get_rls_cache_key(self.datasource)
+        cache_dict["changed_on"] = self.datasource.changed_on
+        json_data = self.json_dumps(cache_dict, sort_keys=True)
+        return md5_sha_from_str(json_data)
+
+    @deprecated(deprecated_in="3.0")
+    def get_payload(self, query_obj: QueryObjectDict | None = None) -> VizPayload:
+        """Returns a payload of metadata and data"""
+
+        try:
+            self.run_extra_queries()
+        except SupersetSecurityException as ex:
+            error = dataclasses.asdict(ex.error)
+            self.errors.append(error)
+            self.status = QueryStatus.FAILED
+
+        payload = self.get_df_payload(query_obj)
+
+        # if payload does not have a df, we are raising an error here.
+        df = cast(Optional[pd.DataFrame], payload["df"])
+
+        if self.status != QueryStatus.FAILED:
+            payload["data"] = self.get_data(df)
+        if "df" in payload:
+            del payload["df"]
+
+        applied_filter_columns = self.applied_filter_columns or []
+        rejected_filter_columns = self.rejected_filter_columns or []
+        applied_time_extras = self.form_data.get("applied_time_extras", {})
+        applied_time_columns, rejected_time_columns = utils.get_time_filter_status(
+            self.datasource, applied_time_extras
+        )
+        payload["applied_filters"] = [
+            {"column": get_column_name(col)} for col in applied_filter_columns
+        ] + applied_time_columns
+        payload["rejected_filters"] = [
+            {
+                "reason": ExtraFiltersReasonType.COL_NOT_IN_DATASOURCE,
+                "column": get_column_name(col),
+            }
+            for col in rejected_filter_columns
+        ] + rejected_time_columns
+        if df is not None:
+            payload["colnames"] = list(df.columns)
+        return payload
+
+    @deprecated(deprecated_in="3.0")
+    def get_df_payload(  # pylint: disable=too-many-statements
+        self, query_obj: QueryObjectDict | None = None, **kwargs: Any
+    ) -> dict[str, Any]:
+        """Handles caching around the df payload retrieval"""
+        if not query_obj:
+            query_obj = self.query_obj()
+        cache_key = self.cache_key(query_obj, **kwargs) if query_obj else None
+        cache_value = None
+        logger.info("Cache key: %s", cache_key)
+        is_loaded = False
+        stacktrace = None
+        df = None
+        cache_timeout = self.cache_timeout
+        force = self.force or cache_timeout == -1
+        if cache_key and cache_manager.data_cache and not force:
+            cache_value = cache_manager.data_cache.get(cache_key)
+            if cache_value:
+                stats_logger.incr("loading_from_cache")
+                try:
+                    df = cache_value["df"]
+                    self.query = cache_value["query"]
+                    self.applied_filter_columns = cache_value.get(
+                        "applied_filter_columns", []
+                    )
+                    self.rejected_filter_columns = cache_value.get(
+                        "rejected_filter_columns", []
+                    )
+                    self.status = QueryStatus.SUCCESS
+                    is_loaded = True
+                    stats_logger.incr("loaded_from_cache")
+                except Exception as ex:  # pylint: disable=broad-except
+                    logger.exception(ex)
+                    logger.error(
+                        "Error reading cache: %s",
+                        utils.error_msg_from_exception(ex),
+                        exc_info=True,
+                    )
+                logger.info("Serving from cache")
+
+        if query_obj and not is_loaded:
+            if self.force_cached:
+                logger.warning(
+                    "force_cached (viz.py): value not found for cache key %s",
+                    cache_key,
+                )
+                raise CacheLoadError(_("Cached value not found"))
+            try:
+                invalid_columns = [
+                    col
+                    for col in get_column_names_from_columns(
+                        query_obj.get("columns") or []
+                    )
+                    + get_column_names_from_columns(query_obj.get("groupby") or [])
+                    + utils.get_column_names_from_metrics(
+                        cast(list[Metric], query_obj.get("metrics") or [])
+                    )
+                    if col not in self.datasource.column_names
+                ]
+                if invalid_columns:
+                    raise QueryObjectValidationError(
+                        _(
+                            "Columns missing in datasource: %(invalid_columns)s",
+                            invalid_columns=invalid_columns,
+                        )
+                    )
+                df = self.get_df(query_obj)
+                if self.status != QueryStatus.FAILED:
+                    stats_logger.incr("loaded_from_source")
+                    if not self.force:
+                        stats_logger.incr("loaded_from_source_without_force")
+                    is_loaded = True
+            except QueryObjectValidationError as ex:
+                error = dataclasses.asdict(
+                    SupersetError(
+                        message=str(ex),
+                        level=ErrorLevel.ERROR,
+                        error_type=SupersetErrorType.VIZ_GET_DF_ERROR,
+                    )
+                )
+                self.errors.append(error)
+                self.status = QueryStatus.FAILED
+            except Exception as ex:  # pylint: disable=broad-except
+                logger.exception(ex)
+
+                error = dataclasses.asdict(
+                    SupersetError(
+                        message=str(ex),
+                        level=ErrorLevel.ERROR,
+                        error_type=SupersetErrorType.VIZ_GET_DF_ERROR,
+                    )
+                )
+                self.errors.append(error)
+                self.status = QueryStatus.FAILED
+                stacktrace = utils.get_stacktrace()
+
+            if is_loaded and cache_key and self.status != QueryStatus.FAILED:
+                set_and_log_cache(
+                    cache_instance=cache_manager.data_cache,
+                    cache_key=cache_key,
+                    cache_value={"df": df, "query": self.query},
+                    cache_timeout=cache_timeout,
+                    datasource_uid=self.datasource.uid,
+                )
+        return {
+            "cache_key": cache_key,
+            "cached_dttm": cache_value["dttm"] if cache_value is not None else None,
+            "cache_timeout": cache_timeout,
+            "df": df,
+            "errors": self.errors,
+            "form_data": self.form_data,
+            "is_cached": cache_value is not None,
+            "query": self.query,
+            "from_dttm": self.from_dttm,
+            "to_dttm": self.to_dttm,
+            "status": self.status,
+            "stacktrace": stacktrace,
+            "rowcount": len(df.index) if df is not None else 0,
+            "colnames": list(df.columns) if df is not None else None,
+            "coltypes": utils.extract_dataframe_dtypes(df, self.datasource)
+            if df is not None
+            else None,
+        }
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def json_dumps(query_obj: Any, sort_keys: bool = False) -> str:
+        return json.dumps(
+            query_obj,
+            default=utils.json_int_dttm_ser,
+            ignore_nan=True,
+            sort_keys=sort_keys,
+        )
+
+    @staticmethod
+    @deprecated(deprecated_in="3.0")
+    def has_error(payload: VizPayload) -> bool:
+        return (
+            payload.get("status") == QueryStatus.FAILED
+            or payload.get("error") is not None
+            or bool(payload.get("errors"))
+        )
+
+    @deprecated(deprecated_in="3.0")
+    def payload_json_and_has_error(self, payload: VizPayload) -> tuple[str, bool]:
+        return self.json_dumps(payload), self.has_error(payload)
+
+    @property
+    @deprecated(deprecated_in="3.0")
+    def data(self) -> dict[str, Any]:
+        """This is the data object serialized to the js layer"""
+        content = {
+            "form_data": self.form_data,
+            "token": self.token,
+            "viz_name": self.viz_type,
+            "filter_select_enabled": self.datasource.filter_select_enabled,
+        }
+        return content
+
+    @deprecated(deprecated_in="3.0")
+    def get_csv(self) -> str | None:
+        df = self.get_df_payload()["df"]  # leverage caching logic
+        include_index = not isinstance(df.index, pd.RangeIndex)
+        return csv.df_to_escaped_csv(df, index=include_index, **config["CSV_EXPORT"])
+
+    @deprecated(deprecated_in="3.0")
+    def get_data(self, df: pd.DataFrame) -> VizData:  # pylint: disable=no-self-use
+        return df.to_dict(orient="records")
+
+    @property
+    @deprecated(deprecated_in="3.0")
+    def json_data(self) -> str:
+        return json.dumps(self.data)
+
+    @deprecated(deprecated_in="3.0")
+    def raise_for_access(self) -> None:
+        """
+        Raise an exception if the user cannot access the resource.
+
+        :raises SupersetSecurityException: If the user cannot access the resource
+        """
+
+        security_manager.raise_for_access(viz=self)
+
+
+#####
 class FormViz(BaseViz):
     """Custom form chart that inserts data into the dataset."""
 
