@@ -92,6 +92,7 @@ import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
 import { CircumplexChartPlugin } from 'superset-plugin-chart-circumplex';
 import DetailViewChart from '@superset-ui/plugin-detail-view-chart';
+import GeoNode from '@superset-ui/plugin-GeoNode';
 export default class MainPreset extends Preset {
   constructor() {
     const experimentalplugins = isFeatureEnabled(
@@ -149,6 +150,8 @@ export default class MainPreset extends Preset {
         new TimePivotChartPlugin().configure({ key: 'time_pivot' }),
         new TimeTableChartPlugin().configure({ key: 'time_table' }),
         new DetailViewChart().configure({ key: 'detail_view' }),
+        new GeoNode().configure({ key: 'geonode' }),
+        
         new EchartsPieChartPluginExtend().configure({ key: 'pie_extend' }),
         new WordCloudChartPlugin().configure({ key: 'word_cloud' }),
         new WorldMapChartPlugin().configure({ key: 'world_map' }),

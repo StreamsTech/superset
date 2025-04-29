@@ -120,6 +120,7 @@
     "@superset-ui/plugin-chart-table-extended": "file:./plugins/plugin-chart-table-extended",
     "@superset-ui/plugin-chart-word-cloud": "file:./plugins/plugin-chart-word-cloud",
     "@superset-ui/plugin-detail-view-chart": "file:./plugins/plugin-detail-view-chart",
+    "@superset-ui/plugin-GeoNode": "file:./plugins/plugin-GeoNode",
     "@superset-ui/switchboard": "file:./packages/superset-ui-switchboard",
     "@types/d3-format": "^3.0.1",
     "@visx/axis": "^3.0.1",
