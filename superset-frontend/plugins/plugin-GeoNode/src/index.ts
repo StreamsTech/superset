@@ -24,7 +24,6 @@ import example2 from './images/option2.png';
 import example3 from './images/option3.png';
 import controlPanel from './controlPanel';
 import buildQuery from './buildQuery';
-import { TableChartFormData, TableChartProps } from './types';
 
 // must export something for the module to be exist in dev mode
 export { default as __hack__ } from './types';
@@ -56,10 +55,7 @@ const metadata = new ChartMetadata({
   thumbnail,
 });
 
-export default class DetailViewChart extends ChartPlugin<
-  TableChartFormData,
-  TableChartProps
-> {
+export default class GeoNode extends ChartPlugin {
   constructor() {
     super({
       loadChart: () => import('./GeoNode'),
