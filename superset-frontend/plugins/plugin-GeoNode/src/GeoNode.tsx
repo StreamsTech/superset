@@ -8,7 +8,7 @@ export default function GeoNode(props: GeoNodeChartTransformedProps) {
       <iframe
         width={width}
         height={height}
-        src={`https://stable.demo.geonode.org/datasets/${embedCode}/embed`}
+        src={`https://stable.demo.geonode.org/maps/${embedCode}/embed`}
         frameBorder="0"
         style={{ border: 'none' }}
         allowFullScreen

@@ -18,8 +18,8 @@
  */
 import { t, ChartMetadata, ChartPlugin } from '@superset-ui/core';
 import transformProps from './transformProps';
-import thumbnail from './images/thumbnail.png';
-import example from './images/example.jpg';
+import thumbnail from './images/Form.png';
+import example from './images/Form.png';
 import controlPanel from './controlPanel';
 
 const metadata = new ChartMetadata({

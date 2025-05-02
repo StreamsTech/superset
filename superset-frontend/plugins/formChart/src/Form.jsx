@@ -65,13 +65,13 @@ export default function AutoForm({ allColumns, formData, height, width }) {
       if (response.ok && result?.status === 'success') {
         Modal.success({
           title: 'Row Inserted',
-          content: <pre>{insertQuery}</pre>,
+          //content: <pre>{insertQuery}</pre>,
         });
         form.resetFields();
       } else {
         Modal.error({
           title: 'Insert Failed',
-          content: result.message || JSON.stringify(result),
+          //content: result.message || JSON.stringify(result),
         });
       }
     } catch (err) {

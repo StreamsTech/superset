@@ -18,10 +18,8 @@
  */
 import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
 import transformProps from './transformProps';
-import thumbnail from './images/DetailViewMain.png';
-import example1 from './images/options.png';
-import example2 from './images/option2.png';
-import example3 from './images/option3.png';
+import thumbnail from './images/GeoNode.png';
+import example1 from './images/GeoNode.png';
 import controlPanel from './controlPanel';
 import buildQuery from './buildQuery';
 
@@ -38,18 +36,17 @@ const metadata = new ChartMetadata({
   category: t('Map'),
   canBeAnnotationTypes: ['EVENT', 'INTERVAL'],
   description: t(
-    'GeoNode is a web-based platform for sharing and collaborating on geospatial data. It provides a user-friendly interface for visualizing and analyzing geospatial data, making it easier to understand complex spatial relationships.',
+    'This chart directly embeds spatial charts from GeoNode, a web-based platform for developing geospatial information systems (GIS) and deploying spatial data infrastructures (SDI).',
   ),
-  exampleGallery: [{ url: example1 }, { url: example2 }, { url: example3 }],
+  exampleGallery: [{ url: example1 }],
   name: t('GeoNode'),
   tags: [
-    t('Additive'),
+    t('Geo'),
     t('Business'),
     t('Pattern'),
     t('Popular'),
     t('Report'),
     t('Sequential'),
-    t('Tabular'),
     t('Description'),
   ],
   thumbnail,
