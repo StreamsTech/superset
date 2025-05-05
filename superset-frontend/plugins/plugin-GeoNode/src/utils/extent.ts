@@ -16,30 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export default function extent<T = number | string | Date | undefined | null>(
-  values: T[],
-) {
-  let min: T | undefined;
-  let max: T | undefined;
-  // eslint-disable-next-line no-restricted-syntax
-  for (const value of values) {
-    if (value !== null) {
-      if (min === undefined) {
-        if (value !== undefined) {
-          min = value;
-          max = value;
-        }
-      } else {
-        if (min > value) {
-          min = value;
-        }
-        if (max !== undefined) {
-          if (max < value) {
-            max = value;
-          }
-        }
-      }
-    }
-  }
-  return [min, max];
-}
+//export default function extent<T = number | string | Date | undefined | null>(
+//  values: T[],
+//) {
+//  let min: T | undefined;
+//  let max: T | undefined;
+//  // eslint-disable-next-line no-restricted-syntax
+//  for (const value of values) {
+//    if (value !== null) {
+//      if (min === undefined) {
+//        if (value !== undefined) {
+//          min = value;
+//          max = value;
+//        }
+//      } else {
+//        if (min > value) {
+//          min = value;
+//        }
+//        if (max !== undefined) {
+//          if (max < value) {
+//            max = value;
+//          }
+//        }
+//      }
+//    }
+//  }
+//  return [min, max];
+//}
