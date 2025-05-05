@@ -27,3 +27,8 @@ from . import (
     tags,
 )
 from .log import api as log_api, views
+
+from superset.views.geonode_api import geonode_api
+from superset.extensions import appbuilder
+
+appbuilder.get_app.register_blueprint(geonode_api)

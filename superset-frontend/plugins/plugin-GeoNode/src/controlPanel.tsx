@@ -21,6 +21,7 @@
 import { t } from '@superset-ui/core';
 import { ControlPanelConfig, getStandardizedControls, sharedControls} from '@superset-ui/chart-controls';
 
+
 const config: ControlPanelConfig = {
   controlPanelSections: [
     {
@@ -33,11 +34,37 @@ const config: ControlPanelConfig = {
             config: {
               type: 'TextControl',
               label: t('Embedded Code'),
-              description: t('Paste the embedded iframe or script code here'),
+              description: t('Paste only the src value of the embedded iframe or script code here'),
               default: '',
               renderTrigger: true,
             },
           },
+        ],
+        [
+          {
+            name: 'geonode_map',
+            config: {
+              type: 'SelectAsyncControl',
+              label: t('GeoNode Map'),
+              default: null,
+              description: t('Select a map from GeoNode'),
+              multi: false,
+              freeForm: false,
+              clearable: true,
+              placeholder: t('Select a map'),
+              onAsyncErrorMessage: t('Failed to fetch maps from GeoNode'),
+        
+              // Replace with a proxy endpoint or CORS-safe API
+              dataEndpoint:'/api/geonode/maps',
+        
+              // Converts API response into { value, label } format
+              mutator: (data: { objects: any; }) =>
+                (data.objects || []).map((item: any) => ({
+                  value: String(item.id),
+                  label: String(item.title),
+                })),
+            },
+          }
         ],
         [
           {

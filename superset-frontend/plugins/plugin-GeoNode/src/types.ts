@@ -23,6 +23,7 @@ export interface GeoNodeChartTransformedProps {
   height: number;
   width: number;
   embedCode: string;
+  geonodeMap: string;
   metrics?: QueryFormMetric[] | null;
 }
 

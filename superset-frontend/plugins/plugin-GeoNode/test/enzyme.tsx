@@ -16,52 +16,52 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactElement } from 'react';
-import { shallow as enzymeShallow, mount as enzymeMount } from 'enzyme';
-import {
-  EmotionCacheProvider,
-  createEmotionCache,
-  supersetTheme,
-  ThemeProvider,
-} from '@superset-ui/core';
-
-const emotionCache = createEmotionCache({
-  key: 'test',
-});
-
-type optionsType = {
-  wrappingComponentProps?: any;
-  wrappingComponent?: ReactElement;
-  context?: any;
-};
-
-export function ProviderWrapper(props: any) {
-  const { children, theme = supersetTheme } = props;
-  return (
-    <EmotionCacheProvider value={emotionCache}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
-    </EmotionCacheProvider>
-  );
-}
-
-export function mount(component: ReactElement, options: optionsType = {}) {
-  return enzymeMount(component, {
-    ...options,
-    wrappingComponent: ProviderWrapper,
-    wrappingComponentProps: {
-      theme: supersetTheme,
-      ...options?.wrappingComponentProps,
-    },
-  });
-}
-
-export function shallow(component: ReactElement, options: optionsType = {}) {
-  return enzymeShallow(component, {
-    ...options,
-    wrappingComponent: ProviderWrapper,
-    wrappingComponentProps: {
-      theme: supersetTheme,
-      ...options?.wrappingComponentProps,
-    },
-  }).dive();
-}
+//import React, { ReactElement } from 'react';
+//import { shallow as enzymeShallow, mount as enzymeMount } from 'enzyme';
+//import {
+//  EmotionCacheProvider,
+//  createEmotionCache,
+//  supersetTheme,
+//  ThemeProvider,
+//} from '@superset-ui/core';
+//
+//const emotionCache = createEmotionCache({
+//  key: 'test',
+//});
+//
+//type optionsType = {
+//  wrappingComponentProps?: any;
+//  wrappingComponent?: ReactElement;
+//  context?: any;
+//};
+//
+//export function ProviderWrapper(props: any) {
+//  const { children, theme = supersetTheme } = props;
+//  return (
+//    <EmotionCacheProvider value={emotionCache}>
+//      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+//    </EmotionCacheProvider>
+//  );
+//}
+//
+//export function mount(component: ReactElement, options: optionsType = {}) {
+//  return enzymeMount(component, {
+//    ...options,
+//    wrappingComponent: ProviderWrapper,
+//    wrappingComponentProps: {
+//      theme: supersetTheme,
+//      ...options?.wrappingComponentProps,
+//    },
+//  });
+//}
+//
+//export function shallow(component: ReactElement, options: optionsType = {}) {
+//  return enzymeShallow(component, {
+//    ...options,
+//    wrappingComponent: ProviderWrapper,
+//    wrappingComponentProps: {
+//      theme: supersetTheme,
+//      ...options?.wrappingComponentProps,
+//    },
+//  }).dive();
+//}

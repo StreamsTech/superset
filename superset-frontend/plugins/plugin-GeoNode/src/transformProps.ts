@@ -25,9 +25,11 @@ export default function transformProps(chartProps: ChartProps): GeoNodeChartTran
   const {
     //metrics,
     embedCode,
+    geonodeMap,
   } = formData;
 
   return {
+    geonodeMap,
     embedCode,
     //metrics,
     height,
