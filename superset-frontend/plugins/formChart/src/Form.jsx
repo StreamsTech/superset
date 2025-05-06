@@ -22,9 +22,9 @@ export default function AutoForm({ allColumns, formData, height, width }) {
       schema = parts[0];
       tableName = parts[1].replace(/"/g, ''); // strip any quotes
     }
-    console.log(' tableName',  tableName);
-    console.log(' dbId',  dbId);
-    console.log(' schema',  schema);
+    //console.log(' tableName',  tableName);
+    //console.log(' dbId',  dbId);
+    //console.log(' schema',  schema);
 
     if (!dbId || !tableName) {
       Modal.error({
@@ -60,7 +60,7 @@ export default function AutoForm({ allColumns, formData, height, width }) {
       });
 
       const result = await response.json();
-      console.log("Response:", result);
+      //console.log("Response:", result);
 
       if (response.ok && result?.status === 'success') {
         Modal.success({
