@@ -93,6 +93,7 @@ import TimeTableChartPlugin from '../TimeTable';
 import { CircumplexChartPlugin } from 'superset-plugin-chart-circumplex';
 import DetailViewChart from '@superset-ui/plugin-detail-view-chart';
 import GeoNode from '@superset-ui/plugin-GeoNode';
+import Prompt from '@superset-ui/plugin-Prompt';
 export default class MainPreset extends Preset {
   constructor() {
     const experimentalplugins = isFeatureEnabled(
@@ -151,6 +152,7 @@ export default class MainPreset extends Preset {
         new TimeTableChartPlugin().configure({ key: 'time_table' }),
         new DetailViewChart().configure({ key: 'detail_view' }),
         new GeoNode().configure({ key: 'geonode' }),
+        new Prompt().configure({ key: 'prompt' }),
         
         new EchartsPieChartPluginExtend().configure({ key: 'pie_extend' }),
         new WordCloudChartPlugin().configure({ key: 'word_cloud' }),
