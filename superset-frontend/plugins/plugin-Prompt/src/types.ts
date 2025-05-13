@@ -16,13 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  QueryFormMetric,
-} from '@superset-ui/core';
-export interface GeoNodeChartTransformedProps {
+
+export interface PromptChartTransformedProps {
+  dashboardId?: number; 
   height: number;
   width: number;
-  metrics?: QueryFormMetric[] | null;
+  formData: {
+    datasource_name?: string;
+    schema?: string;
+    dbId?: number;
+    [key: string]: any;
+  };
 }
 
 export default {};

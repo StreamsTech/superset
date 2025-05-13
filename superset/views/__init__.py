@@ -25,6 +25,7 @@ from . import (
     redirects,
     sql_lab,
     tags,
+    prompt_table_api,
 )
 from .log import api as log_api, views
 
@@ -32,3 +33,6 @@ from superset.views.geonode_api import geonode_api
 from superset.extensions import appbuilder
 
 appbuilder.get_app.register_blueprint(geonode_api)
+
+from superset.views.prompt_table_api import PromptTableApi
+appbuilder.add_view_no_menu(PromptTableApi)

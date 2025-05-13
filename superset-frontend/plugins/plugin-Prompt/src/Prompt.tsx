@@ -1,21 +1,17 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { styled } from '@superset-ui/core';
-import { Button, Input } from 'antd';
+import { Button, Input, Modal, Form } from 'antd';
 
 const Container = styled.div`
   padding: 1em;
 `;
 
 export default function MyDynamicTableChart({ formData }: any) {
-  const [columnsInput, setColumnsInput] = useState('');
-   const dashboardId = 13;
+  const [form] = Form.useForm();
+  const dashboardId = 13;
 
-  console.log('Dashboard ID:', dashboardId);
-
-
-  const handleSubmit = async () => {
-    const res = await fetch('/api/v1/plugin_dynamic_table/create_viz', {
+  const handleSubmit = async (values: { columns: string }) => {
+    const columnsInput = values.columns;
+    const res = await fetch('/prompt_table/create_viz', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -24,23 +20,36 @@ export default function MyDynamicTableChart({ formData }: any) {
         dashboard_id: dashboardId,
       }),
     });
+
     const json = await res.json();
     if (json.success) {
-      alert('Table visualization added to the dashboard!');
+      Modal.success({
+        title: 'Table visualization added to the dashboard!',
+      });
+      form.resetFields(); 
     }
   };
 
   return (
     <Container>
-      <h3>Enter columns (comma-separated):</h3>
-      <Input
-        value={columnsInput}
-        onChange={e => setColumnsInput(e.target.value)}
-        placeholder="e.g. name, age, salary"
-      />
-      <Button onClick={handleSubmit} style={{ marginTop: '10px' }}>
-        Submit
-      </Button>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+      >
+        <Form.Item
+          label="Enter columns (comma-separated)"
+          name="columns"
+          rules={[{ required: true, message: 'Please enter at least one column' }]}
+        >
+          <Input placeholder="e.g. name, age, salary" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
     </Container>
   );
 }
