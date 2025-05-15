@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Form, Button, Modal } from 'antd';
+import { Input, Form, Button, Modal, Radio } from 'antd';
+const { TextArea } = Input;
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -12,7 +13,15 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [customLabels, setCustomLabels] = useState({});
-  const [originalLabels, setOriginalLabels] = useState({}); // Save original column names
+  const [originalLabels, setOriginalLabels] = useState({}); 
+  const [inputTypes, setInputTypes] = useState({});
+
+  const handleInputTypeChange = (col, e) => {
+    setInputTypes(prev => ({
+      ...prev,
+      [col]: e.target.value,
+    }));
+  };
 
   useEffect(() => {
     const fetchLabels = async () => {
@@ -31,8 +40,14 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
         const data = await response.json();
         const chart = data?.result;
         const params = chart?.params ? JSON.parse(chart.params) : {};
+        const extraFormData = params?.extra_form_data || {};
+
         const labels = params?.extra_form_data?.custom_form_labels || {};
+        const savedInputTypes = extraFormData.custom_input_types || {};
+
         setCustomLabels(labels);
+        setInputTypes(savedInputTypes);
+
         setOriginalLabels(
           allColumns.reduce((acc, col) => {
             acc[col] = col;
@@ -47,7 +62,7 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
     fetchLabels();
   }, [allColumns]);
 
-  const updateChartMetadata = async (customLabelsToSave) => {
+  const updateChartMetadata = async (customLabelsToSave, inputTypesToSave) => {
     if (!chartId) {
       Modal.error({ title: 'Chart ID missing' });
       return;
@@ -77,6 +92,7 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
       currentParams.extra_form_data = {
         ...currentParams.extra_form_data,
         custom_form_labels: customLabelsToSave,
+        custom_input_types: inputTypesToSave,
       };
 
       const putResponse = await fetch(`/api/v1/chart/${chartId}`, {
@@ -99,8 +115,9 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
         const errorText = await putResponse.text();
         throw new Error(errorText || 'Failed to update chart');
       }
-      if (customLabelsToSave && Object.keys(customLabelsToSave).length > 0) {
-        Modal.success({ title: 'Labels Saved Successfully' });
+      if ((customLabelsToSave && Object.keys(customLabelsToSave).length > 0) ||
+      (inputTypesToSave && Object.keys(inputTypesToSave).length > 0)) {
+        Modal.success({ title: 'Saved Successfully' });
       } else {
         Modal.success({ title: 'Labels Reset Successfully' });
       }
@@ -179,7 +196,7 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
     });
 
     setCustomLabels(updatedLabels);
-    updateChartMetadata(updatedLabels);
+    updateChartMetadata(updatedLabels,inputTypes);
     setIsModalVisible(false);
   };
 
@@ -196,35 +213,41 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
 
   return (
     <div style={{ overflowX: 'auto', overflowY: 'auto', height, width }}>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleFinish}
-        style={{ overflowX: 'auto', overflowY: 'auto' }}
-      >
-        <div style={{ minHeight: '400px', padding: '1rem' }}>
-          {allColumns?.map(col => (
+         <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleFinish}
+      style={{ overflowX: 'auto', overflowY: 'auto' }}
+    >
+      <div style={{ minHeight: '400px', padding: '1rem' }}>
+        {allColumns?.map(col => (
+          <div key={col} style={{ marginBottom: '1.5rem' }}>
             <Form.Item
-              key={col}
               name={col}
               label={customLabels[col] || col}
               rules={[{ required: false, message: `Please input ${col}` }]}
             >
-              <Input />
+              {inputTypes[col] === 'textarea' ? (
+                <TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+              ) : (
+                <Input />
+              )}
             </Form.Item>
-          ))}
-        </div>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-      </Form>
+          </div>
+        ))}
+      </div>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
 
       {!isInDashboard && (
         <>
           <Button type="link" onClick={showEditLabelsModal}>
-            Edit Labels
+            Edit Form
           </Button>
           <Button type="link" onClick={handleUndoLabels}>
             Reset Labels
@@ -233,7 +256,7 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
       )}
 
       <Modal
-        title="Edit Form Field Labels"
+        title="Edit Form Field Labels and Input Types"
         visible={isModalVisible}
         onOk={handleSaveLabels}
         onCancel={() => setIsModalVisible(false)}
@@ -247,16 +270,25 @@ export default function AutoForm({ allColumns, formData, height, width, chartId 
         ]}
       >
         <div>
-          {allColumns?.map(col => (
-            <div key={col} style={{ marginBottom: '10px' }}>
-              <label>{col}</label>
-              <Input
-                id={`label-input-${col}`}
-                defaultValue={customLabels[col] || col}
-              />
-            </div>
-          ))}
-        </div>
+    {allColumns?.map(col => (
+      <div key={col} style={{ marginBottom: '1.5rem' }}>
+        <label style={{ display: 'block', marginBottom: 4 }}>{col}</label>
+        <Input
+          id={`label-input-${col}`}
+          defaultValue={customLabels[col] || col}
+          style={{ marginBottom: 8 }}
+        />
+        <Radio.Group
+          value={inputTypes[col] || 'input'}
+          onChange={(e) => handleInputTypeChange(col, e)}
+          size="small"
+        >
+          <Radio value="input">Single-line Text</Radio>
+          <Radio value="textarea">Multi-line Text</Radio>
+        </Radio.Group>
+      </div>
+    ))}
+  </div>
       </Modal>
     </div>
   );
