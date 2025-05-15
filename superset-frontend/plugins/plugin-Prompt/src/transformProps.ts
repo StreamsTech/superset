@@ -7,8 +7,15 @@ import { PromptChartTransformedProps } from './types';
 
 export default function transformProps(chartProps: ChartProps): PromptChartTransformedProps {
   const { width, height, datasource, formData } = chartProps;
+  const {
+    sliceId,
+    dashboardId,
+   
+  } = formData;
 
   return {
+    chartId: sliceId,
+    dashboardId: dashboardId,
     height,
     width,
     formData: {

@@ -18,6 +18,7 @@
  */
 
 export interface PromptChartTransformedProps {
+  chartId: number;
   dashboardId?: number; 
   height: number;
   width: number;
