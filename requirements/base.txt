@@ -292,7 +292,7 @@ sshtunnel==0.4.0
     # via apache-superset
 tabulate==0.8.9
     # via apache-superset
-typing-extensions==4.4.0
+typing-extensions>=4.11.0,<5.0.0
     # via
     #   apache-superset
     #   flask-limiter
@@ -326,6 +326,10 @@ xlsxwriter==3.0.7
     # via apache-superset
 zipp==3.15.0
     # via importlib-metadata
+
+google-auth==2.40.1
+google-genai==1.16.1
+    #Goofle GenAI
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

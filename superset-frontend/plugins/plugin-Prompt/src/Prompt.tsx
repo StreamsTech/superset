@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Button, Input, Modal, Form } from 'antd';
 import { styled } from '@superset-ui/core';
 import { PromptChartTransformedProps } from './types';
-import { Button, Input, Modal, Form } from 'antd';
+
 
 const Container = styled.div`
   padding: 1em;
@@ -16,6 +17,7 @@ function getCookie(name: string) {
 
 
 export default function PromptChart(props: PromptChartTransformedProps) {
+  const dashboardIdFromURL = window.location.pathname.match(/\/dashboard\/(\d+)/)?.[1];
   const { chartId, formData } = props;
   const [form] = Form.useForm();
   console.log('chart ID:', chartId)
@@ -57,7 +59,11 @@ export default function PromptChart(props: PromptChartTransformedProps) {
     }
   }
 
-  useEffect(() => {
+ 
+useEffect(() => {
+  if (dashboardIdFromURL) {
+    setDashboardId(parseInt(dashboardIdFromURL, 10));
+  } else {
     const fetchDashboardId = async () => {
       const id = await getExploreData(
         formData.urlParams.form_data_key,
@@ -67,28 +73,75 @@ export default function PromptChart(props: PromptChartTransformedProps) {
       setDashboardId(id);
     };
     fetchDashboardId();
-  }, [formData.urlParams.form_data_key]);
+  }
+}, [dashboardIdFromURL, formData.urlParams.form_data_key]);
+
 
   console.log('Dashboard ID:', dashboardId);
   //console.log('formData:', formData);
   //console.log('formDatadatakey:', formData.urlParams.form_data_key);
 
+  const parsePrompt = (prompt: string) => {
+  const result: {
+    chart?: string;
+    dimensions?: string[];
+    metric?: { aggregate: string; column: string };
+  } = {};
+
+  // Example: "chart= Pie, Dimensions= City, Street, Metric=Count[Numbers]"
+  const parts = prompt.split(',');
+
+  parts.forEach(part => {
+    const [keyRaw, valueRaw] = part.split('=');
+    if (!keyRaw || !valueRaw) return;
+
+    const key = keyRaw.trim().toLowerCase();
+    const value = valueRaw.trim();
+
+    if (key === 'chart') {
+      result.chart = value.toLowerCase();
+    } else if (key === 'dimensions') {
+      result.dimensions = value.split(',').map(d => d.trim());
+    } else if (key === 'metric') {
+      const match = value.match(/^(\w+)\[(.+)\]$/);
+      if (match) {
+        result.metric = {
+          aggregate: match[1].toUpperCase(),
+          column: match[2].trim(),
+        };
+      }
+    }
+  });
+
+  return result;
+};
+
+
   const handleSubmit = async (values: { columns: string }) => {
-    const columnsInput = values.columns;
+    //const columnsInput = values.columns;
+    const parsed = parsePrompt(values.columns);
+    console.log('Parsed Prompt:', parsed);
+
+  if (!parsed.chart || !parsed.dimensions || !parsed.metric) {
+    Modal.error({ title: 'Invalid prompt format!' });
+    return;
+  }
     const res = await fetch('/prompt_table/create_viz', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        columns: columnsInput.split(',').map(s => s.trim()),
-        dataset_id: formData.datasource.split('__')[0],
-        dashboard_id: dashboardId,
-      }),
+      viz_type: parsed.chart,
+      groupby: parsed.dimensions,
+      metric: parsed.metric,
+      dataset_id: formData.datasource.split('__')[0],
+      dashboard_id: dashboardId,
+    }),
     });
 
     const json = await res.json();
     if (json.success) {
       Modal.success({
-        title: 'Table visualization added to the dashboard!',
+        title: `${parsed.chart} Table visualization added to the dashboard!`,
       });
       form.resetFields();
     }

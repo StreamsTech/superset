@@ -1,0 +1,28 @@
+Table: customers
+        customer_id (INT, Primary Key)
+        name (VARCHAR)
+        email (VARCHAR)
+        registration_date (DATE)
+        last_login (TIMESTAMP)
+    
+Table: products
+    product_id (INT, Primary Key)
+    name (VARCHAR)
+    description (TEXT)
+    price (DECIMAL)
+    category (VARCHAR)
+    stock_quantity (INT)
+
+Table: orders
+    order_id (INT, Primary Key)
+    customer_id (INT, Foreign Key to customers.customer_id)
+    order_date (DATE)
+    total_amount (DECIMAL)
+    status (VARCHAR)
+
+Table: order_items
+        item_id (INT, Primary Key)
+        order_id (INT, Foreign Key to orders.order_id)
+        product_id (INT, Foreign Key to products.product_id)
+        quantity (INT)
+        unit_price (DECIMAL)

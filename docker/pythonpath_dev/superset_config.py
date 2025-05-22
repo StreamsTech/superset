@@ -223,3 +223,9 @@ WEBDRIVER_BASEURL_USER_FRIENDLY = "http://localhost:8088"
 
 # Set this API key to enable Mapbox visualizations
 MAPBOX_API_KEY = "pk.eyJ1IjoiYW5pa2EtaXNsYW0iLCJhIjoiY204cXpheWZvMGg1ajJrczg4bmJ4NmJibyJ9.thlmqx2c6MVr2LU2DcY4vQ"
+
+
+# sql -gen
+GEMINI_API_KEY="AIzaSyDZOipEYE4o_q5BUyn80u3pN1_Q4D0h0z8"
+DATABASE_URL="postgresql://postgres:bhaAmxfWQ007@118.179.215.3:5432/gift"
+SCHEMA_NAME="public"
