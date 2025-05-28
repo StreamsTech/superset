@@ -10,10 +10,14 @@ export default function transformProps(chartProps: ChartProps): PromptChartTrans
   const {
     sliceId,
     dashboardId,
+    databaseId,
+    schemaName,
    
   } = formData;
 
   return {
+    schemaName,
+    databaseId,
     chartId: sliceId,
     dashboardId: dashboardId,
     height,

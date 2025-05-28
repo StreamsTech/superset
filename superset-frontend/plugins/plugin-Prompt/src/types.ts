@@ -18,6 +18,8 @@
  */
 
 export interface PromptChartTransformedProps {
+  databaseId?: number;
+  schemaName?: string;
   chartId: number;
   dashboardId?: number; 
   height: number;

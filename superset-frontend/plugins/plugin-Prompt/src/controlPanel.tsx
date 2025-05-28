@@ -19,26 +19,77 @@
  */
 
 import { t } from '@superset-ui/core';
-import { ControlPanelConfig, getStandardizedControls, sharedControls} from '@superset-ui/chart-controls';
+import { ControlPanelConfig, getStandardizedControls, sharedControls, ControlPanelsContainerProps } from '@superset-ui/chart-controls';
 
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
     {
-      label: t('Embedded Code Input'),
+      label: t('Data Source Settings'),
       expanded: true,
       controlSetRows: [
         [
           {
-            name: 'embed_code',
+            name: 'database_id',
             config: {
-              type: 'TextControl',
-              label: t('Embedded Code'),
-              description: t('Paste only the src value of the embedded iframe or script code here'),
-              default: '',
-              renderTrigger: true,
+              type: 'SelectAsyncControl',
+              label: t('Database'),
+              default: null,
+              description: t('Select a database'),
+              multi: false,
+              freeForm: false,
+              clearable: true,
+              placeholder: t('Select a database'),
+              onAsyncErrorMessage: t('Failed to fetch databases'),
+              dataEndpoint: '/api/v1/database/',
+              mutator: (data: any) =>
+                (data.result || []).map((item: any) => ({
+                  value: item.id,
+                  label: item.database_name,
+                })),
             },
           },
+        ],
+        [
+          {
+            name: 'schema_name',
+            config: {
+              type: 'SelectAsyncControl',
+              label: t('Schema'),
+              default: null,
+              description: t('Select schema based on selected database'),
+              multi: false,
+              clearable: true,
+              freeForm: false,
+              placeholder: t('Select a schema'),
+
+              // Make sure this matches the control name of your DB dropdown
+              dependencies: ['database_id'],
+              shouldMapStateToProps: () => true,
+
+              mapStateToProps: state => {
+                const databaseId = state?.controls?.database_id?.value;
+                return {
+                  databaseId,
+                  dataEndpoint: databaseId ? `/api/v1/database/${databaseId}/schemas/` : undefined,
+                };
+              },
+
+
+
+              mutator: (data: any) =>
+                (data.result || []).map((schema: string) => ({
+                  value: schema,
+                  label: schema,
+                })),
+
+              onAsyncErrorMessage: t('Failed to fetch schemas'),
+
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.database_id?.value),
+            },
+          }
+
         ],
         [
           {

@@ -19,8 +19,11 @@ import os
 from flask import request, Response
 from flask_appbuilder.api import expose, safe
 from superset.views.base_api import BaseSupersetApi
+from superset import db
+from superset.models.core import Database
 from dotenv import load_dotenv
 from superset import app
+import logging
 config = app.config
 
 from superset.views.sql_gen.schema import get_postgres_schema, get_schema
@@ -29,6 +32,8 @@ from superset.views.sql_gen.gen_sql_query import generate_sql_query
 
 # Load environment variables (e.g., GEMINI_API_KEY, DATABASE_URL, SCHEMA_NAME)
 load_dotenv()
+
+logging.basicConfig(level=logging.INFO)
 
 database_url = config['DATABASE_URL']
 schema_name = config['SCHEMA_NAME']
@@ -62,7 +67,7 @@ class GeminiSqlRestApi(BaseSupersetApi):
         """
         return self.response(200, message="Hello from Gemini SQL API")
 
-    @expose("/schema", methods=("GET",))
+    @expose("/schema", methods=("POST",))
     @safe
     def get_schema(self) -> Response:
         """
@@ -81,7 +86,24 @@ class GeminiSqlRestApi(BaseSupersetApi):
                       schema:
                         type: string
         """
-        return self.response(200, schema=db_schema)
+        data = request.get_json()
+        db_id = data.get("dbId")
+        schema_name = data.get("schemaName")
+
+        if not db_id or not schema_name:
+            return self.response(400, message="Missing 'dbId' or 'schemaName'")
+        try:
+            # Fetch the database connection info from Superset metadata
+            database = db.session.query(Database).filter_by(id=db_id).first()
+            if not database:
+                return self.response(400, message=f"Database with id {db_id} not found")
+
+            #engine = database.get_engine(schema=schema_name)
+            database_url = database.sqlalchemy_uri_decrypted
+            db_schema = get_postgres_schema(database_url, schema_name)
+            return self.response(200, schema=db_schema)
+        except Exception as ex:
+            return self.response(500, message=f"Error fetching schema: {str(ex)}")
 
     @expose("/generate", methods=("POST",))
     @safe
@@ -118,12 +140,28 @@ class GeminiSqlRestApi(BaseSupersetApi):
         """
         data = request.get_json()
         query_description = data.get("queryDescription")
+        db_id = data.get("dbId")
+        schema_name = data.get("schemaName")
 
         if not query_description:
             return self.response(400, message="Missing 'queryDescription'")
-
+        if not db_id or not schema_name:
+            return self.response(400, message="Missing 'dbId' or 'schemaName'")
         try:
-            sql_query = generate_sql_query(get_schema(), query_description)
+            # Fetch the database connection info from Superset metadata
+            database = db.session.query(Database).filter_by(id=db_id).first()
+            if not database:
+                return self.response(400, message=f"Database with id {db_id} not found")
+
+            #engine = database.get_engine(schema=schema_name)
+            database_url = database.sqlalchemy_uri_decrypted
+            #database_url = database.sqlalchemy_uri
+            db_schema = get_postgres_schema(database_url, schema_name)
+            logging.info(f"Using schema: {db_schema}")
+            logging.info(f"Using dbURL: {database_url}")
+            
+
+            sql_query = generate_sql_query(db_schema, query_description)
             return self.response(200, query=sql_query)
         except Exception as ex:
             return self.response(500, message=f"Error generating SQL: {str(ex)}")
