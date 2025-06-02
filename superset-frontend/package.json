@@ -118,6 +118,7 @@
     "@superset-ui/plugin-chart-pivot-table": "file:./plugins/plugin-chart-pivot-table",
     "@superset-ui/plugin-chart-table": "file:./plugins/plugin-chart-table",
     "@superset-ui/plugin-chart-table-extended": "file:./plugins/plugin-chart-table-extended",
+    "@superset-ui/plugin-chart-table-from-prompt": "file:./plugins/plugin-chart-table-from-prompt",
     "@superset-ui/plugin-chart-word-cloud": "file:./plugins/plugin-chart-word-cloud",
     "@superset-ui/plugin-detail-view-chart": "file:./plugins/plugin-detail-view-chart",
     "@superset-ui/plugin-GeoNode": "file:./plugins/plugin-GeoNode",

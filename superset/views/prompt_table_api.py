@@ -21,41 +21,36 @@ class PromptTableApi(BaseSupersetView):
         viz_type = data["viz_type"]
         groupby = data["groupby"]
         metric = data["metric"]
+        slice_id = data["slice_id"]  # ✅ pass this from frontend
     
-        if viz_type == "pie":
+        slice_to_update = db.session.query(Slice).get(slice_id)
+    
+        if not slice_to_update:
+            return jsonify({"success": False, "message": f"Slice with ID {slice_id} not found."}), 404
+    
+        if viz_type == "pie_extend":
+            # ✅ Construct new params for pie_extend
             params = {
-                "viz_type": "pie",
+                "viz_type": "pie_extend",
                 "datasource": f"{dataset_id}__table",
                 "groupby": groupby,
                 "metric": {
                     "label": metric["column"],
                     "expressionType": "SIMPLE",
                     "column": {"column_name": metric["column"]},
-                    "aggregate": metric["aggregate"],
+                    "aggregate": metric["aggregate"].upper(),
                 },
                 "row_limit": 1000,
             }
-        else:
-            # fallback to table
-            params = {
-                "viz_type": "table",
-                "datasource": f"{dataset_id}__table",
-                "all_columns": groupby + [metric["column"]],
-                "row_limit": 1000,
-            }
     
-        new_slice = Slice(
-            slice_name=f"Dynamic {viz_type.title()} Chart",
-            viz_type=viz_type,
-            datasource_type="table",
-            datasource_id=dataset_id,
-            params=json.dumps(params),
-        )
-        db.session.add(new_slice)
-        db.session.commit()
+            # ✅ Update the slice in place
+            slice_to_update.slice_name = "Dynamic Pie Chart"
+            slice_to_update.viz_type = "pie_extend"
+            slice_to_update.datasource_id = dataset_id
+            slice_to_update.params = json.dumps(params)
     
-        dashboard = db.session.query(Dashboard).get(dashboard_id)
-        dashboard.slices.append(new_slice)
-        db.session.commit()
+            db.session.commit()
     
-        return jsonify({"success": True})
+            return jsonify({"success": True, "updated_slice_id": slice_id})
+    
+        return jsonify({"success": False, "message": "Unsupported chart type"})

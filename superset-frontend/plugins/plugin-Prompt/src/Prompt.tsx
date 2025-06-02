@@ -19,15 +19,12 @@ function getCookie(name: string) {
 
 export default function PromptChart(props: PromptChartTransformedProps) {
   const dashboardIdFromURL = window.location.pathname.match(/\/dashboard\/(\d+)/)?.[1];
-  const { chartId, formData, height, width, databaseId,schemaName } = props;
+  const { chartId, formData, height, width, databaseId, schemaName } = props;
   const [form] = Form.useForm();
   console.log('chart ID:', chartId)
   const [dashboardId, setDashboardId] = useState<number | null>(null);
   const [query, setQuery] = useState('');
-  //const [databases, setDatabases] = useState<any[]>([]);
-  //const [schemas, setSchemas] = useState<any[]>([]);
-  //const [selectedDb, setSelectedDb] = useState<number | null>(null);
-  //const [selectedSchema, setSelectedSchema] = useState<string | null>(null);
+
 
   async function getExploreData(
     formDataKey: string,
@@ -64,36 +61,6 @@ export default function PromptChart(props: PromptChartTransformedProps) {
       return null;
     }
   }
-
-  //useEffect(() => {
-  //  const fetchDatabases = async () => {
-  //    try {
-  //      const res = await fetch('/api/v1/database/');
-  //      const json = await res.json();
-  //      setDatabases(json.result || []);
-  //      console.log('Databases:', json.result);
-  //    } catch (err) {
-  //      console.error('Failed to load databases', err);
-  //    }
-  //  };
-  //  fetchDatabases();
-  //}, []);
-//
-  //useEffect(() => {
-  //  const fetchSchemas = async () => {
-  //    console.log('Selected DB:', selectedDb);
-  //    if (!selectedDb) return;
-  //    try {
-  //      const res = await fetch(`/api/v1/database/${selectedDb}/schemas/`);
-  //      const json = await res.json();
-  //      setSchemas(json.result || []);
-  //      console.log('Schemas:', json.result);
-  //    } catch (err) {
-  //      console.error('Failed to load schemas', err);
-  //    }
-  //  };
-  //  fetchSchemas();
-  //}, [selectedDb]);
 
 
   useEffect(() => {
@@ -188,10 +155,6 @@ export default function PromptChart(props: PromptChartTransformedProps) {
       return;
     }
 
-    //if (!selectedDb || !selectedSchema) {
-    //  Modal.error({ title: 'Please select both a database and schema before submitting the query.' });
-    //  return;
-    //}
 
     try {
       const res = await fetch('/api/v1/gemini_sql/generate', {
@@ -212,8 +175,9 @@ export default function PromptChart(props: PromptChartTransformedProps) {
       if (json?.query) {
         Modal.success({
           title: 'Query Generated!',
-          content: <pre>{JSON.stringify(json.query, null, 2)}</pre>,
+          content: <pre>{json.query}</pre>,
           width: 600,
+          onOk: () => createDatasetFromQuery(json.query),
         });
         setQuery('');
       } else {
@@ -225,39 +189,126 @@ export default function PromptChart(props: PromptChartTransformedProps) {
     }
   };
 
+const createDatasetFromQuery = async (sql: string) => {
+  try {
+    const generateMeaningfulTableName = (prefix = 'prompt_dataset') => {
+      const now = new Date();
+      const date = now.toISOString().slice(0, 10).replace(/-/g, '_'); // YYYY_MM_DD
+      const time = now.toTimeString().slice(0, 8).replace(/:/g, '_'); // HH_MM_SS
+      return `${prefix}_${date}_${time}`;
+    };
+
+    const tableName = generateMeaningfulTableName();
+    const payload = {
+      database: databaseId,
+      schema: schemaName,
+      table_name: tableName,
+      sql: sql,
+    };
+
+    const response = await fetch('/api/v1/dataset/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrf_token'),
+      },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+
+    const json = await response.json();
+    console.log('Create dataset response:', json);
+
+    if (response.ok && json?.id) {
+      const datasetId = json.id;
+
+      // Step 1: Fetch dataset metadata to get columns
+      const metadataRes = await fetch(`/api/v1/dataset/${datasetId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrf_token'),
+        },
+        credentials: 'include',
+      });
+
+      const metadataJson = await metadataRes.json();
+      const columns = metadataJson.result.columns.map((col: any) => col.column_name);
+
+      // Step 2: Call the prompt_dataset_table API to create the chart
+      const chartRes = await fetch('/prompt_dataset_table/create_viz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrf_token'),
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          dataset_id: datasetId,
+          dashboard_id: dashboardId,
+          columns: columns,
+        }),
+      });
+
+      const chartJson = await chartRes.json();
+      if (chartRes.ok && chartJson?.success) {
+        Modal.success({
+          title: 'Dataset and Table Chart Created!',
+          content: `Dataset "${tableName}" and a table visualization have been added to the dashboard.`,
+        });
+      } else {
+        Modal.error({
+          title: 'Dataset created, but failed to create chart',
+          content: JSON.stringify(chartJson),
+        });
+      }
+    } else {
+      Modal.error({ title: 'Failed to create dataset', content: JSON.stringify(json) });
+    }
+  } catch (error) {
+    console.error('Error creating dataset or chart:', error);
+    Modal.error({ title: 'Error creating dataset or chart' });
+  }
+};
+
+
+
   return (
-    <div style={{  overflowX: 'auto', overflowY: 'auto', height, width }}>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-      >
-        <Form.Item
-          label="Enter columns (comma-separated)"
-          name="columns"
-          rules={[{ required: true, message: 'Please enter at least one column' }]}
+    <div style={{ overflowX: 'auto', overflowY: 'auto', height, width }}>
+      {/* 
+      <div style={{ visibility: 'hidden' }}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
         >
-          <Input placeholder="e.g. chart=Pie, dimensions=City, Street, metric=Count[Numbers]" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item
+        label="Enter columns (comma-separated)"
+        name="columns"
+        rules={[{ required: true, message: 'Please enter at least one column' }]}
+          >
+        <Input placeholder="e.g. chart=Pie, dimensions=City, Street, metric=Count[Numbers]" />
+          </Form.Item>
+          <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+          </Form.Item>
+        </Form>
+      </div>
+      */}
       <hr style={{ margin: '2em 0' }} />
       <Form layout="vertical">
-        <Form.Item label="Enter SQL-like query">
+        <Form.Item label="Write in Natural Language">
           <Input.TextArea
-        rows={3}
-        defaultValue={query}
-        onBlur={e => setQuery(e.target.value)}
-        placeholder="SELECT * FROM table WHERE ..."
+            rows={3}
+            defaultValue={query}
+            onBlur={e => setQuery(e.target.value)}
+            placeholder="Show me the total sales by city and street, grouped by month."
           />
         </Form.Item>
         <Form.Item>
           <Button type="default" onClick={handleQuerySubmit}>
-        Submit Query
+            Submit Query
           </Button>
         </Form.Item>
       </Form>
