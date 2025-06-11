@@ -31,7 +31,7 @@ class PromptTableApi(BaseSupersetView):
         if viz_type == "pie_extend":
             # ✅ Construct new params for pie_extend
             params = {
-                "viz_type": "pie_extend",
+                "viz_type": "pie",
                 "datasource": f"{dataset_id}__table",
                 "groupby": groupby,
                 "metric": {

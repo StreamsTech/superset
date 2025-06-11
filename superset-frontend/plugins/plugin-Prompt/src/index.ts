@@ -18,8 +18,8 @@
  */
 import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
 import transformProps from './transformProps';
-import thumbnail from './images/GeoNode.png';
-import example1 from './images/GeoNode.png';
+import thumbnail from './images/Prompt.png';
+import example1 from './images/Prompt.png';
 import controlPanel from './controlPanel';
 import buildQuery from './buildQuery';
 
@@ -36,12 +36,11 @@ const metadata = new ChartMetadata({
   category: t('Map'),
   canBeAnnotationTypes: ['EVENT', 'INTERVAL'],
   description: t(
-    'Prompt is a chart type that allows users to create and customize maps with various data visualizations. It provides a user-friendly interface for selecting data sources, customizing map styles, and adding interactive elements to enhance the user experience.',
+    'Prompt is a chart type that allows users to create visualizations from queries written in natural language. It provides an intuitive interface for entering questions or requests, automatically generating charts based on the user\'s input.',
   ),
   exampleGallery: [{ url: example1 }],
   name: t('Prompt'),
   tags: [
-    t('Geo'),
     t('Business'),
     t('Pattern'),
     t('Popular'),

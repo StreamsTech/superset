@@ -23,7 +23,6 @@ import React, {
   useMemo,
   useState,
   MouseEvent,
-  useEffect,
 } from 'react';
 
 import {
@@ -334,7 +333,7 @@ export default function TableChart<D extends DataRecord = DataRecord>(
       Modal.success({
         title: `Pie Chart added to the dashboard!`,
       })
-      window.location.reload();
+      //window.location.reload();
     } else {
       Modal.error({
         title: 'Chart creation failed',

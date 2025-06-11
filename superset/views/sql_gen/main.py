@@ -21,6 +21,7 @@ from flask_appbuilder.api import expose, safe
 from superset.views.base_api import BaseSupersetApi
 from superset import db
 from superset.models.core import Database
+from sqlalchemy import text, inspect
 from dotenv import load_dotenv
 from superset import app
 import logging
@@ -152,16 +153,51 @@ class GeminiSqlRestApi(BaseSupersetApi):
             database = db.session.query(Database).filter_by(id=db_id).first()
             if not database:
                 return self.response(400, message=f"Database with id {db_id} not found")
+            table_alias_lines = []
+            column_alias_lines = []
+            with database.get_sqla_engine_with_context(schema=schema_name) as engine:
+              inspector = inspect(engine)
+          
+              with engine.connect() as conn:
+                  if "Table Alias" in inspector.get_table_names(schema=schema_name):
+                      result = conn.execute(f'SELECT * FROM "{schema_name}"."Table Alias"')
+                      for row in result:
+                          original_table = row["Original Name"]
+                          aliases = row["Alias"]
+                          table_alias_lines.append(f"{original_table} as {aliases}")
+          
+                  if "Column Alias" in inspector.get_table_names(schema=schema_name):
+                      result = conn.execute(f'SELECT * FROM "{schema_name}"."Column Alias"')
+                      for row in result:
+                          table_name = row["Table Name"]
+                          column_name = row["Column Name"]
+                          aliases = row["Alias"]
+                          column_alias_lines.append(f"{table_name}.{column_name} as {aliases}")
+
+            table_alias = (
+                "please consider the table alias:\n" + "\n".join(table_alias_lines)
+                if table_alias_lines
+                else ""
+            )
+            column_alias = (
+                "please consider the table.column alias:\n"
+                + "\n".join(column_alias_lines)
+                if column_alias_lines
+                else ""
+            )
 
             #engine = database.get_engine(schema=schema_name)
             database_url = database.sqlalchemy_uri_decrypted
             #database_url = database.sqlalchemy_uri
             db_schema = get_postgres_schema(database_url, schema_name)
-            logging.info(f"Using schema: {db_schema}")
-            logging.info(f"Using dbURL: {database_url}")
+            ##logging.info(f"Using schema: {db_schema}")
+            ##logging.info(f"Using dbURL: {database_url}")
+
+            logging.info(table_alias)
+            logging.info(column_alias)
             
 
-            sql_query = generate_sql_query(db_schema, query_description)
+            sql_query = generate_sql_query(db_schema, query_description, table_alias, column_alias)
             return self.response(200, query=sql_query)
         except Exception as ex:
             return self.response(500, message=f"Error generating SQL: {str(ex)}")
