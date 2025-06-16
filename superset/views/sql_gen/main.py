@@ -36,9 +36,9 @@ load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
-database_url = config['DATABASE_URL']
-schema_name = config['SCHEMA_NAME']
-db_schema = get_postgres_schema(database_url, schema_name)
+##database_url = config['DATABASE_URL']
+##schema_name = config['SCHEMA_NAME']
+##db_schema = get_postgres_schema(database_url, schema_name)
 
 
 class GeminiSqlRestApi(BaseSupersetApi):
@@ -190,8 +190,8 @@ class GeminiSqlRestApi(BaseSupersetApi):
             database_url = database.sqlalchemy_uri_decrypted
             #database_url = database.sqlalchemy_uri
             db_schema = get_postgres_schema(database_url, schema_name)
-            ##logging.info(f"Using schema: {db_schema}")
-            ##logging.info(f"Using dbURL: {database_url}")
+            logging.info(f"Using schema: {db_schema}")
+            logging.info(f"Using dbURL: {database_url}")
 
             logging.info(table_alias)
             logging.info(column_alias)

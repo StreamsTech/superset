@@ -84,17 +84,17 @@ export default function PromptChart(props: PromptChartTransformedProps) {
   //    dimensions?: string[];
   //    metric?: { aggregate: string; column: string };
   //  } = {};
-//
+  //
   //  // Example: "chart= Pie, Dimensions= City, Street, Metric=Count[Numbers]"
   //  const parts = prompt.split(',');
-//
+  //
   //  parts.forEach(part => {
   //    const [keyRaw, valueRaw] = part.split('=');
   //    if (!keyRaw || !valueRaw) return;
-//
+  //
   //    const key = keyRaw.trim().toLowerCase();
   //    const value = valueRaw.trim();
-//
+  //
   //    if (key === 'chart') {
   //      result.chart = value.toLowerCase();
   //    } else if (key === 'dimensions') {
@@ -109,7 +109,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
   //      }
   //    }
   //  });
-//
+  //
   //  return result;
   //};
 
@@ -117,7 +117,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
   //  //const columnsInput = values.columns;
   //  const parsed = parsePrompt(values.columns);
   //  console.log('Parsed Prompt:', parsed);
-//
+  //
   //  if (!parsed.chart || !parsed.dimensions || !parsed.metric) {
   //    Modal.error({ title: 'Invalid prompt format!' });
   //    return;
@@ -133,7 +133,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
   //      dashboard_id: dashboardId,
   //    }),
   //  });
-//
+  //
   //  const json = await res.json();
   //  if (json.success) {
   //    Modal.success({
@@ -162,6 +162,10 @@ export default function PromptChart(props: PromptChartTransformedProps) {
           break;
         }
       }
+    }
+    // Append only for PIE or BAR charts
+    if (chartName && ['PIE', 'BAR'].includes(chartName.toUpperCase())) {
+      queryDescriptionLine += ' Please use alias name for aggregate values.';
     }
     try {
       const res = await fetch('/api/v1/gemini_sql/generate', {
@@ -268,7 +272,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
         const groupby = columns.filter((col: string) => col !== metricColumn);
         console.log('Group By:', groupby);
         console.log('Metric:', metric);
-        const pieRes = await fetch('/prompt_dataset_table/create_pie', {
+        const pieRes = await fetch('/api/v1/prompt_dataset_table/create_pie', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -327,7 +331,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
         console.log('Group By:', groupby);
         console.log('Metrics:', metrics);
 
-        const barRes = await fetch('/prompt_dataset_table/create_bar', {
+        const barRes = await fetch('/api/v1/prompt_dataset_table/create_bar', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -357,7 +361,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
 
       else {
         // Default: table chart
-        const chartRes = await fetch('/prompt_dataset_table/create_viz', {
+        const chartRes = await fetch('/api/v1/prompt_dataset_table/create_viz', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -1,18 +1,18 @@
 from flask import request, jsonify
-from flask_appbuilder import expose
-from superset.views.base import api, BaseSupersetView, handle_api_exception
+from flask_appbuilder.api import expose, safe
+from flask_appbuilder.security.decorators import has_access
+from superset.views.base_api import BaseSupersetApi
 from superset import db, event_logger
-from flask_appbuilder.security.decorators import has_access_api
 from superset.models.slice import Slice
 from superset.models.dashboard import Dashboard
 import json
 
-class PromptDatasetToPromptTableApi(BaseSupersetView):
-    route_base = "/prompt_dataset_table"
+class PromptDatasetToPromptTableApi(BaseSupersetApi):
+    resource_name = "prompt_dataset_table"  # becomes part of /api/v1/prompt_dataset_table/
+    openapi_spec_tag = "Prompt Dataset to Table"
     @event_logger.log_this
-    @api
-    @handle_api_exception
-    @has_access_api
+    @safe
+    @has_access
     @expose("/create_viz", methods=["POST"])
     def create_viz(self):
         data = request.json
@@ -42,9 +42,8 @@ class PromptDatasetToPromptTableApi(BaseSupersetView):
         return jsonify({"success": True})
     
     @event_logger.log_this
-    @api
-    @handle_api_exception
-    @has_access_api
+    @safe
+    @has_access
     @expose("/create_pie", methods=["POST"])
     def create_pie(self):
         """Creates a pie chart visualization"""
@@ -82,9 +81,8 @@ class PromptDatasetToPromptTableApi(BaseSupersetView):
         return jsonify({"success": True})
     
     @event_logger.log_this
-    @api
-    @handle_api_exception
-    @has_access_api
+    @safe
+    @has_access
     @expose("/create_bar", methods=["POST"])
     def create_bar(self):
         """Creates a bar chart visualization with multiple metrics (no series/grouping)"""

@@ -1,13 +1,14 @@
 from flask import request, jsonify
 from flask_appbuilder import expose
-from superset.views.base import api, BaseSupersetView, handle_api_exception
+from superset.views.base import api, handle_api_exception
+from superset.views.base_api import BaseSupersetApi
 from superset import db, event_logger
 from flask_appbuilder.security.decorators import has_access_api
 from superset.models.slice import Slice
 from superset.models.dashboard import Dashboard
 import json
 
-class PromptTableApi(BaseSupersetView):
+class PromptTableApi(BaseSupersetApi):
     route_base = "/prompt_table"
     @event_logger.log_this
     @api

@@ -193,6 +193,8 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         from superset.views.tags import TagModelView, TagView
         from superset.views.users.api import CurrentUserRestApi
         from superset.views.sql_gen.main import GeminiSqlRestApi
+        from superset.views.prompt_to_chart.prompt_dataset_to_prompt_table import PromptDatasetToPromptTableApi
+        from superset.views.prompt_to_chart.prompt_table_api import PromptTableApi
 
         #
         # Setup API views
@@ -208,6 +210,8 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         appbuilder.add_api(CssTemplateRestApi)
         appbuilder.add_api(CurrentUserRestApi)
         appbuilder.add_api(GeminiSqlRestApi)
+        appbuilder.add_api(PromptDatasetToPromptTableApi)
+        appbuilder.add_api(PromptTableApi)
         appbuilder.add_api(DashboardFilterStateRestApi)
         appbuilder.add_api(DashboardPermalinkRestApi)
         appbuilder.add_api(DashboardRestApi)
