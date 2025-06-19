@@ -13,9 +13,9 @@ function getCookie(name: string) {
 
 export default function PromptChart(props: PromptChartTransformedProps) {
   const dashboardIdFromURL = window.location.pathname.match(/\/dashboard\/(\d+)/)?.[1];
-  const { chartId, formData, height, width, databaseId, schemaName } = props;
+  const { formData, height, width, databaseId, schemaName } = props;
   //const [form] = Form.useForm();
-  console.log('chart ID:', chartId)
+  //console.log('chart ID:', chartId)
   const [dashboardId, setDashboardId] = useState<number | null>(null);
   const [query, setQuery] = useState('');
 
@@ -74,7 +74,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
   }, [dashboardIdFromURL, formData.urlParams.form_data_key]);
 
 
-  console.log('Dashboard ID:', dashboardId);
+  //console.log('Dashboard ID:', dashboardId);
   //console.log('formData:', formData);
   //console.log('formDatadatakey:', formData.urlParams.form_data_key);
 
@@ -165,7 +165,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
     }
     // Append only for PIE or BAR charts
     if (chartName && ['PIE', 'BAR'].includes(chartName.toUpperCase())) {
-      queryDescriptionLine += ' Please use alias name for aggregate values.';
+     queryDescriptionLine += ' Please create alias names directly based on the aggregate functions used (e.g., sum_sales for SUM(sales)), not from column or table aliases.';
     }
     try {
       const res = await fetch('/api/v1/gemini_sql/generate', {
@@ -270,8 +270,8 @@ export default function PromptChart(props: PromptChartTransformedProps) {
 
         // Set all columns except the metric column as groupby
         const groupby = columns.filter((col: string) => col !== metricColumn);
-        console.log('Group By:', groupby);
-        console.log('Metric:', metric);
+        //console.log('Group By:', groupby);
+        //console.log('Metric:', metric);
         const pieRes = await fetch('/api/v1/prompt_dataset_table/create_pie', {
           method: 'POST',
           headers: {
@@ -309,7 +309,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
         }
 
         metricColumns = metricMatches.map(match => match[3].replace(/[,;]/g, '').trim());
-        console.log('Metric Columns:', metricColumns);
+        //console.log('Metric Columns:', metricColumns);
         // Filter columns to get groupColumn (columns not in metricColumns)
         groupColumn = columns.filter((col: string) => !metricColumns.includes(col));
 
@@ -326,10 +326,10 @@ export default function PromptChart(props: PromptChartTransformedProps) {
           column: name,
         }));
 
-        console.log('X Axis Column:', xAxisColumn);
-        console.log('Group Columns:', groupColumn);
-        console.log('Group By:', groupby);
-        console.log('Metrics:', metrics);
+        //console.log('X Axis Column:', xAxisColumn);
+        //console.log('Group Columns:', groupColumn);
+        //console.log('Group By:', groupby);
+        //console.log('Metrics:', metrics);
 
         const barRes = await fetch('/api/v1/prompt_dataset_table/create_bar', {
           method: 'POST',

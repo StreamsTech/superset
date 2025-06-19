@@ -45,6 +45,7 @@ RUN /frontend-mem-nag.sh
 
 COPY superset-frontend/package*.json ./
 
+RUN npm config set registry https://registry.npmmirror.com
 RUN npm config set fetch-retry-mintimeout 20000
 RUN npm config set fetch-retry-maxtimeout 120000
 

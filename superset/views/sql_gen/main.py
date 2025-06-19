@@ -27,7 +27,7 @@ from superset import app
 import logging
 config = app.config
 
-from superset.views.sql_gen.schema import get_postgres_schema, get_schema
+from superset.views.sql_gen.schema import get_postgres_schema, get_schema, get_postgres_schema_with_description
 
 from superset.views.sql_gen.gen_sql_query import generate_sql_query
 
@@ -159,19 +159,19 @@ class GeminiSqlRestApi(BaseSupersetApi):
               inspector = inspect(engine)
           
               with engine.connect() as conn:
-                  if "Table Alias" in inspector.get_table_names(schema=schema_name):
-                      result = conn.execute(f'SELECT * FROM "{schema_name}"."Table Alias"')
+                  if "table_alias" in inspector.get_table_names(schema=schema_name):
+                      result = conn.execute(f'SELECT * FROM "{schema_name}"."table_alias"')
                       for row in result:
-                          original_table = row["Original Name"]
-                          aliases = row["Alias"]
+                          original_table = row["original_name"]
+                          aliases = row["alias"]
                           table_alias_lines.append(f"{original_table} as {aliases}")
           
-                  if "Column Alias" in inspector.get_table_names(schema=schema_name):
-                      result = conn.execute(f'SELECT * FROM "{schema_name}"."Column Alias"')
+                  if "column_alias" in inspector.get_table_names(schema=schema_name):
+                      result = conn.execute(f'SELECT * FROM "{schema_name}"."column_alias"')
                       for row in result:
-                          table_name = row["Table Name"]
-                          column_name = row["Column Name"]
-                          aliases = row["Alias"]
+                          table_name = row["table_name"]
+                          column_name = row["column_name"]
+                          aliases = row["alias"]
                           column_alias_lines.append(f"{table_name}.{column_name} as {aliases}")
 
             table_alias = (
@@ -189,7 +189,8 @@ class GeminiSqlRestApi(BaseSupersetApi):
             #engine = database.get_engine(schema=schema_name)
             database_url = database.sqlalchemy_uri_decrypted
             #database_url = database.sqlalchemy_uri
-            db_schema = get_postgres_schema(database_url, schema_name)
+            #db_schema = get_postgres_schema(database_url, schema_name)
+            db_schema = get_postgres_schema_with_description(database_url, schema_name)
             logging.info(f"Using schema: {db_schema}")
             logging.info(f"Using dbURL: {database_url}")
 

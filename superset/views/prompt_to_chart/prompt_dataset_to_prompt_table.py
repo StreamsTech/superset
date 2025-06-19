@@ -1,6 +1,5 @@
 from flask import request, jsonify
 from flask_appbuilder.api import expose, safe
-from flask_appbuilder.security.decorators import has_access
 from superset.views.base_api import BaseSupersetApi
 from superset import db, event_logger
 from superset.models.slice import Slice
@@ -12,7 +11,6 @@ class PromptDatasetToPromptTableApi(BaseSupersetApi):
     openapi_spec_tag = "Prompt Dataset to Table"
     @event_logger.log_this
     @safe
-    @has_access
     @expose("/create_viz", methods=["POST"])
     def create_viz(self):
         data = request.json
@@ -43,7 +41,6 @@ class PromptDatasetToPromptTableApi(BaseSupersetApi):
     
     @event_logger.log_this
     @safe
-    @has_access
     @expose("/create_pie", methods=["POST"])
     def create_pie(self):
         """Creates a pie chart visualization"""
@@ -82,7 +79,6 @@ class PromptDatasetToPromptTableApi(BaseSupersetApi):
     
     @event_logger.log_this
     @safe
-    @has_access
     @expose("/create_bar", methods=["POST"])
     def create_bar(self):
         """Creates a bar chart visualization with multiple metrics (no series/grouping)"""

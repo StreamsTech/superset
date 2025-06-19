@@ -7,6 +7,7 @@ config = app.config
 
 from superset.views.sql_gen.schema import extract_table_names,filter_schemas_by_table_names
 
+
 def get_query_prompt(tableNames, allSchema, query_description, is_double_quoted_table_name=False, table_alias='', column_alias=''):
 
     filteredSchema=filter_schemas_by_table_names(tableNames, allSchema)
@@ -22,19 +23,23 @@ def get_query_prompt(tableNames, allSchema, query_description, is_double_quoted_
 
     {table_alias}
 
-
     {column_alias}
-    
+
     Generate a SQL query for postgresql that:
     {query_description}
     
+    please do not add such a table name or column name in your query that not match with the given database schema.
+    That will raise fatal error once I run this query.
+
+    If you can't match any table name, return - You query description is not sufficient to make a valid query.
+
     {doubleQuotedTableName}
     Please provide only the SQL query without any explanations.
     """
     return prompt
 
 def get_table_name_prompt(schemaStr, query_description, table_alias=''):
-    tableNames = extract_table_names(schemaStr)
+    tableNames = extract_table_names(schemaStr or "")
     prompt = f"""
     Given this database table names:
     {tableNames}
@@ -43,11 +48,12 @@ def get_table_name_prompt(schemaStr, query_description, table_alias=''):
     
     Find expected table names that:
     {query_description}
+
+    please only consider the given table names. Do not add any additional table names in your response.
     
     Please provide only the comma separated table names without any explanations.
     """
     return prompt
-
 def generate_sql_query(schema, query_description, is_double_quoted_table_name=False, table_alias='', column_alias=''):
     """
     Uses Gemini to generate a SQL query based on a schema and description.
