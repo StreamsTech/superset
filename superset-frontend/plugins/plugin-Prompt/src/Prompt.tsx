@@ -165,7 +165,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
     }
     // Append only for PIE or BAR charts
     if (chartName && ['PIE', 'BAR'].includes(chartName.toUpperCase())) {
-     queryDescriptionLine += ' Please create alias names directly based on the aggregate functions used (e.g., sum_sales for SUM(sales)), not from column or table aliases.';
+      queryDescriptionLine += ' Please create alias names for the aggregate values only directly based on the aggregate functions used (e.g., sum_sales for SUM(sales)), not from column or table aliases.';
     }
     try {
       const res = await fetch('/api/v1/gemini_sql/generate', {
@@ -181,9 +181,19 @@ export default function PromptChart(props: PromptChartTransformedProps) {
           schemaName: schemaName,
         }),
       });
+      //const res = await fetch('/api/v1/query_database/generate', {
+      //  method: 'POST',
+      //  headers: {
+      //    'Content-Type': 'application/json',
+      //    'X-CSRFToken': getCookie('csrf_token'),
+      //  },
+      //  credentials: 'include',
+      //  body: JSON.stringify({ question: queryDescriptionLine }),
+      //});
 
       const json = await res.json();
       if (json?.query) {
+        //const rawSql = json.query.response.replace(/```sql|```/g, '').trim();
         Modal.success({
           title: `Query Generated${chartName ? ' for ' + chartName + ' chart' : ''}!`,
           content: <pre>{json.query}</pre>,
@@ -229,7 +239,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
 
       const json = await response.json();
       if (!response.ok || !json?.id) {
-        Modal.error({ title: 'Failed to create dataset', content: JSON.stringify(json) });
+        Modal.error({ title: 'Failed to create dataset' });
         return;
       }
 
@@ -253,7 +263,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
 
         // Match the pattern: COUNT(something) AS "alias"
         const aggWithAliasMatch = sql.match(
-          /(COUNT|SUM|AVG|MIN|MAX)\s*\(\s*([^)]+?)\s*\)\s+AS\s+["']?([^"'\n\r;]+)["']?/i
+          /(COUNT|SUM|AVG|MIN|MAX)\s*\(([^)]+?)\)\s+AS\s+["']?([\w\d_]+)["']?/i
         );
 
         if (aggWithAliasMatch) {
@@ -294,7 +304,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
             content: `Dataset "${tableName}" and a pie chart have been added to the dashboard.`,
           });
         } else {
-          Modal.error({ title: 'Failed to create pie chart', content: JSON.stringify(pieJson) });
+          Modal.error({ title: 'Failed to create Pie Chart' });
         }
       }
       else if (upperChartName === 'BAR') {
@@ -302,13 +312,13 @@ export default function PromptChart(props: PromptChartTransformedProps) {
         let groupColumn: string[] = [];
 
         // Try to find metric expressions with aliases: e.g., COUNT(col) AS "Total", SUM(sales) AS "Revenue"
-        const metricMatches = [...sql.matchAll(/(COUNT|SUM|AVG|MIN|MAX)\s*\(([^)]+)\)\s+AS\s+["']?([^"'\n\r;]+)["']?/gi)];
+        const metricMatches = [...sql.matchAll(/(COUNT|SUM|AVG|MIN|MAX)\s*\(([^)]+?)\)\s+AS\s+["']?([\w\d_]+)["']?/gi)];
         if (metricMatches.length === 0) {
           Modal.error({ title: 'Could not determine metrics from SQL' });
           return;
         }
 
-        metricColumns = metricMatches.map(match => match[3].replace(/[,;]/g, '').trim());
+        metricColumns = metricMatches.map(match => match[3].trim());
         //console.log('Metric Columns:', metricColumns);
         // Filter columns to get groupColumn (columns not in metricColumns)
         groupColumn = columns.filter((col: string) => !metricColumns.includes(col));
@@ -354,7 +364,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
             content: `Dataset "${tableName}" and a bar chart have been added to the dashboard.`,
           });
         } else {
-          Modal.error({ title: 'Failed to create bar chart', content: JSON.stringify(barJson) });
+          Modal.error({ title: 'Failed to create bar chart' });
         }
       }
 
@@ -384,7 +394,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
         } else {
           Modal.error({
             title: 'Dataset created, but failed to create table chart',
-            content: JSON.stringify(chartJson),
+            //content: JSON.stringify(chartJson),
           });
         }
       }
