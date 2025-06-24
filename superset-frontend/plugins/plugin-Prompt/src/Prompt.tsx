@@ -14,9 +14,8 @@ function getCookie(name: string) {
 export default function PromptChart(props: PromptChartTransformedProps) {
   const dashboardIdFromURL = window.location.pathname.match(/\/dashboard\/(\d+)/)?.[1];
   const { formData, height, width, databaseId, schemaName } = props;
-  //const [form] = Form.useForm();
-  //console.log('chart ID:', chartId)
   const [dashboardId, setDashboardId] = useState<number | null>(null);
+  const [dbSchema, setDbSchema] = useState<string>('');
   const [query, setQuery] = useState('');
 
 
@@ -58,6 +57,33 @@ export default function PromptChart(props: PromptChartTransformedProps) {
 
 
   useEffect(() => {
+    const fetchSchema = async () => {
+      if (!databaseId || !schemaName) return;
+
+      try {
+        const res = await fetch('/api/v1/gemini_sql/schema', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrf_token'),
+          },
+          credentials: 'include',
+          body: JSON.stringify({ dbId: databaseId, schemaName }),
+        });
+
+        const json = await res.json();
+        if (json?.schema) {
+          setDbSchema(json.schema);
+        } else {
+          console.warn('Schema response missing');
+        }
+      } catch (err) {
+        console.error('Error fetching schema:', err);
+      }
+    };
+
+    fetchSchema();
+    //console.log('dbschema:', dbSchema);
     if (dashboardIdFromURL) {
       setDashboardId(parseInt(dashboardIdFromURL, 10));
     } else {
@@ -71,77 +97,14 @@ export default function PromptChart(props: PromptChartTransformedProps) {
       };
       fetchDashboardId();
     }
-  }, [dashboardIdFromURL, formData.urlParams.form_data_key]);
+  }, [dashboardIdFromURL, formData.urlParams.form_data_key, databaseId, schemaName]);
 
 
   //console.log('Dashboard ID:', dashboardId);
   //console.log('formData:', formData);
   //console.log('formDatadatakey:', formData.urlParams.form_data_key);
 
-  //const parsePrompt = (prompt: string) => {
-  //  const result: {
-  //    chart?: string;
-  //    dimensions?: string[];
-  //    metric?: { aggregate: string; column: string };
-  //  } = {};
-  //
-  //  // Example: "chart= Pie, Dimensions= City, Street, Metric=Count[Numbers]"
-  //  const parts = prompt.split(',');
-  //
-  //  parts.forEach(part => {
-  //    const [keyRaw, valueRaw] = part.split('=');
-  //    if (!keyRaw || !valueRaw) return;
-  //
-  //    const key = keyRaw.trim().toLowerCase();
-  //    const value = valueRaw.trim();
-  //
-  //    if (key === 'chart') {
-  //      result.chart = value.toLowerCase();
-  //    } else if (key === 'dimensions') {
-  //      result.dimensions = value.split(',').map(d => d.trim());
-  //    } else if (key === 'metric') {
-  //      const match = value.match(/^(\w+)\[(.+)\]$/);
-  //      if (match) {
-  //        result.metric = {
-  //          aggregate: match[1].toUpperCase(),
-  //          column: match[2].trim(),
-  //        };
-  //      }
-  //    }
-  //  });
-  //
-  //  return result;
-  //};
 
-  //const handleSubmit = async (values: { columns: string }) => {
-  //  //const columnsInput = values.columns;
-  //  const parsed = parsePrompt(values.columns);
-  //  console.log('Parsed Prompt:', parsed);
-  //
-  //  if (!parsed.chart || !parsed.dimensions || !parsed.metric) {
-  //    Modal.error({ title: 'Invalid prompt format!' });
-  //    return;
-  //  }
-  //  const res = await fetch('/prompt_table/create_viz', {
-  //    method: 'POST',
-  //    headers: { 'Content-Type': 'application/json' },
-  //    body: JSON.stringify({
-  //      viz_type: parsed.chart,
-  //      groupby: parsed.dimensions,
-  //      metric: parsed.metric,
-  //      dataset_id: formData.datasource.split('__')[0],
-  //      dashboard_id: dashboardId,
-  //    }),
-  //  });
-  //
-  //  const json = await res.json();
-  //  if (json.success) {
-  //    Modal.success({
-  //      title: `${parsed.chart} Table visualization added to the dashboard!`,
-  //    });
-  //    form.resetFields();
-  //  }
-  //};
 
   const handleQuerySubmit = async () => {
     if (!query.trim()) {
@@ -150,19 +113,21 @@ export default function PromptChart(props: PromptChartTransformedProps) {
     }
     let chartName: string | null = null;
     let queryDescriptionLine = query.trim();
+    //console.log('dbschema2:', dbSchema);
 
     if (query.includes('\n')) {
-      const [firstLine, ...restLines] = query.split('\n');
-      queryDescriptionLine = firstLine;
+      const lines = query.trim().split('\n');
+      const lastLine = lines[lines.length - 1].trim();
+      const descriptionLines = lines.slice(0, -1); // all lines except last
 
-      for (const line of restLines) {
-        const match = line.match(/(\w+)\s+(?=chart\b)/i);
-        if (match) {
-          chartName = match[1];
-          break;
-        }
+      queryDescriptionLine = descriptionLines.join('\n').trim();
+
+      const match = lastLine.match(/(\w+)\s+(?=chart\b)/i);
+      if (match) {
+        chartName = match[1];
       }
     }
+
     // Append only for PIE or BAR charts
     if (chartName && ['PIE', 'BAR'].includes(chartName.toUpperCase())) {
       queryDescriptionLine += ' Please create alias names for the aggregate values only directly based on the aggregate functions used (e.g., sum_sales for SUM(sales)), not from column or table aliases.';
@@ -179,6 +144,7 @@ export default function PromptChart(props: PromptChartTransformedProps) {
           queryDescription: queryDescriptionLine,
           dbId: databaseId,
           schemaName: schemaName,
+          dbSchema: dbSchema,
         }),
       });
       //const res = await fetch('/api/v1/query_database/generate', {

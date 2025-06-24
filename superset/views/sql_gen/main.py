@@ -102,6 +102,7 @@ class GeminiSqlRestApi(BaseSupersetApi):
             #engine = database.get_engine(schema=schema_name)
             database_url = database.sqlalchemy_uri_decrypted
             db_schema = get_postgres_schema(database_url, schema_name)
+            logging.info(f"Using schema: {db_schema}")
             return self.response(200, schema=db_schema)
         except Exception as ex:
             return self.response(500, message=f"Error fetching schema: {str(ex)}")
@@ -143,11 +144,14 @@ class GeminiSqlRestApi(BaseSupersetApi):
         query_description = data.get("queryDescription")
         db_id = data.get("dbId")
         schema_name = data.get("schemaName")
+        db_schema = data.get("dbSchema")
 
         if not query_description:
             return self.response(400, message="Missing 'queryDescription'")
         if not db_id or not schema_name:
             return self.response(400, message="Missing 'dbId' or 'schemaName'")
+        if not db_schema:
+            return self.response(400, message="Missing 'dbSchema'")
         try:
             # Fetch the database connection info from Superset metadata
             database = db.session.query(Database).filter_by(id=db_id).first()
@@ -190,7 +194,7 @@ class GeminiSqlRestApi(BaseSupersetApi):
             database_url = database.sqlalchemy_uri_decrypted
             #database_url = database.sqlalchemy_uri
             #db_schema = get_postgres_schema(database_url, schema_name)
-            db_schema = get_postgres_schema_with_description(database_url, schema_name)
+            ##db_schema = get_postgres_schema_with_description(database_url, schema_name)
             logging.info(f"Using schema: {db_schema}")
             logging.info(f"Using dbURL: {database_url}")
 
