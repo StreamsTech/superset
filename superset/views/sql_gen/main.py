@@ -101,7 +101,7 @@ class GeminiSqlRestApi(BaseSupersetApi):
 
             #engine = database.get_engine(schema=schema_name)
             database_url = database.sqlalchemy_uri_decrypted
-            db_schema = get_postgres_schema(database_url, schema_name)
+            db_schema = get_postgres_schema_with_description(database_url, schema_name)
             logging.info(f"Using schema: {db_schema}")
             return self.response(200, schema=db_schema)
         except Exception as ex:
