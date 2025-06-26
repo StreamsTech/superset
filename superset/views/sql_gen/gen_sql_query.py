@@ -31,7 +31,7 @@ def get_query_prompt(tableNames, allSchema, query_description, is_double_quoted_
     please do not add such a table name or column name in your query that not match with the given database schema.
     That will raise fatal error once I run this query.
 
-    If you can't match any table name, return - You query description is not sufficient to make a valid query.
+    If you can't match any table name from the given schema, return - You query description is not sufficient to make a valid query.
 
     {doubleQuotedTableName}
     Please provide only the SQL query without any explanations.
@@ -41,8 +41,10 @@ def get_query_prompt(tableNames, allSchema, query_description, is_double_quoted_
 def get_table_name_prompt(schemaStr, query_description, table_alias=''):
     tableNames = extract_table_names(schemaStr or "")
     prompt = f"""
-    Given this database table names:
+    Given this database table names with description([tableName] - [description]):
+    ```
     {tableNames}
+    ```
     
     {table_alias}
     

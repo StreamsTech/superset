@@ -333,6 +333,8 @@ def get_schema(connection_string=None, schema_name="public"):
         return file.read()
     
 
+
+#### New function to filter schemas by table names ####
 def extract_table_names(schemas=""):
     """
     Extract table names from a schema string and return them as a comma-separated string.
@@ -347,19 +349,24 @@ def extract_table_names(schemas=""):
     table_names = []
     if not schemas:
         return ""
+    
     # Split the schemas into lines
     lines = schemas.split('\n')
     
     # Look for lines starting with "Table: "
-    for line in lines:
+    for idx, line in enumerate(lines):
         line = line.strip()
         if line.lower().startswith('table:'):
             # Extract the table name (everything after "Table: ")
+            nextLine=lines[idx+1].strip()
             table_name = line[6:].strip()
-            table_names.append(table_name)
+            if nextLine.startswith('Description:'):
+                table_names.append(f'{table_name} - {nextLine[12:].strip()}')
+            else:
+                table_names.append(f'{table_name} - ')
     
     # Join the table names with commas
-    return ', '.join(table_names)
+    return '\n'.join(table_names)
 
 
 
