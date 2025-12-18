@@ -72,8 +72,9 @@ import {
 import {
   EchartsTimeseriesBarChartPluginExtended,
   EchartsPieChartPluginExtend,
-  BigNumberWithTrendlineChartPluginExtended, 
+  BigNumberWithTrendlineChartPluginExtended,
   BigNumberTotalChartPluginExtended,
+  EchartsSunburstChartPluginExtend,
 } from '@superset-ui/plugin-chart-echarts-extended';
 
 import {
@@ -180,6 +181,7 @@ export default class MainPreset extends Preset {
         new TimeGrainFilterPlugin().configure({ key: 'filter_timegrain' }),
         new EchartsTreeChartPlugin().configure({ key: 'tree_chart' }),
         new EchartsSunburstChartPlugin().configure({ key: 'sunburst_v2' }),
+        new EchartsSunburstChartPluginExtend().configure({ key: 'sunburst_v2_extend' }),
         new HandlebarsChartPlugin().configure({ key: 'handlebars' }),
         new CircumplexChartPlugin().configure({ key: 'circumplex_chart' }),
         ...experimentalplugins,

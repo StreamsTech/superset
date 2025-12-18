@@ -33,7 +33,7 @@ export { default as EchartsFunnelChartPlugin } from './Funnel';
 export { default as EchartsTreeChartPlugin } from './Tree';
 export { default as EchartsTreemapChartPlugin } from './Treemap';
 export { BigNumberWithTrendlineChartPluginExtended, BigNumberTotalChartPluginExtended } from './BigNumber';
-export { default as EchartsSunburstChartPlugin } from './Sunburst';
+export { default as EchartsSunburstChartPluginExtend } from './Sunburst';
 
 export { default as BoxPlotTransformProps } from './BoxPlot/transformProps';
 export { default as FunnelTransformProps } from './Funnel/transformProps';

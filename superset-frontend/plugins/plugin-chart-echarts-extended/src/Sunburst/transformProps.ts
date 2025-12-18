@@ -30,7 +30,7 @@ import {
   t,
   ValueFormatter,
 } from '@superset-ui/core';
-import { EChartsCoreOption } from 'echarts';
+import { EChartsCoreOption } from 'echarts/core';
 import { CallbackDataParams } from 'echarts/types/src/util/types';
 import { OpacityEnum } from '../constants';
 import { defaultGrid } from '../defaults';
@@ -285,6 +285,10 @@ export default function transformProps(
     linearColorScale(totalSecondaryValue / totalValue);
   }
 
+  // Get colors array from the color scale for sequential assignment
+  const colors = categoricalColorScale?.colors || [];
+  let colorIndex = 0;
+
   const traverse = (
     treeNodes: TreeNode[],
     path: string[],
@@ -300,18 +304,29 @@ export default function transformProps(
           coltype: coltypeMapping[groupBy],
         }),
       });
+
       const newPath = path.concat(name);
+
+      // Get color sequentially from the color scheme
+      let itemColor: string;
+      if (colorByCategory) {
+        // Use sequential colors from the palette for all nodes
+        itemColor = colors[colorIndex % colors.length] || categoricalColorScale(name, sliceId);
+        colorIndex++;
+      } else {
+        itemColor = linearColorScale(secondaryValue / value);
+      }
+
       let item: NodeItemOption = {
         records,
         name,
         value,
         secondaryValue,
         itemStyle: {
-          color: colorByCategory
-            ? categoricalColorScale(name, sliceId)
-            : linearColorScale(secondaryValue / value),
+          color: itemColor,
         },
       };
+
       if (treeNode.children?.length) {
         item.children = traverse(treeNode.children, newPath, records);
       } else {

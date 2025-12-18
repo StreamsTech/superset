@@ -26,6 +26,11 @@ FROM --platform=${BUILDPLATFORM} node:16-slim AS superset-node
 
 ARG NPM_BUILD_CMD="build"
 
+# Add this before the apt-get commands
+RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list \
+    && sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list \
+    && sed -i '/stretch-updates/d' /etc/apt/sources.list
+
 RUN apt-get update -q \
     && apt-get install -yq --no-install-recommends \
         python3 \
